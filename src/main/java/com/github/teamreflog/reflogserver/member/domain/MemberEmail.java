@@ -11,7 +11,7 @@ public record MemberEmail(String email) {
             Pattern.compile("^[a-zA-Z0-9._]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$");
 
     public MemberEmail {
-        if (emailPattern.matcher(email).matches()) {
+        if (!emailPattern.matcher(email).matches()) {
             throw new EmailFormatException();
         }
     }
