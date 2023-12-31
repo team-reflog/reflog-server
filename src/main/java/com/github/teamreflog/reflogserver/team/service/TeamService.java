@@ -1,7 +1,9 @@
 package com.github.teamreflog.reflogserver.team.service;
 
 import com.github.teamreflog.reflogserver.team.dto.TeamCreateRequest;
+import com.github.teamreflog.reflogserver.team.dto.TeamQueryResponse;
 import com.github.teamreflog.reflogserver.team.exception.TeamNameDuplicatedException;
+import com.github.teamreflog.reflogserver.team.exception.TeamNotExistException;
 import com.github.teamreflog.reflogserver.team.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,5 +21,12 @@ public class TeamService {
 
         // TODO: 토큰에서 사용자 ID를 추출하여 사용하도록 수정
         teamRepository.save(request.toEntity(777L));
+    }
+
+    public TeamQueryResponse queryTeam(final Long teamId) {
+        return teamRepository
+                .findById(teamId)
+                .map(TeamQueryResponse::fromEntity)
+                .orElseThrow(TeamNotExistException::new);
     }
 }
