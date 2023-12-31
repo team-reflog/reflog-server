@@ -51,11 +51,16 @@ class TeamAcceptanceTest extends AcceptanceTest {
     void queryTeam() {
         final Long memberId = MemberFixture.createMember("reflog@email.com", "reflog");
         final String accessToken = AuthFixture.login("reflog@email.com", "reflog").accessToken();
-        TeamFixture.createTeam(
-                accessToken,
-                "antifragile",
-                "안티프래질 팀입니다.",
-                List.of(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY, DayOfWeek.SUNDAY));
+        final Long teamId =
+                TeamFixture.createTeam(
+                        accessToken,
+                        "antifragile",
+                        "안티프래질 팀입니다.",
+                        List.of(
+                                DayOfWeek.MONDAY,
+                                DayOfWeek.WEDNESDAY,
+                                DayOfWeek.FRIDAY,
+                                DayOfWeek.SUNDAY));
 
         RestAssured.given()
                 .log()
@@ -63,7 +68,7 @@ class TeamAcceptanceTest extends AcceptanceTest {
                 .auth()
                 .oauth2(accessToken)
                 .when()
-                .get("/teams/1")
+                .get("/teams/" + teamId)
                 .then()
                 .log()
                 .all()

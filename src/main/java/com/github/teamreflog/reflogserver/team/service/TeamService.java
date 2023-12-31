@@ -15,12 +15,12 @@ public class TeamService {
 
     private final TeamRepository teamRepository;
 
-    public void createTeam(final AuthPrincipal authPrincipal, final TeamCreateRequest request) {
+    public Long createTeam(final AuthPrincipal authPrincipal, final TeamCreateRequest request) {
         if (teamRepository.existsByName(request.name())) {
             throw new TeamNameDuplicatedException();
         }
 
-        teamRepository.save(request.toEntity(authPrincipal.memberId()));
+        return teamRepository.save(request.toEntity(authPrincipal.memberId())).getId();
     }
 
     public TeamQueryResponse queryTeam(final Long teamId) {
