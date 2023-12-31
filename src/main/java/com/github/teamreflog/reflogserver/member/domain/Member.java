@@ -2,6 +2,7 @@ package com.github.teamreflog.reflogserver.member.domain;
 
 import com.github.teamreflog.reflogserver.common.entity.BaseEntity;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,14 +24,14 @@ public class Member extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Embedded
     @Column(name = "email", unique = true, nullable = false)
-    private String email;
+    private MemberEmail email;
 
     @Column(name = "password", nullable = false)
     private String password;
 
-    public Member(final String email, final String password) {
-        this.email = email;
-        this.password = password;
+    public static Member of(final String email, final String password) {
+        return new Member(null, new MemberEmail(email), password);
     }
 }
