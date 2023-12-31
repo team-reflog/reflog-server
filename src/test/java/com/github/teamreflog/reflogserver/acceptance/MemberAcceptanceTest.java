@@ -1,4 +1,4 @@
-package com.github.teamreflog.reflogserver.integration;
+package com.github.teamreflog.reflogserver.acceptance;
 
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -14,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-class MemberIntegrationTest {
+class MemberAcceptanceTest {
 
     @LocalServerPort int port;
 
