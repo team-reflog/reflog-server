@@ -1,5 +1,6 @@
 package com.github.teamreflog.reflogserver.team.service;
 
+import com.github.teamreflog.reflogserver.auth.dto.AuthPrincipal;
 import com.github.teamreflog.reflogserver.team.dto.TeamCreateRequest;
 import com.github.teamreflog.reflogserver.team.dto.TeamQueryResponse;
 import com.github.teamreflog.reflogserver.team.exception.TeamNameDuplicatedException;
@@ -14,13 +15,12 @@ public class TeamService {
 
     private final TeamRepository teamRepository;
 
-    public void createTeam(final TeamCreateRequest request) {
+    public void createTeam(final AuthPrincipal authPrincipal, final TeamCreateRequest request) {
         if (teamRepository.existsByName(request.name())) {
             throw new TeamNameDuplicatedException();
         }
 
-        // TODO: 토큰에서 사용자 ID를 추출하여 사용하도록 수정
-        teamRepository.save(request.toEntity(777L));
+        teamRepository.save(request.toEntity(authPrincipal.memberId()));
     }
 
     public TeamQueryResponse queryTeam(final Long teamId) {

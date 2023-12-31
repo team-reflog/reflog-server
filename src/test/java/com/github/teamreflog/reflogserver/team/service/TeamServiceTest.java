@@ -2,6 +2,7 @@ package com.github.teamreflog.reflogserver.team.service;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 
+import com.github.teamreflog.reflogserver.auth.dto.AuthPrincipal;
 import com.github.teamreflog.reflogserver.config.JpaConfig;
 import com.github.teamreflog.reflogserver.team.dto.TeamCreateRequest;
 import com.github.teamreflog.reflogserver.team.exception.TeamNameDuplicatedException;
@@ -24,6 +25,7 @@ class TeamServiceTest {
     @DisplayName("팀을 생성한다.")
     void createTeam() {
         /* given */
+        final AuthPrincipal authPrincipal = new AuthPrincipal(1L);
         final TeamCreateRequest request =
                 new TeamCreateRequest(
                         "antifragile",
@@ -35,13 +37,15 @@ class TeamServiceTest {
                                 DayOfWeek.SUNDAY));
 
         /* when & then */
-        assertThatCode(() -> teamService.createTeam(request)).doesNotThrowAnyException();
+        assertThatCode(() -> teamService.createTeam(authPrincipal, request))
+                .doesNotThrowAnyException();
     }
 
     @Test
     @DisplayName("팀 이름이 중복되면 예외가 발생한다.")
     void throwExceptionWithDuplicatedTeamName() {
         /* given */
+        final AuthPrincipal authPrincipal = new AuthPrincipal(1L);
         final TeamCreateRequest request =
                 new TeamCreateRequest(
                         "antifragile",
@@ -53,10 +57,10 @@ class TeamServiceTest {
                                 DayOfWeek.SUNDAY));
 
         /* when */
-        teamService.createTeam(request);
+        teamService.createTeam(authPrincipal, request);
 
         /* then */
-        assertThatCode(() -> teamService.createTeam(request))
+        assertThatCode(() -> teamService.createTeam(authPrincipal, request))
                 .isExactlyInstanceOf(TeamNameDuplicatedException.class)
                 .hasMessage("이미 사용중인 팀 이름입니다.");
     }

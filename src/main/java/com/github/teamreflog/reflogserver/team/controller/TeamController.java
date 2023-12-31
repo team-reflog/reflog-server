@@ -1,5 +1,7 @@
 package com.github.teamreflog.reflogserver.team.controller;
 
+import com.github.teamreflog.reflogserver.auth.annotation.Authenticated;
+import com.github.teamreflog.reflogserver.auth.dto.AuthPrincipal;
 import com.github.teamreflog.reflogserver.team.dto.TeamCreateRequest;
 import com.github.teamreflog.reflogserver.team.dto.TeamQueryResponse;
 import com.github.teamreflog.reflogserver.team.service.TeamService;
@@ -22,8 +24,10 @@ public class TeamController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createTeam(@RequestBody final TeamCreateRequest request) {
-        teamService.createTeam(request);
+    public void createTeam(
+            @Authenticated final AuthPrincipal authPrincipal,
+            @RequestBody final TeamCreateRequest request) {
+        teamService.createTeam(authPrincipal, request);
     }
 
     @GetMapping("/{id}")
