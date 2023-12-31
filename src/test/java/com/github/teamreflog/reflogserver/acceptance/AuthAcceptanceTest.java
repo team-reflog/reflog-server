@@ -45,7 +45,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("refresh token으로 access token을 재발급 받는다.")
+    @DisplayName("refresh token으로 token을 재발급 받는다.")
     void refreshToken() {
         RestAssured.given()
                 .log()
