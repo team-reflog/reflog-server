@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 import com.github.teamreflog.reflogserver.config.JpaConfig;
+import com.github.teamreflog.reflogserver.member.domain.MemberEmail;
 import com.github.teamreflog.reflogserver.member.domain.MemberRepository;
 import com.github.teamreflog.reflogserver.member.dto.MemberJoinRequest;
 import com.github.teamreflog.reflogserver.member.exception.EmailDuplicatedException;
@@ -31,7 +32,7 @@ class MemberServiceTest {
         memberService.createMember(request);
 
         /* then */
-        assertThat(memberRepository.existsByEmail(request.getMemberEmail())).isTrue();
+        assertThat(memberRepository.existsByEmail(new MemberEmail(request.email()))).isTrue();
     }
 
     @Test
