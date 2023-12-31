@@ -1,9 +1,10 @@
 package com.github.teamreflog.reflogserver.auth.service;
 
 import com.github.teamreflog.reflogserver.auth.dto.LoginRequest;
-import com.github.teamreflog.reflogserver.auth.dto.LoginResponse;
+import com.github.teamreflog.reflogserver.auth.dto.TokenResponse;
 import com.github.teamreflog.reflogserver.auth.exception.EmailNotExistException;
 import com.github.teamreflog.reflogserver.auth.exception.PasswordNotMatchedException;
+import com.github.teamreflog.reflogserver.auth.infrastructure.JwtProvider;
 import com.github.teamreflog.reflogserver.member.domain.Member;
 import com.github.teamreflog.reflogserver.member.domain.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +15,9 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     private final MemberRepository memberRepository;
+    private final JwtProvider jwtProvider;
 
-    public LoginResponse login(final LoginRequest request) {
+    public TokenResponse login(final LoginRequest request) {
         final Member member =
                 memberRepository
                         .findByEmail(request.getMemberEmail())
@@ -25,6 +27,16 @@ public class AuthService {
             throw new PasswordNotMatchedException();
         }
 
-        return new LoginResponse("accessToken", "refreshToken");
+        return new TokenResponse(
+                jwtProvider.generateAccessToken(member.getId()),
+                jwtProvider.generateRefreshToken(member.getId()));
+    }
+
+    public TokenResponse refresh(final String token) {
+        final Long memberId = jwtProvider.decode(token);
+
+        return new TokenResponse(
+                jwtProvider.generateAccessToken(memberId),
+                jwtProvider.generateRefreshToken(memberId));
     }
 }

@@ -1,6 +1,6 @@
 package com.github.teamreflog.reflogserver.auth.infrastructure;
 
-import com.github.teamreflog.reflogserver.auth.exception.JwtInvaildException;
+import com.github.teamreflog.reflogserver.auth.exception.JwtInvalidException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.JwtException;
@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 @Component
 public class JwtProvider {
@@ -22,7 +23,7 @@ public class JwtProvider {
     private final JwtParser parser;
     private final JwtBuilder builder;
 
-    public JwtProvider(@Value("jwt.secret") final String secret) {
+    public JwtProvider(@Value("${jwt.secret}") final String secret) {
         final SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
 
         this.builder = Jwts.builder().signWith(key);
@@ -49,7 +50,15 @@ public class JwtProvider {
 
             return Long.valueOf(payload.getSubject());
         } catch (final JwtException e) {
-            throw new JwtInvaildException(e);
+            throw new JwtInvalidException(e);
         }
+    }
+
+    public String extractToken(final String header) {
+        if (!StringUtils.hasText(header) || !header.startsWith("Bearer ")) {
+            throw new JwtInvalidException();
+        }
+
+        return header.replace("Bearer ", "");
     }
 }
