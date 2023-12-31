@@ -27,7 +27,7 @@ class JwtProviderTest {
 
         /* when */
         final String token = jwtProvider.generateAccessToken(memberId);
-        final Long subject = jwtProvider.decode(token);
+        final Long subject = jwtProvider.parseSubject(token);
 
         /* then */
         assertThat(subject).isEqualTo(memberId);
@@ -41,7 +41,7 @@ class JwtProviderTest {
 
         /* when */
         final String token = jwtProvider.generateRefreshToken(memberId);
-        final Long subject = jwtProvider.decode(token);
+        final Long subject = jwtProvider.parseSubject(token);
 
         /* then */
         assertThat(subject).isEqualTo(memberId);
@@ -55,7 +55,7 @@ class JwtProviderTest {
                 "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI3NzciLCJleHAiOjE3MDQwMTkwNTV9.Gq8SgcYQEPv_W7yKpzHbCQPDGx9YyllLDD6f8vo8p_Q";
 
         /* when & then */
-        assertThatCode(() -> jwtProvider.decode(expired))
+        assertThatCode(() -> jwtProvider.parseSubject(expired))
                 .isInstanceOf(JwtInvalidException.class)
                 .hasMessage("유효하지 않은 토큰입니다.");
     }

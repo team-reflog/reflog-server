@@ -44,7 +44,7 @@ public class JwtProvider {
                 .compact();
     }
 
-    public Long decode(final String token) {
+    public Long parseSubject(final String token) {
         try {
             final Claims payload = (Claims) parser.parse(token).getPayload();
 

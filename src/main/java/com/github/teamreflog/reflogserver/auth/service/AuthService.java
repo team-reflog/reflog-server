@@ -33,7 +33,7 @@ public class AuthService {
     }
 
     public TokenResponse refresh(final String token) {
-        final Long memberId = jwtProvider.decode(token);
+        final Long memberId = jwtProvider.parseSubject(token);
 
         return new TokenResponse(
                 jwtProvider.generateAccessToken(memberId),
