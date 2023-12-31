@@ -13,7 +13,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     public void createMember(final MemberJoinRequest request) {
-        if (memberRepository.findByEmail(request.email()).isPresent()) {
+        if (memberRepository.existsByEmail(request.email())) {
             throw new EmailDuplicatedException();
         }
 

@@ -8,4 +8,6 @@ public interface MemberRepository extends Repository<Member, Long> {
     Optional<Member> findByEmail(String email);
 
     void save(Member member);
+
+    boolean existsByEmail(String email);
 }
