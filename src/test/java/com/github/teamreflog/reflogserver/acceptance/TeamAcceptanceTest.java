@@ -49,7 +49,7 @@ class TeamAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("팀 정보를 조회할 수 있다.")
     void queryTeam() {
-        MemberFixture.createMember("reflog@email.com", "reflog");
+        final Long memberId = MemberFixture.createMember("reflog@email.com", "reflog");
         final String accessToken = AuthFixture.login("reflog@email.com", "reflog").accessToken();
         TeamFixture.createTeam(
                 accessToken,
@@ -70,7 +70,7 @@ class TeamAcceptanceTest extends AcceptanceTest {
                 .statusCode(200)
                 .body("name", equalTo("antifragile"))
                 .body("description", equalTo("안티프래질 팀입니다."))
-                .body("ownerId", equalTo(1))
+                .body("ownerId", equalTo(memberId.intValue()))
                 .body("daysOfWeek", equalTo(List.of("MONDAY", "WEDNESDAY", "FRIDAY", "SUNDAY")));
     }
 }

@@ -13,11 +13,11 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
-    public void createMember(final MemberJoinRequest request) {
+    public Long createMember(final MemberJoinRequest request) {
         if (memberRepository.existsByEmail(new MemberEmail(request.email()))) {
             throw new EmailDuplicatedException();
         }
 
-        memberRepository.save(request.toEntity());
+        return memberRepository.save(request.toEntity()).getId();
     }
 }

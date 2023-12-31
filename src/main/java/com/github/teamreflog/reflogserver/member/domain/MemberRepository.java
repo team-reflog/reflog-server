@@ -7,7 +7,7 @@ public interface MemberRepository extends Repository<Member, Long> {
 
     Optional<Member> findByEmail(MemberEmail email);
 
-    void save(Member member);
+    Member save(Member member);
 
     boolean existsByEmail(MemberEmail email);
 }
