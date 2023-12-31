@@ -31,7 +31,7 @@ class MemberServiceTest {
         memberService.createMember(request);
 
         /* then */
-        assertThat(memberRepository.findByEmail(request.getMemberEmail())).isPresent();
+        assertThat(memberRepository.existsByEmail(request.getMemberEmail())).isTrue();
     }
 
     @Test
