@@ -1,1 +1,2 @@
-truncate table members;
+TRUNCATE TABLE members;
+TRUNCATE TABLE teams;
