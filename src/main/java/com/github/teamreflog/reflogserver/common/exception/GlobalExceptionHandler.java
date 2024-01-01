@@ -14,9 +14,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleRuntimeException(final RuntimeException e) {
-
-        e.printStackTrace();
-
+        // TODO: logging cause
         return new ResponseEntity<>(
                 new ErrorResponse("일시적인 에러가 발생했습니다. 잠시 후 다시 시도해주세요."), INTERNAL_SERVER_ERROR);
     }
