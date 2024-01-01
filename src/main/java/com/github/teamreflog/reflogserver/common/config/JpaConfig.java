@@ -1,4 +1,4 @@
-package com.github.teamreflog.reflogserver.config;
+package com.github.teamreflog.reflogserver.common.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;

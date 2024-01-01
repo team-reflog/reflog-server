@@ -3,7 +3,7 @@ package com.github.teamreflog.reflogserver.team.service;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 import com.github.teamreflog.reflogserver.auth.dto.AuthPrincipal;
-import com.github.teamreflog.reflogserver.config.JpaConfig;
+import com.github.teamreflog.reflogserver.common.config.JpaConfig;
 import com.github.teamreflog.reflogserver.team.dto.TeamCreateRequest;
 import com.github.teamreflog.reflogserver.team.exception.TeamNameDuplicatedException;
 import com.github.teamreflog.reflogserver.team.exception.TeamReflectionDaysEmptyException;

@@ -3,7 +3,7 @@ package com.github.teamreflog.reflogserver.member.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
-import com.github.teamreflog.reflogserver.config.JpaConfig;
+import com.github.teamreflog.reflogserver.common.config.JpaConfig;
 import com.github.teamreflog.reflogserver.member.domain.MemberEmail;
 import com.github.teamreflog.reflogserver.member.domain.MemberRepository;
 import com.github.teamreflog.reflogserver.member.dto.MemberJoinRequest;
