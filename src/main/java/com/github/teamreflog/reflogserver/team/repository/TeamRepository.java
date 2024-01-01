@@ -10,7 +10,5 @@ public interface TeamRepository extends Repository<Team, Long> {
 
     boolean existsByName(String name);
 
-    boolean existsByIdAndOwnerId(Long teamId, Long ownerId);
-
     Optional<Team> findById(Long teamId);
 }
