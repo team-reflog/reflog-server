@@ -37,7 +37,7 @@ class AuthServiceTest {
     @DisplayName("비밀번호가 일치하지 않으면 로그인에 실패한다.")
     void loginFailWithNotMatchedPassword() {
         /* given */
-        final LoginRequest request = new LoginRequest("test@email.com", "notmatched");
+        final LoginRequest request = new LoginRequest("maesil@email.com", "notmatched");
 
         /* when & then */
         assertThatCode(() -> authService.login(request))
