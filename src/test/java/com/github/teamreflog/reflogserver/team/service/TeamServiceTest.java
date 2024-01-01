@@ -6,6 +6,7 @@ import com.github.teamreflog.reflogserver.auth.dto.AuthPrincipal;
 import com.github.teamreflog.reflogserver.config.JpaConfig;
 import com.github.teamreflog.reflogserver.team.dto.TeamCreateRequest;
 import com.github.teamreflog.reflogserver.team.exception.TeamNameDuplicatedException;
+import com.github.teamreflog.reflogserver.team.exception.TeamReflectionDaysEmptyException;
 import java.time.DayOfWeek;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -63,5 +64,19 @@ class TeamServiceTest {
         assertThatCode(() -> teamService.createTeam(authPrincipal, request))
                 .isExactlyInstanceOf(TeamNameDuplicatedException.class)
                 .hasMessage("이미 사용중인 팀 이름입니다.");
+    }
+
+    @Test
+    @DisplayName("회고일이 비어있는 경우 예외가 발생한다.")
+    void throwExceptionWithEmptyReflectionDays() {
+        /* given */
+        final AuthPrincipal authPrincipal = new AuthPrincipal(1L);
+        final TeamCreateRequest request =
+                new TeamCreateRequest("antifragile", "안티프래질 팀입니다.", List.of());
+
+        /* when & then */
+        assertThatCode(() -> teamService.createTeam(authPrincipal, request))
+                .isExactlyInstanceOf(TeamReflectionDaysEmptyException.class)
+                .hasMessage("회고일은 최소 하루 이상이어야 합니다.");
     }
 }

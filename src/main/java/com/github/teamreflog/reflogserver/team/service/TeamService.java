@@ -5,6 +5,7 @@ import com.github.teamreflog.reflogserver.team.dto.TeamCreateRequest;
 import com.github.teamreflog.reflogserver.team.dto.TeamQueryResponse;
 import com.github.teamreflog.reflogserver.team.exception.TeamNameDuplicatedException;
 import com.github.teamreflog.reflogserver.team.exception.TeamNotExistException;
+import com.github.teamreflog.reflogserver.team.exception.TeamReflectionDaysEmptyException;
 import com.github.teamreflog.reflogserver.team.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,9 @@ public class TeamService {
     private final TeamRepository teamRepository;
 
     public Long createTeam(final AuthPrincipal authPrincipal, final TeamCreateRequest request) {
+        if (request.reflectionDays().isEmpty()) {
+            throw new TeamReflectionDaysEmptyException();
+        }
         if (teamRepository.existsByName(request.name())) {
             throw new TeamNameDuplicatedException();
         }
