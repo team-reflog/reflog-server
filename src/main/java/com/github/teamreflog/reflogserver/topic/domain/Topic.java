@@ -28,4 +28,8 @@ public class Topic extends BaseEntity {
 
     @Column(name = "content", nullable = false)
     private String content;
+
+    public static Topic of(final Long teamId, final String content) {
+        return new Topic(null, teamId, content);
+    }
 }
