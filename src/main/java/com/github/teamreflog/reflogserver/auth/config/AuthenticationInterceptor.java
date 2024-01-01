@@ -23,6 +23,11 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             final HttpServletResponse response,
             final Object handler)
             throws Exception {
+        if (request.getMethod().equals("OPTIONS")) {
+            response.setStatus(HttpServletResponse.SC_ACCEPTED);
+            return true;
+        }
+
         final String token = jwtProvider.extractToken(request.getHeader(HttpHeaders.AUTHORIZATION));
         final Long memberId = jwtProvider.parseSubject(token);
         request.setAttribute(AUTH_PRINCIPAL, new AuthPrincipal(memberId));
