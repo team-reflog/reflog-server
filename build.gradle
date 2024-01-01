@@ -60,7 +60,7 @@ tasks.named('test') {
 }
 
 
-task updateGitHooks(type: Copy) {
+tasks.register('updateGitHooks', Copy) {
     from './scripts/pre-commit'
     into './.git/hooks'
 }
