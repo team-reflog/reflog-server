@@ -1,14 +1,16 @@
 package com.github.teamreflog.reflogserver.auth.exception;
 
-public class JwtInvalidException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class JwtInvalidException extends AuthException {
 
     private static final String MESSAGE = "유효하지 않은 토큰입니다.";
 
     public JwtInvalidException() {
-        super(MESSAGE);
+        super(HttpStatus.BAD_REQUEST, MESSAGE);
     }
 
     public JwtInvalidException(final Throwable cause) {
-        super(MESSAGE, cause);
+        super(HttpStatus.BAD_REQUEST, MESSAGE, cause);
     }
 }
