@@ -6,7 +6,7 @@ import com.github.teamreflog.reflogserver.member.exception.EmailFormatException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("Member 도메인 테스트")
+@DisplayName("단위 테스트: Member")
 class MemberTest {
 
     @Test

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 
-@DisplayName("인수 테스트 : 회원")
+@DisplayName("인수 테스트: 회원")
 class MemberAcceptanceTest extends AcceptanceTest {
 
     @Test

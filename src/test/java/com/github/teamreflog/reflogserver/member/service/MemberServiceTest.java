@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Import;
 
 @DataJpaTest
 @Import({MemberService.class, AuthConfig.class, JpaConfig.class})
+@DisplayName("통합 테스트: MemberService")
 class MemberServiceTest {
 
     @Autowired MemberService memberService;
