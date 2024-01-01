@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "topics")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Topic extends BaseEntity {
 
     @Id
