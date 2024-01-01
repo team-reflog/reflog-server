@@ -23,7 +23,6 @@ class TopicAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("주제를 생성한다.")
     void createTopic() {
-        /* given */
         final Long memberId = MemberFixture.createMember("reflog@email.com", "reflog");
         final String accessToken = AuthFixture.login("reflog@email.com", "reflog").accessToken();
         final Long teamId =
