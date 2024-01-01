@@ -1,5 +1,7 @@
 package com.github.teamreflog.reflogserver.auth.config;
 
+import static org.springframework.http.HttpMethod.OPTIONS;
+
 import com.github.teamreflog.reflogserver.auth.dto.AuthPrincipal;
 import com.github.teamreflog.reflogserver.auth.infrastructure.JwtProvider;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,7 +25,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             final HttpServletResponse response,
             final Object handler)
             throws Exception {
-        if (request.getMethod().equals("OPTIONS")) {
+        if (OPTIONS.matches(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_ACCEPTED);
             return true;
         }
