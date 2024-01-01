@@ -13,6 +13,9 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @Component
 public class AuthPrincipalResolver implements HandlerMethodArgumentResolver {
 
+    private static final String AUTH_PRINCIPAL = "authPrincipal";
+
+    @Override
     public boolean supportsParameter(final MethodParameter parameter) {
         return parameter.hasParameterAnnotation(Authenticated.class);
     }
@@ -26,6 +29,6 @@ public class AuthPrincipalResolver implements HandlerMethodArgumentResolver {
             throws Exception {
         final HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
 
-        return (AuthPrincipal) request.getAttribute("authPrincipal");
+        return (AuthPrincipal) request.getAttribute(AUTH_PRINCIPAL);
     }
 }

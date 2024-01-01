@@ -13,6 +13,8 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @RequiredArgsConstructor
 public class AuthenticationInterceptor implements HandlerInterceptor {
 
+    private static final String AUTH_PRINCIPAL = "authPrincipal";
+
     private final JwtProvider jwtProvider;
 
     @Override
@@ -23,7 +25,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             throws Exception {
         final String token = jwtProvider.extractToken(request.getHeader(HttpHeaders.AUTHORIZATION));
         final Long memberId = jwtProvider.parseSubject(token);
-        request.setAttribute("authPrincipal", new AuthPrincipal(memberId));
+        request.setAttribute(AUTH_PRINCIPAL, new AuthPrincipal(memberId));
 
         return true;
     }
