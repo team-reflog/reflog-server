@@ -1,2 +1,2 @@
 INSERT INTO `members` (email, password, created_at, modified_at)
-VALUES ('test@email.com', 'password123', now(), now());
+VALUES ('maesil@email.com', 'maesil123', NOW(), NOW());

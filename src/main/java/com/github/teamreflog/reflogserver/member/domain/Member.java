@@ -24,9 +24,7 @@ public class Member extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Embedded
-    @Column(name = "email", unique = true, nullable = false)
-    private MemberEmail email;
+    @Embedded private MemberEmail email;
 
     @Column(name = "password", nullable = false)
     private String password;
