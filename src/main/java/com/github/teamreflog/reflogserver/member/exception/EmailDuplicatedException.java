@@ -1,8 +1,10 @@
 package com.github.teamreflog.reflogserver.member.exception;
 
-public class EmailDuplicatedException extends RuntimeException {
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+
+public class EmailDuplicatedException extends MemberException {
 
     public EmailDuplicatedException() {
-        super("이미 사용중인 이메일입니다.");
+        super(BAD_REQUEST, "이미 사용중인 이메일입니다.");
     }
 }
