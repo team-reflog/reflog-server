@@ -1,4 +1,4 @@
-package com.github.teamreflog.reflogserver.auth.exception;
+package com.github.teamreflog.reflogserver.topic.exception;
 
 import com.github.teamreflog.reflogserver.common.exception.ErrorResponse;
 import org.springframework.core.Ordered;
@@ -9,11 +9,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice
-public class AuthExceptionHandler {
+public class TopicExceptionHandler {
 
-    @ExceptionHandler(AuthException.class)
-    public ResponseEntity<ErrorResponse> handleAuthException(final AuthException e) {
-
+    @ExceptionHandler(TopicException.class)
+    public ResponseEntity<ErrorResponse> handleTopicException(final TopicException e) {
         return new ResponseEntity<>(new ErrorResponse(e.getMessage()), e.getStatus());
     }
 }

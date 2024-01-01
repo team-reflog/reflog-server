@@ -16,11 +16,11 @@ public class DayOfWeekListConverter implements AttributeConverter<List<DayOfWeek
 
     @Override
     public Byte convertToDatabaseColumn(final List<DayOfWeek> dayOfWeeks) {
-        return dayOfWeeks.stream()
-                .map(DayOfWeek::getValue)
-                .reduce((accumulation, value) -> accumulation | (1 << value - 1))
-                .orElse(0)
-                .byteValue();
+        return (byte)
+                dayOfWeeks.stream()
+                        .mapToInt(DayOfWeek::getValue)
+                        .map(value -> 1 << (value - 1))
+                        .sum();
     }
 
     @Override

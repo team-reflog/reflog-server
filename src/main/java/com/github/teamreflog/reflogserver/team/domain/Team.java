@@ -47,4 +47,8 @@ public class Team extends BaseEntity {
             final List<DayOfWeek> reflectionDays) {
         return new Team(null, name, description, ownerId, reflectionDays);
     }
+
+    public boolean isOwner(final Long ownerId) {
+        return this.ownerId.equals(ownerId);
+    }
 }
