@@ -46,4 +46,30 @@ class DayOfWeekListConverterTest {
                 .containsExactly(
                         DayOfWeek.MONDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SUNDAY);
     }
+
+    @Test
+    @DisplayName("요일 목록이 비어있으면 0 Byte를 반환한다.")
+    void convertToZeroByte() {
+        /* given */
+        final List<DayOfWeek> dayOfWeeks = List.of();
+
+        /* when */
+        final Byte result = converter.convertToDatabaseColumn(dayOfWeeks);
+
+        /* then */
+        assertThat(result).isZero();
+    }
+
+    @Test
+    @DisplayName("0 Byte를 요일 목록으로 변환하면 비어있는 목록을 반환한다.")
+    void convertToEmptyDayOfWeeks() {
+        /* given */
+        final Byte dayBit = 0;
+
+        /* when */
+        final List<DayOfWeek> result = converter.convertToEntityAttribute(dayBit);
+
+        /* then */
+        assertThat(result).isEmpty();
+    }
 }
