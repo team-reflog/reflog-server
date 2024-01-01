@@ -18,15 +18,7 @@ public class AuthWebConfig implements WebMvcConfigurer {
     public void addInterceptors(final InterceptorRegistry registry) {
         registry.addInterceptor(authenticationInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/auth/login", "/members")
-                .excludePathPatterns(
-                        "/error",
-                        "/css/**",
-                        "/assets/**",
-                        "/js/**",
-                        "/*.ico",
-                        "/favicon.ico",
-                        "/h2-console/**");
+                .excludePathPatterns("/auth/login", "/members");
     }
 
     @Override
