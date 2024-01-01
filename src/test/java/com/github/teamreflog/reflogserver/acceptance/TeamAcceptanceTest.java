@@ -1,6 +1,7 @@
 package com.github.teamreflog.reflogserver.acceptance;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.matchesRegex;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import com.github.teamreflog.reflogserver.acceptance.fixture.AuthFixture;
@@ -13,6 +14,7 @@ import java.time.DayOfWeek;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 
 @DisplayName("인수 테스트: 팀")
 class TeamAcceptanceTest extends AcceptanceTest {
@@ -43,7 +45,8 @@ class TeamAcceptanceTest extends AcceptanceTest {
                 .then()
                 .log()
                 .all()
-                .statusCode(201);
+                .statusCode(201)
+                .header(HttpHeaders.LOCATION, matchesRegex("/teams/[0-9]+"));
     }
 
     @Test
