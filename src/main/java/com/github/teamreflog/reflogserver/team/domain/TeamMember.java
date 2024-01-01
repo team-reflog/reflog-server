@@ -1,8 +1,7 @@
-package com.github.teamreflog.reflogserver.member.domain;
+package com.github.teamreflog.reflogserver.team.domain;
 
 import com.github.teamreflog.reflogserver.common.entity.BaseEntity;
 import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,26 +13,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "members")
+@Table(name = "team_members")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Member extends BaseEntity {
+public class TeamMember extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Embedded private MemberEmail email;
+    @Column(name = "team_id", nullable = false)
+    private Long teamId;
 
-    @Column(name = "password", nullable = false)
-    private String password;
+    @Column(name = "member_id", nullable = false)
+    private Long memberId;
 
-    public static Member of(final String email, final String password) {
-        return new Member(null, new MemberEmail(email), password);
-    }
-
-    public boolean isMatchedPassword(final String password) {
-        return this.password.equals(password);
-    }
+    @Column(name = "nickname", nullable = false)
+    private String nickname;
 }

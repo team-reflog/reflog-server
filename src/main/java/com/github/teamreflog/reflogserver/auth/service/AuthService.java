@@ -6,6 +6,7 @@ import com.github.teamreflog.reflogserver.auth.exception.EmailNotExistException;
 import com.github.teamreflog.reflogserver.auth.exception.PasswordNotMatchedException;
 import com.github.teamreflog.reflogserver.auth.infrastructure.JwtProvider;
 import com.github.teamreflog.reflogserver.member.domain.Member;
+import com.github.teamreflog.reflogserver.member.domain.MemberEmail;
 import com.github.teamreflog.reflogserver.member.domain.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,7 @@ public class AuthService {
     public TokenResponse login(final LoginRequest request) {
         final Member member =
                 memberRepository
-                        .findByEmail(request.getMemberEmail())
+                        .findByEmail(new MemberEmail(request.email()))
                         .orElseThrow(EmailNotExistException::new);
 
         if (!member.isMatchedPassword(request.password())) {
@@ -32,7 +33,8 @@ public class AuthService {
                 jwtProvider.generateRefreshToken(member.getId()));
     }
 
-    public TokenResponse refresh(final String token) {
+    public TokenResponse refresh(final String header) {
+        final String token = jwtProvider.extractToken(header);
         final Long memberId = jwtProvider.parseSubject(token);
 
         return new TokenResponse(
