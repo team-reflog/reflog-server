@@ -8,4 +8,6 @@ public interface TeamMemberRepository extends CrudRepository<TeamMember, Long> {
     boolean existsByMemberIdAndTeamId(Long memberId, Long teamId);
 
     List<TeamMember> findAllByTeamId(Long teamId);
+
+    boolean existsByTeamIdAndNickname(Long teamId, String nickname);
 }

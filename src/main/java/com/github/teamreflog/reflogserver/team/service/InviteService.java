@@ -9,10 +9,12 @@ import com.github.teamreflog.reflogserver.team.domain.Team;
 import com.github.teamreflog.reflogserver.team.domain.TeamInvite;
 import com.github.teamreflog.reflogserver.team.domain.TeamInviteRepository;
 import com.github.teamreflog.reflogserver.team.domain.TeamMemberRepository;
+import com.github.teamreflog.reflogserver.team.dto.InviteAcceptRequest;
 import com.github.teamreflog.reflogserver.team.dto.InviteResponse;
 import com.github.teamreflog.reflogserver.team.dto.TeamInvitationRequest;
 import com.github.teamreflog.reflogserver.team.exception.MemberAlreadyInvitedException;
 import com.github.teamreflog.reflogserver.team.exception.MemberAlreadyJoinedException;
+import com.github.teamreflog.reflogserver.team.exception.NicknameDuplicateException;
 import com.github.teamreflog.reflogserver.team.exception.TeamNotExistException;
 import com.github.teamreflog.reflogserver.team.repository.TeamRepository;
 import com.github.teamreflog.reflogserver.topic.exception.NotOwnerException;
@@ -57,7 +59,7 @@ public class InviteService {
         teamInviteRepository.save(request.toEntity(member.getId()));
     }
 
-    public List<InviteResponse> gueryInvites(final AuthPrincipal authPrincipal) {
+    public List<InviteResponse> queryInvites(final AuthPrincipal authPrincipal) {
         final List<Long> teamIds =
                 teamInviteRepository.findAllByMemberId(authPrincipal.memberId()).stream()
                         .map(TeamInvite::getTeamId)
@@ -66,5 +68,13 @@ public class InviteService {
         return teamRepository.findAllByIdIn(teamIds).stream()
                 .map(InviteResponse::fromEntity)
                 .toList();
+    }
+
+    public void acceptInvite(final AuthPrincipal authPrincipal, final InviteAcceptRequest request) {
+        teamRepository.findById(request.teamId()).orElseThrow(TeamNotExistException::new);
+        if (teamMemberRepository.existsByTeamIdAndNickname(request.teamId(), request.nickname())) {
+            throw new NicknameDuplicateException();
+        }
+        teamMemberRepository.save(request.toEntity(authPrincipal.memberId()));
     }
 }

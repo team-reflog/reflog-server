@@ -10,6 +10,7 @@ import com.github.teamreflog.reflogserver.acceptance.fixture.TeamFixture;
 import com.github.teamreflog.reflogserver.team.dto.InviteAcceptRequest;
 import com.github.teamreflog.reflogserver.team.dto.InviteResponse;
 import com.github.teamreflog.reflogserver.team.dto.TeamInvitationRequest;
+import com.github.teamreflog.reflogserver.team.dto.TeamMemberQueryResponse;
 import io.restassured.RestAssured;
 import java.time.DayOfWeek;
 import java.util.List;
@@ -111,7 +112,7 @@ public class InviteAcceptanceTest extends AcceptanceTest {
                 .all()
                 .auth()
                 .oauth2(memberAccessToken)
-                .body(new InviteAcceptRequest(teamId))
+                .body(new InviteAcceptRequest(teamId, "user"))
                 .contentType(APPLICATION_JSON_VALUE)
                 .when()
                 .post("/invites/accept")
@@ -122,6 +123,23 @@ public class InviteAcceptanceTest extends AcceptanceTest {
                 .extract();
 
         /* then */
-        // TODO: 팀원 목록 조회시 초대받은 사용자가 포함되었는지 검증한다.
+        List<TeamMemberQueryResponse> teamMembers =
+                RestAssured.given()
+                        .log()
+                        .all()
+                        .auth()
+                        .oauth2(memberAccessToken)
+                        .when()
+                        .get("/teams/{teamId}/members", teamId)
+                        .then()
+                        .log()
+                        .all()
+                        .statusCode(200)
+                        .extract()
+                        .jsonPath()
+                        .getList(".", TeamMemberQueryResponse.class);
+
+        assertThat(teamMembers).hasSize(2);
+        assertThat(teamMembers).extracting("nickname").contains("owner", "user");
     }
 }

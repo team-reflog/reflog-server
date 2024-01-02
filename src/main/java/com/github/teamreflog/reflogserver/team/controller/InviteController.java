@@ -30,11 +30,13 @@ public class InviteController {
 
     @GetMapping
     public List<InviteResponse> queryInvites(@Authenticated final AuthPrincipal authPrincipal) {
-        return inviteService.gueryInvites(authPrincipal);
+        return inviteService.queryInvites(authPrincipal);
     }
 
     @PostMapping("/accept")
     public void acceptInvitation(
             @Authenticated final AuthPrincipal authPrincipal,
-            @RequestBody InviteAcceptRequest request) {}
+            @RequestBody InviteAcceptRequest request) {
+        inviteService.acceptInvite(authPrincipal, request);
+    }
 }
