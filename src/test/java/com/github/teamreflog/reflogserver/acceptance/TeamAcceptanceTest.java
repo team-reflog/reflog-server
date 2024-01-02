@@ -1,5 +1,6 @@
 package com.github.teamreflog.reflogserver.acceptance;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.matchesRegex;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -9,6 +10,7 @@ import com.github.teamreflog.reflogserver.acceptance.fixture.MemberFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.TeamFixture;
 import com.github.teamreflog.reflogserver.auth.dto.TokenResponse;
 import com.github.teamreflog.reflogserver.team.dto.TeamCreateRequest;
+import com.github.teamreflog.reflogserver.team.dto.TeamMemberQueryResponse;
 import io.restassured.RestAssured;
 import java.time.DayOfWeek;
 import java.util.List;
@@ -34,6 +36,7 @@ class TeamAcceptanceTest extends AcceptanceTest {
                         new TeamCreateRequest(
                                 "antifragile",
                                 "안티프래질 팀입니다.",
+                                "owner",
                                 List.of(
                                         DayOfWeek.MONDAY,
                                         DayOfWeek.WEDNESDAY,
@@ -59,6 +62,7 @@ class TeamAcceptanceTest extends AcceptanceTest {
                         accessToken,
                         "antifragile",
                         "안티프래질 팀입니다.",
+                        "owner",
                         List.of(
                                 DayOfWeek.MONDAY,
                                 DayOfWeek.WEDNESDAY,
@@ -80,5 +84,47 @@ class TeamAcceptanceTest extends AcceptanceTest {
                 .body("description", equalTo("안티프래질 팀입니다."))
                 .body("ownerId", equalTo(memberId.intValue()))
                 .body("daysOfWeek", equalTo(List.of("MONDAY", "WEDNESDAY", "FRIDAY", "SUNDAY")));
+    }
+
+    @Test
+    @DisplayName("팀 멤버를 조회한다.")
+    void queryTeamMembers() {
+        /* given */
+        final Long ownerId = MemberFixture.createMember("reflog@email.com", "reflog");
+        final String accessToken = AuthFixture.login("reflog@email.com", "reflog").accessToken();
+        final Long teamId =
+                TeamFixture.createTeam(
+                        accessToken,
+                        "antifragile",
+                        "안티프래질 팀입니다.",
+                        "owner",
+                        List.of(
+                                DayOfWeek.MONDAY,
+                                DayOfWeek.WEDNESDAY,
+                                DayOfWeek.FRIDAY,
+                                DayOfWeek.SUNDAY));
+
+        /* when */
+        List<TeamMemberQueryResponse> response =
+                RestAssured.given()
+                        .log()
+                        .all()
+                        .auth()
+                        .oauth2(accessToken)
+                        .when()
+                        .get("/teams/{teamId}/members", teamId)
+                        .then()
+                        .log()
+                        .all()
+                        .statusCode(200)
+                        .extract()
+                        .jsonPath()
+                        .getList(".", TeamMemberQueryResponse.class);
+
+        /* then */
+        assertThat(response).hasSize(1);
+        assertThat(response.get(0).isOwner()).isTrue();
+        assertThat(response.get(0).nickname()).isEqualTo("owner");
+        assertThat(response.get(0).memberId()).isEqualTo(ownerId);
     }
 }

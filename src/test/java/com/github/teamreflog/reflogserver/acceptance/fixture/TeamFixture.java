@@ -18,6 +18,7 @@ public abstract class TeamFixture {
             final String accessToken,
             final String name,
             final String description,
+            final String nickname,
             final List<DayOfWeek> reflectionDays) {
         final String teamId =
                 RestAssured.given()
@@ -25,7 +26,7 @@ public abstract class TeamFixture {
                         .all()
                         .auth()
                         .oauth2(accessToken)
-                        .body(new TeamCreateRequest(name, description, reflectionDays))
+                        .body(new TeamCreateRequest(name, description, nickname, reflectionDays))
                         .contentType(APPLICATION_JSON_VALUE)
                         .when()
                         .post("/teams")

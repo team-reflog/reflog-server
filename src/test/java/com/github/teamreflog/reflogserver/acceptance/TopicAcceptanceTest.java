@@ -23,13 +23,14 @@ class TopicAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("주제를 생성한다.")
     void createTopic() {
-        final Long memberId = MemberFixture.createMember("reflog@email.com", "reflog");
+        MemberFixture.createMember("reflog@email.com", "reflog");
         final String accessToken = AuthFixture.login("reflog@email.com", "reflog").accessToken();
         final Long teamId =
                 TeamFixture.createTeam(
                         accessToken,
                         "antifragile",
                         "안티프래질 팀입니다.",
+                        "owner",
                         List.of(
                                 DayOfWeek.MONDAY,
                                 DayOfWeek.WEDNESDAY,
@@ -56,13 +57,14 @@ class TopicAcceptanceTest extends AcceptanceTest {
     @DisplayName("특정 팀의 주제 목록을 조회한다.")
     void queryTopics() {
         /* given */
-        final Long memberId = MemberFixture.createMember("reflog@email.com", "reflog");
+        MemberFixture.createMember("reflog@email.com", "reflog");
         final String accessToken = AuthFixture.login("reflog@email.com", "reflog").accessToken();
         final Long teamId =
                 TeamFixture.createTeam(
                         accessToken,
                         "antifragile",
                         "안티프래질 팀입니다.",
+                        "owner",
                         List.of(
                                 DayOfWeek.MONDAY,
                                 DayOfWeek.WEDNESDAY,

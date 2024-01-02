@@ -2,6 +2,7 @@ package com.github.teamreflog.reflogserver.team.controller;
 
 import com.github.teamreflog.reflogserver.auth.annotation.Authenticated;
 import com.github.teamreflog.reflogserver.auth.dto.AuthPrincipal;
+import com.github.teamreflog.reflogserver.team.dto.InviteAcceptRequest;
 import com.github.teamreflog.reflogserver.team.dto.InviteResponse;
 import com.github.teamreflog.reflogserver.team.dto.TeamInvitationRequest;
 import com.github.teamreflog.reflogserver.team.service.InviteService;
@@ -31,4 +32,9 @@ public class InviteController {
     public List<InviteResponse> queryInvites(@Authenticated final AuthPrincipal authPrincipal) {
         return inviteService.gueryInvites(authPrincipal);
     }
+
+    @PostMapping("/accept")
+    public void acceptInvitation(
+            @Authenticated final AuthPrincipal authPrincipal,
+            @RequestBody InviteAcceptRequest request) {}
 }

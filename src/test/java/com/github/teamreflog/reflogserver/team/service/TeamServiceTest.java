@@ -31,6 +31,7 @@ class TeamServiceTest {
                 new TeamCreateRequest(
                         "antifragile",
                         "안티프래질 팀입니다.",
+                        "owner",
                         List.of(
                                 DayOfWeek.MONDAY,
                                 DayOfWeek.WEDNESDAY,
@@ -51,6 +52,7 @@ class TeamServiceTest {
                 new TeamCreateRequest(
                         "antifragile",
                         "안티프래질 팀입니다.",
+                        "owner",
                         List.of(
                                 DayOfWeek.MONDAY,
                                 DayOfWeek.WEDNESDAY,
@@ -72,7 +74,7 @@ class TeamServiceTest {
         /* given */
         final AuthPrincipal authPrincipal = new AuthPrincipal(1L);
         final TeamCreateRequest request =
-                new TeamCreateRequest("antifragile", "안티프래질 팀입니다.", List.of());
+                new TeamCreateRequest("antifragile", "안티프래질 팀입니다.", "owner", List.of());
 
         /* when & then */
         assertThatCode(() -> teamService.createTeam(authPrincipal, request))

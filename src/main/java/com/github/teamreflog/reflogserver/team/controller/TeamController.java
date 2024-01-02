@@ -3,10 +3,11 @@ package com.github.teamreflog.reflogserver.team.controller;
 import com.github.teamreflog.reflogserver.auth.annotation.Authenticated;
 import com.github.teamreflog.reflogserver.auth.dto.AuthPrincipal;
 import com.github.teamreflog.reflogserver.team.dto.TeamCreateRequest;
-import com.github.teamreflog.reflogserver.team.dto.TeamInvitationRequest;
+import com.github.teamreflog.reflogserver.team.dto.TeamMemberQueryResponse;
 import com.github.teamreflog.reflogserver.team.dto.TeamQueryResponse;
 import com.github.teamreflog.reflogserver.team.service.TeamService;
 import java.net.URI;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,9 +38,8 @@ public class TeamController {
         return teamService.queryTeam(teamId);
     }
 
-    @PostMapping("/{id}/invite")
-    public void inviteTeamMember(
-            @Authenticated final AuthPrincipal authPrincipal,
-            @PathVariable("id") final Long teamId,
-            @RequestBody final TeamInvitationRequest request) {}
+    @GetMapping("/{id}/members")
+    public List<TeamMemberQueryResponse> queryTeamMembers(@PathVariable("id") final Long teamId) {
+        return teamService.queryTeamMembers(teamId);
+    }
 }

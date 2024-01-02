@@ -31,4 +31,8 @@ public class TeamMember extends BaseEntity {
 
     @Column(name = "nickname", nullable = false)
     private String nickname;
+
+    public static TeamMember of(final Long teamId, final Long memberId, final String nickname) {
+        return new TeamMember(null, teamId, memberId, nickname);
+    }
 }
