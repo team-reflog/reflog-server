@@ -3,6 +3,7 @@ package com.github.teamreflog.reflogserver.team.controller;
 import com.github.teamreflog.reflogserver.auth.annotation.Authenticated;
 import com.github.teamreflog.reflogserver.auth.dto.AuthPrincipal;
 import com.github.teamreflog.reflogserver.team.dto.TeamCreateRequest;
+import com.github.teamreflog.reflogserver.team.dto.TeamInvitationRequest;
 import com.github.teamreflog.reflogserver.team.dto.TeamQueryResponse;
 import com.github.teamreflog.reflogserver.team.service.TeamService;
 import java.net.URI;
@@ -35,4 +36,10 @@ public class TeamController {
     public TeamQueryResponse queryTeam(@PathVariable("id") final Long teamId) {
         return teamService.queryTeam(teamId);
     }
+
+    @PostMapping("/{id}/invite")
+    public void inviteTeamMember(
+            @Authenticated final AuthPrincipal authPrincipal,
+            @PathVariable("id") final Long teamId,
+            @RequestBody final TeamInvitationRequest request) {}
 }
