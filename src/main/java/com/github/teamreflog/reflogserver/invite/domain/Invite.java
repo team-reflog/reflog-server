@@ -32,4 +32,8 @@ public class Invite extends BaseEntity {
     public static Invite of(final Long teamId, final Long memberId) {
         return new Invite(null, teamId, memberId);
     }
+
+    public boolean isSameMember(final Long memberId) {
+        return this.memberId.equals(memberId);
+    }
 }

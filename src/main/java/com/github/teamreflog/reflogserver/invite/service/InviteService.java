@@ -9,6 +9,7 @@ import com.github.teamreflog.reflogserver.invite.dto.InviteQueryResponse;
 import com.github.teamreflog.reflogserver.invite.exception.InviteNotExistException;
 import com.github.teamreflog.reflogserver.invite.exception.MemberAlreadyInvitedException;
 import com.github.teamreflog.reflogserver.invite.exception.MemberAlreadyJoinedException;
+import com.github.teamreflog.reflogserver.invite.exception.UnauthorizedInviteException;
 import com.github.teamreflog.reflogserver.member.domain.Member;
 import com.github.teamreflog.reflogserver.member.domain.MemberEmail;
 import com.github.teamreflog.reflogserver.member.domain.MemberRepository;
@@ -77,6 +78,10 @@ public class InviteService {
             final InviteAcceptRequest request) {
         final Invite invite =
                 inviteRepository.findById(inviteId).orElseThrow(InviteNotExistException::new);
+
+        if (!invite.isSameMember(authPrincipal.memberId())) {
+            throw new UnauthorizedInviteException();
+        }
 
         if (teamMemberRepository.existsByTeamIdAndNickname(
                 invite.getTeamId(), request.nickname())) {
