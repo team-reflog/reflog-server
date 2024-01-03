@@ -1,5 +1,6 @@
-package com.github.teamreflog.reflogserver.team.exception;
+package com.github.teamreflog.reflogserver.invite.exception;
 
+import com.github.teamreflog.reflogserver.team.exception.TeamException;
 import org.springframework.http.HttpStatus;
 
 public class MemberAlreadyJoinedException extends TeamException {

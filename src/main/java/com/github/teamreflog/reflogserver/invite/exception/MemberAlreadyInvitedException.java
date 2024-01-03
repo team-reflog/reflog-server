@@ -1,6 +1,8 @@
-package com.github.teamreflog.reflogserver.team.exception;
+package com.github.teamreflog.reflogserver.invite.exception;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+
+import com.github.teamreflog.reflogserver.team.exception.TeamException;
 
 public class MemberAlreadyInvitedException extends TeamException {
 

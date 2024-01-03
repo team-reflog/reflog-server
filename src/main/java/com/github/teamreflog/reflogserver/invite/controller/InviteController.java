@@ -1,11 +1,11 @@
-package com.github.teamreflog.reflogserver.team.controller;
+package com.github.teamreflog.reflogserver.invite.controller;
 
 import com.github.teamreflog.reflogserver.auth.annotation.Authenticated;
 import com.github.teamreflog.reflogserver.auth.dto.AuthPrincipal;
-import com.github.teamreflog.reflogserver.team.dto.InviteAcceptRequest;
-import com.github.teamreflog.reflogserver.team.dto.InviteResponse;
-import com.github.teamreflog.reflogserver.team.dto.TeamInvitationRequest;
-import com.github.teamreflog.reflogserver.team.service.InviteService;
+import com.github.teamreflog.reflogserver.invite.dto.InvitationRequest;
+import com.github.teamreflog.reflogserver.invite.dto.InviteAcceptRequest;
+import com.github.teamreflog.reflogserver.invite.dto.InviteResponse;
+import com.github.teamreflog.reflogserver.invite.service.InviteService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +24,7 @@ public class InviteController {
     @PostMapping
     public void inviteTeamMember(
             @Authenticated final AuthPrincipal authPrincipal,
-            @RequestBody final TeamInvitationRequest request) {
+            @RequestBody final InvitationRequest request) {
         inviteService.inviteMember(authPrincipal, request);
     }
 
@@ -36,7 +36,7 @@ public class InviteController {
     @PostMapping("/accept")
     public void acceptInvitation(
             @Authenticated final AuthPrincipal authPrincipal,
-            @RequestBody InviteAcceptRequest request) {
+            @RequestBody final InviteAcceptRequest request) {
         inviteService.acceptInvite(authPrincipal, request);
     }
 }

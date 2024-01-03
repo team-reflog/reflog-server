@@ -1,10 +1,10 @@
-package com.github.teamreflog.reflogserver.team.service;
+package com.github.teamreflog.reflogserver.invite.service;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 import com.github.teamreflog.reflogserver.auth.dto.AuthPrincipal;
 import com.github.teamreflog.reflogserver.common.config.JpaConfig;
-import com.github.teamreflog.reflogserver.team.dto.InviteAcceptRequest;
+import com.github.teamreflog.reflogserver.invite.dto.InviteAcceptRequest;
 import com.github.teamreflog.reflogserver.team.exception.NicknameDuplicateException;
 import com.github.teamreflog.reflogserver.team.exception.TeamNotExistException;
 import org.junit.jupiter.api.DisplayName;

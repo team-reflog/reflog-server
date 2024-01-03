@@ -2,7 +2,7 @@ package com.github.teamreflog.reflogserver.acceptance.fixture;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import com.github.teamreflog.reflogserver.team.dto.TeamInvitationRequest;
+import com.github.teamreflog.reflogserver.invite.dto.InvitationRequest;
 import io.restassured.RestAssured;
 
 public abstract class InviteFixture {
@@ -16,7 +16,7 @@ public abstract class InviteFixture {
                 .all()
                 .auth()
                 .oauth2(accessToken)
-                .body(new TeamInvitationRequest(memberEmail, teamId))
+                .body(new InvitationRequest(memberEmail, teamId))
                 .contentType(APPLICATION_JSON_VALUE)
                 .when()
                 .post("/invites")

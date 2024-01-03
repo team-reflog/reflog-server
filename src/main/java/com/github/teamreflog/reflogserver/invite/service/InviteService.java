@@ -1,19 +1,19 @@
-package com.github.teamreflog.reflogserver.team.service;
+package com.github.teamreflog.reflogserver.invite.service;
 
 import com.github.teamreflog.reflogserver.auth.dto.AuthPrincipal;
+import com.github.teamreflog.reflogserver.invite.domain.Invite;
+import com.github.teamreflog.reflogserver.invite.domain.InviteRepository;
+import com.github.teamreflog.reflogserver.invite.dto.InvitationRequest;
+import com.github.teamreflog.reflogserver.invite.dto.InviteAcceptRequest;
+import com.github.teamreflog.reflogserver.invite.dto.InviteResponse;
+import com.github.teamreflog.reflogserver.invite.exception.MemberAlreadyInvitedException;
+import com.github.teamreflog.reflogserver.invite.exception.MemberAlreadyJoinedException;
 import com.github.teamreflog.reflogserver.member.domain.Member;
 import com.github.teamreflog.reflogserver.member.domain.MemberEmail;
 import com.github.teamreflog.reflogserver.member.domain.MemberRepository;
 import com.github.teamreflog.reflogserver.member.exception.MemberNotExistException;
 import com.github.teamreflog.reflogserver.team.domain.Team;
-import com.github.teamreflog.reflogserver.team.domain.TeamInvite;
-import com.github.teamreflog.reflogserver.team.domain.TeamInviteRepository;
 import com.github.teamreflog.reflogserver.team.domain.TeamMemberRepository;
-import com.github.teamreflog.reflogserver.team.dto.InviteAcceptRequest;
-import com.github.teamreflog.reflogserver.team.dto.InviteResponse;
-import com.github.teamreflog.reflogserver.team.dto.TeamInvitationRequest;
-import com.github.teamreflog.reflogserver.team.exception.MemberAlreadyInvitedException;
-import com.github.teamreflog.reflogserver.team.exception.MemberAlreadyJoinedException;
 import com.github.teamreflog.reflogserver.team.exception.NicknameDuplicateException;
 import com.github.teamreflog.reflogserver.team.exception.TeamNotExistException;
 import com.github.teamreflog.reflogserver.team.repository.TeamRepository;
@@ -29,13 +29,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class InviteService {
 
     private final TeamRepository teamRepository;
-    private final TeamInviteRepository teamInviteRepository;
+    private final InviteRepository inviteRepository;
     private final TeamMemberRepository teamMemberRepository;
     private final MemberRepository memberRepository;
 
     @Transactional
-    public void inviteMember(
-            final AuthPrincipal authPrincipal, final TeamInvitationRequest request) {
+    public void inviteMember(final AuthPrincipal authPrincipal, final InvitationRequest request) {
         final Team team =
                 teamRepository.findById(request.teamId()).orElseThrow(TeamNotExistException::new);
 
@@ -52,17 +51,17 @@ public class InviteService {
             throw new MemberAlreadyJoinedException();
         }
 
-        if (teamInviteRepository.existsByMemberIdAndTeamId(member.getId(), team.getId())) {
+        if (inviteRepository.existsByMemberIdAndTeamId(member.getId(), team.getId())) {
             throw new MemberAlreadyInvitedException();
         }
 
-        teamInviteRepository.save(request.toEntity(member.getId()));
+        inviteRepository.save(request.toEntity(member.getId()));
     }
 
     public List<InviteResponse> queryInvites(final AuthPrincipal authPrincipal) {
         final List<Long> teamIds =
-                teamInviteRepository.findAllByMemberId(authPrincipal.memberId()).stream()
-                        .map(TeamInvite::getTeamId)
+                inviteRepository.findAllByMemberId(authPrincipal.memberId()).stream()
+                        .map(Invite::getTeamId)
                         .toList();
 
         return teamRepository.findAllByIdIn(teamIds).stream()

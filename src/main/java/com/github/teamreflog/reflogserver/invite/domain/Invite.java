@@ -1,4 +1,4 @@
-package com.github.teamreflog.reflogserver.team.domain;
+package com.github.teamreflog.reflogserver.invite.domain;
 
 import com.github.teamreflog.reflogserver.common.entity.BaseEntity;
 import jakarta.persistence.Column;
@@ -13,11 +13,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "team_invites")
+@Table(name = "invites")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class TeamInvite extends BaseEntity {
+public class Invite extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +29,7 @@ public class TeamInvite extends BaseEntity {
     @Column(name = "member_id", nullable = false)
     private Long memberId;
 
-    public static TeamInvite of(final Long teamId, final Long memberId) {
-        return new TeamInvite(null, teamId, memberId);
+    public static Invite of(final Long teamId, final Long memberId) {
+        return new Invite(null, teamId, memberId);
     }
 }

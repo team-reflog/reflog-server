@@ -1,4 +1,4 @@
-package com.github.teamreflog.reflogserver.team.dto;
+package com.github.teamreflog.reflogserver.invite.dto;
 
 import com.github.teamreflog.reflogserver.team.domain.Team;
 
