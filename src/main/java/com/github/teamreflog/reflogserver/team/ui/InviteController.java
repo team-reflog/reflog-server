@@ -29,7 +29,7 @@ public class InviteController {
     public void inviteCrew(
             @Authenticated final AuthPrincipal authPrincipal,
             @RequestBody final InviteCreateRequest request) {
-        inviteService.inviteMember(authPrincipal, request);
+        inviteService.inviteCrew(authPrincipal, request);
     }
 
     @GetMapping

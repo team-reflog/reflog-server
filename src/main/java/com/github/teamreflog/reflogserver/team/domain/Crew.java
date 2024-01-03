@@ -39,4 +39,8 @@ public class Crew extends BaseEntity {
     public boolean isSameNickname(final String nickname) {
         return this.nickname.equals(nickname);
     }
+
+    public boolean isSameMemberId(final Long memberId) {
+        return this.memberId.equals(memberId);
+    }
 }

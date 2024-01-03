@@ -33,7 +33,7 @@ public class InviteService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public void inviteMember(final AuthPrincipal authPrincipal, final InviteCreateRequest request) {
+    public void inviteCrew(final AuthPrincipal authPrincipal, final InviteCreateRequest request) {
         final Team team =
                 teamRepository.findById(request.teamId()).orElseThrow(TeamNotExistException::new);
 

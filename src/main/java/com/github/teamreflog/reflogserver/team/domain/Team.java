@@ -1,6 +1,7 @@
 package com.github.teamreflog.reflogserver.team.domain;
 
 import com.github.teamreflog.reflogserver.common.entity.BaseEntity;
+import com.github.teamreflog.reflogserver.team.domain.exception.CrewAlreadyJoinedException;
 import com.github.teamreflog.reflogserver.team.domain.exception.NicknameDuplicateException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -47,7 +48,7 @@ public class Team extends BaseEntity {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private final List<Crew> members = new ArrayList<>();
+    private final List<Crew> crews = new ArrayList<>();
 
     @OneToMany(
             cascade = CascadeType.ALL,
@@ -84,11 +85,14 @@ public class Team extends BaseEntity {
     }
 
     public void processInvite(final Invite invite, final String nickname) {
-        if (members.stream().anyMatch(member -> member.isSameNickname(nickname))) {
+        if (crews.stream().anyMatch(crew -> crew.isSameNickname(nickname))) {
             throw new NicknameDuplicateException();
         }
+        if (crews.stream().anyMatch(crew -> crew.isSameMemberId(invite.getMemberId()))) {
+            throw new CrewAlreadyJoinedException();
+        }
 
-        members.add(Crew.of(this.id, invite.getMemberId(), nickname));
+        crews.add(Crew.of(this.id, invite.getMemberId(), nickname));
         invites.remove(invite);
     }
 }
