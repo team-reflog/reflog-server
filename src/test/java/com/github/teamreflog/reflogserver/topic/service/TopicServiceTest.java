@@ -16,6 +16,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 @DataJpaTest
 @Import({TopicService.class, JpaConfig.class})
+@DisplayName("통합 테스트: TopicService")
 class TopicServiceTest {
 
     @Autowired TopicService topicService;

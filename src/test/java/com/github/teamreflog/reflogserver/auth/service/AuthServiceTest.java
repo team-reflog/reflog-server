@@ -2,6 +2,7 @@ package com.github.teamreflog.reflogserver.auth.service;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 
+import com.github.teamreflog.reflogserver.auth.config.AuthConfig;
 import com.github.teamreflog.reflogserver.auth.dto.LoginRequest;
 import com.github.teamreflog.reflogserver.auth.exception.EmailNotExistException;
 import com.github.teamreflog.reflogserver.auth.exception.PasswordNotMatchedException;
@@ -14,7 +15,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 
 @DataJpaTest
-@Import({AuthService.class, JwtProvider.class})
+@Import({AuthService.class, AuthConfig.class, JwtProvider.class})
 @DisplayName("통합 테스트: AuthService")
 class AuthServiceTest {
 

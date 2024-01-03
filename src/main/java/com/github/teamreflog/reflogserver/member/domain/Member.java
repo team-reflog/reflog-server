@@ -32,8 +32,4 @@ public class Member extends BaseEntity {
     public static Member of(final String email, final String password) {
         return new Member(null, new MemberEmail(email), password);
     }
-
-    public boolean isMatchedPassword(final String password) {
-        return this.password.equals(password);
-    }
 }
