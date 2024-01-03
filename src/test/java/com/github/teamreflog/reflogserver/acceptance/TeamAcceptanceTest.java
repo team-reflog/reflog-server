@@ -8,7 +8,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import com.github.teamreflog.reflogserver.acceptance.fixture.AuthFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.MemberFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.TeamFixture;
-import com.github.teamreflog.reflogserver.auth.dto.TokenResponse;
+import com.github.teamreflog.reflogserver.auth.application.dto.TokenResponse;
 import com.github.teamreflog.reflogserver.team.application.dto.CrewQueryResponse;
 import com.github.teamreflog.reflogserver.team.application.dto.TeamCreateRequest;
 import io.restassured.RestAssured;

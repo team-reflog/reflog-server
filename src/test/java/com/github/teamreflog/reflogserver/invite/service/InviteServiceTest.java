@@ -2,15 +2,15 @@ package com.github.teamreflog.reflogserver.invite.service;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 
-import com.github.teamreflog.reflogserver.auth.dto.AuthPrincipal;
+import com.github.teamreflog.reflogserver.auth.application.dto.AuthPrincipal;
 import com.github.teamreflog.reflogserver.common.config.JpaConfig;
-import com.github.teamreflog.reflogserver.member.exception.MemberNotExistException;
+import com.github.teamreflog.reflogserver.member.domain.exception.MemberNotExistException;
 import com.github.teamreflog.reflogserver.team.application.InviteService;
 import com.github.teamreflog.reflogserver.team.application.dto.InviteAcceptRequest;
 import com.github.teamreflog.reflogserver.team.application.dto.InviteCreateRequest;
 import com.github.teamreflog.reflogserver.team.domain.exception.InviteNotExistException;
 import com.github.teamreflog.reflogserver.team.domain.exception.UnauthorizedInviteException;
-import com.github.teamreflog.reflogserver.topic.exception.NotOwnerException;
+import com.github.teamreflog.reflogserver.topic.domain.exception.NotOwnerException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

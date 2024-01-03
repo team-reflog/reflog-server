@@ -2,7 +2,7 @@ package com.github.teamreflog.reflogserver.acceptance.fixture;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import com.github.teamreflog.reflogserver.member.dto.MemberJoinRequest;
+import com.github.teamreflog.reflogserver.member.application.dto.MemberJoinRequest;
 import io.restassured.RestAssured;
 import org.springframework.http.HttpHeaders;
 

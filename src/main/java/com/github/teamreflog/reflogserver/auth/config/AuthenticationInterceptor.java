@@ -2,7 +2,7 @@ package com.github.teamreflog.reflogserver.auth.config;
 
 import static org.springframework.http.HttpMethod.OPTIONS;
 
-import com.github.teamreflog.reflogserver.auth.dto.AuthPrincipal;
+import com.github.teamreflog.reflogserver.auth.application.dto.AuthPrincipal;
 import com.github.teamreflog.reflogserver.auth.infrastructure.JwtProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

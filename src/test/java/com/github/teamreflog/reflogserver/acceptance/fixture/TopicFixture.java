@@ -3,7 +3,7 @@ package com.github.teamreflog.reflogserver.acceptance.fixture;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import com.github.teamreflog.reflogserver.topic.dto.TopicCreateRequest;
+import com.github.teamreflog.reflogserver.topic.application.dto.TopicCreateRequest;
 import io.restassured.RestAssured;
 
 public abstract class TopicFixture {

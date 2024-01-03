@@ -1,10 +1,10 @@
 package com.github.teamreflog.reflogserver.team.application;
 
-import com.github.teamreflog.reflogserver.auth.dto.AuthPrincipal;
+import com.github.teamreflog.reflogserver.auth.application.dto.AuthPrincipal;
 import com.github.teamreflog.reflogserver.member.domain.Member;
 import com.github.teamreflog.reflogserver.member.domain.MemberEmail;
 import com.github.teamreflog.reflogserver.member.domain.MemberRepository;
-import com.github.teamreflog.reflogserver.member.exception.MemberNotExistException;
+import com.github.teamreflog.reflogserver.member.domain.exception.MemberNotExistException;
 import com.github.teamreflog.reflogserver.team.application.dto.InviteAcceptRequest;
 import com.github.teamreflog.reflogserver.team.application.dto.InviteCreateRequest;
 import com.github.teamreflog.reflogserver.team.application.dto.InviteQueryResponse;
@@ -15,7 +15,7 @@ import com.github.teamreflog.reflogserver.team.domain.TeamRepository;
 import com.github.teamreflog.reflogserver.team.domain.exception.InviteNotExistException;
 import com.github.teamreflog.reflogserver.team.domain.exception.TeamNotExistException;
 import com.github.teamreflog.reflogserver.team.domain.exception.UnauthorizedInviteException;
-import com.github.teamreflog.reflogserver.topic.exception.NotOwnerException;
+import com.github.teamreflog.reflogserver.topic.domain.exception.NotOwnerException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

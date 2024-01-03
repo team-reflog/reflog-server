@@ -3,7 +3,7 @@ package com.github.teamreflog.reflogserver.acceptance;
 import static org.hamcrest.Matchers.matchesRegex;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import com.github.teamreflog.reflogserver.member.dto.MemberJoinRequest;
+import com.github.teamreflog.reflogserver.member.application.dto.MemberJoinRequest;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
