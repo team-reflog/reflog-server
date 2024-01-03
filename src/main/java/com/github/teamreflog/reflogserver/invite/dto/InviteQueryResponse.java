@@ -1,10 +1,11 @@
 package com.github.teamreflog.reflogserver.invite.dto;
 
-import com.github.teamreflog.reflogserver.team.domain.Team;
+import com.github.teamreflog.reflogserver.invite.domain.Invite;
 
-public record InviteQueryResponse(String teamName, String description) {
+public record InviteQueryResponse(Long id, String teamName, String description) {
 
-    public static InviteQueryResponse fromEntity(final Team team) {
-        return new InviteQueryResponse(team.getName(), team.getDescription());
+    public static InviteQueryResponse fromEntity(final Invite invite) {
+        return new InviteQueryResponse(
+                invite.getId(), invite.getTeam().getName(), invite.getTeam().getDescription());
     }
 }

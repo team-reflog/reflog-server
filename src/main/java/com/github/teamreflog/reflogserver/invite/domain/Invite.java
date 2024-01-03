@@ -1,11 +1,16 @@
 package com.github.teamreflog.reflogserver.invite.domain;
 
 import com.github.teamreflog.reflogserver.common.entity.BaseEntity;
+import com.github.teamreflog.reflogserver.team.domain.Team;
 import jakarta.persistence.Column;
+import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -23,14 +28,18 @@ public class Invite extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "team_id", nullable = false)
-    private Long teamId;
+    @ManyToOne()
+    @JoinColumn(
+            name = "team_id",
+            nullable = false,
+            foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private Team team;
 
     @Column(name = "member_id", nullable = false)
     private Long memberId;
 
-    public static Invite of(final Long teamId, final Long memberId) {
-        return new Invite(null, teamId, memberId);
+    public static Invite of(final Team team, final Long memberId) {
+        return new Invite(null, team, memberId);
     }
 
     public boolean isSameMember(final Long memberId) {

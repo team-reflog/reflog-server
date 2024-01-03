@@ -7,8 +7,6 @@ import com.github.teamreflog.reflogserver.invite.dto.InviteAcceptRequest;
 import com.github.teamreflog.reflogserver.invite.dto.InviteCreateRequest;
 import com.github.teamreflog.reflogserver.invite.dto.InviteQueryResponse;
 import com.github.teamreflog.reflogserver.invite.exception.InviteNotExistException;
-import com.github.teamreflog.reflogserver.invite.exception.MemberAlreadyInvitedException;
-import com.github.teamreflog.reflogserver.invite.exception.MemberAlreadyJoinedException;
 import com.github.teamreflog.reflogserver.invite.exception.UnauthorizedInviteException;
 import com.github.teamreflog.reflogserver.member.domain.Member;
 import com.github.teamreflog.reflogserver.member.domain.MemberEmail;
@@ -37,7 +35,7 @@ public class InviteService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public Long inviteMember(final AuthPrincipal authPrincipal, final InviteCreateRequest request) {
+    public void inviteMember(final AuthPrincipal authPrincipal, final InviteCreateRequest request) {
         final Team team =
                 teamRepository.findById(request.teamId()).orElseThrow(TeamNotExistException::new);
 
@@ -50,24 +48,11 @@ public class InviteService {
                         .findByEmail(new MemberEmail(request.email()))
                         .orElseThrow(MemberNotExistException::new);
 
-        if (teamMemberRepository.existsByMemberIdAndTeamId(member.getId(), team.getId())) {
-            throw new MemberAlreadyJoinedException();
-        }
-
-        if (inviteRepository.existsByMemberIdAndTeamId(member.getId(), team.getId())) {
-            throw new MemberAlreadyInvitedException();
-        }
-
-        return inviteRepository.save(request.toEntity(member.getId())).getId();
+        team.addInvite(Invite.of(team, member.getId()));
     }
 
     public List<InviteQueryResponse> queryInvites(final AuthPrincipal authPrincipal) {
-        final List<Long> teamIds =
-                inviteRepository.findAllByMemberId(authPrincipal.memberId()).stream()
-                        .map(Invite::getTeamId)
-                        .toList();
-
-        return teamRepository.findAllByIdIn(teamIds).stream()
+        return inviteRepository.findAllByMemberId(authPrincipal.memberId()).stream()
                 .map(InviteQueryResponse::fromEntity)
                 .toList();
     }
@@ -85,13 +70,13 @@ public class InviteService {
         }
 
         if (teamMemberRepository.existsByTeamIdAndNickname(
-                invite.getTeamId(), request.nickname())) {
+                invite.getTeam().getId(), request.nickname())) {
             throw new NicknameDuplicateException();
         }
 
         // TODO: 팀 멤버도 201로 반환?
         teamMemberRepository.save(
-                TeamMember.of(invite.getTeamId(), invite.getMemberId(), request.nickname()));
+                TeamMember.of(invite.getTeam().getId(), invite.getMemberId(), request.nickname()));
 
         inviteRepository.delete(invite);
     }

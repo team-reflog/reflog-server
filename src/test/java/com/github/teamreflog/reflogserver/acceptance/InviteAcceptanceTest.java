@@ -26,6 +26,8 @@ public class InviteAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void setUp() {
+        super.setUp();
+
         memberEmail = "member@email.com";
         MemberFixture.createMember("reflog@email.com", "reflog");
         MemberFixture.createMember(memberEmail, "reflog");
@@ -48,34 +50,21 @@ public class InviteAcceptanceTest extends AcceptanceTest {
     @DisplayName("팀장이 새로운 회원을 초대할 때")
     class inviteTest {
 
-        Long inviteId;
-
         @BeforeEach
         void setUp() {
-            final String id =
-                    RestAssured.given()
-                            .log()
-                            .all()
-                            .auth()
-                            .oauth2(ownerAccessToken)
-                            .body(new InviteCreateRequest(memberEmail, teamId))
-                            .contentType(APPLICATION_JSON_VALUE)
-                            .when()
-                            .post("/invites")
-                            .then()
-                            .log()
-                            .all()
-                            .statusCode(201)
-                            .extract()
-                            .header("Location")
-                            .split("/")[2];
-            inviteId = Long.parseLong(id);
-        }
-
-        @Test
-        @DisplayName("헤더에 초대 번호 정보를 담아서 응답한다.")
-        void headerContainsInviteId() {
-            assertThat(inviteId).isPositive();
+            RestAssured.given()
+                    .log()
+                    .all()
+                    .auth()
+                    .oauth2(ownerAccessToken)
+                    .body(new InviteCreateRequest(memberEmail, teamId))
+                    .contentType(APPLICATION_JSON_VALUE)
+                    .when()
+                    .post("/invites")
+                    .then()
+                    .log()
+                    .all()
+                    .statusCode(201);
         }
 
         @Test
@@ -105,8 +94,28 @@ public class InviteAcceptanceTest extends AcceptanceTest {
         @DisplayName("회원이 초대를 수락하면")
         class acceptInviteTest {
 
+            Long inviteId;
+
             @BeforeEach
             void setUp() {
+                final List<InviteQueryResponse> result =
+                        RestAssured.given()
+                                .log()
+                                .all()
+                                .auth()
+                                .oauth2(memberAccessToken)
+                                .when()
+                                .get("/invites")
+                                .then()
+                                .log()
+                                .all()
+                                .statusCode(200)
+                                .extract()
+                                .jsonPath()
+                                .getList(".", InviteQueryResponse.class);
+
+                inviteId = result.get(0).id();
+
                 RestAssured.given()
                         .log()
                         .all()

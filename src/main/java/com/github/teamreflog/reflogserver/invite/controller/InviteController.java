@@ -6,15 +6,15 @@ import com.github.teamreflog.reflogserver.invite.dto.InviteAcceptRequest;
 import com.github.teamreflog.reflogserver.invite.dto.InviteCreateRequest;
 import com.github.teamreflog.reflogserver.invite.dto.InviteQueryResponse;
 import com.github.teamreflog.reflogserver.invite.service.InviteService;
-import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -25,12 +25,11 @@ public class InviteController {
     private final InviteService inviteService;
 
     @PostMapping
-    public ResponseEntity<Void> inviteTeamMember(
+    @ResponseStatus(HttpStatus.CREATED)
+    public void inviteTeamMember(
             @Authenticated final AuthPrincipal authPrincipal,
             @RequestBody final InviteCreateRequest request) {
-        final Long inviteId = inviteService.inviteMember(authPrincipal, request);
-
-        return ResponseEntity.created(URI.create("/invites/" + inviteId)).build();
+        inviteService.inviteMember(authPrincipal, request);
     }
 
     @GetMapping

@@ -41,7 +41,7 @@ class InviteServiceTest {
 
         @Test
         @DisplayName("초대 대상 사용자와 요청 사용자 토큰이 일치하지 않는 경우 예외가 발생한다.")
-        @Sql("/invite.sql")
+        @Sql({"/invite.sql", "/team.sql"})
         void userTokenInvalidThrowsException() {
             /* given */
             final AuthPrincipal authPrincipal = new AuthPrincipal(777L);
