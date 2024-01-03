@@ -72,6 +72,7 @@ public class InviteService {
                 .toList();
     }
 
+    @Transactional
     public void acceptInvite(
             final AuthPrincipal authPrincipal,
             final Long inviteId,
@@ -91,5 +92,7 @@ public class InviteService {
         // TODO: 팀 멤버도 201로 반환?
         teamMemberRepository.save(
                 TeamMember.of(invite.getTeamId(), invite.getMemberId(), request.nickname()));
+
+        inviteRepository.delete(invite);
     }
 }

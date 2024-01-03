@@ -13,4 +13,6 @@ public interface InviteRepository extends Repository<Invite, Long> {
     boolean existsByMemberIdAndTeamId(Long memberId, Long teamId);
 
     Optional<Invite> findById(Long id);
+
+    void delete(Invite invite);
 }

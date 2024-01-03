@@ -16,7 +16,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 
-// TODO: nested로 메서드 단위 테스트
 @DataJpaTest
 @Import({InviteService.class, JpaConfig.class})
 @DisplayName("통합 테스트: InviteService")
