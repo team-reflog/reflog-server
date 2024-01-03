@@ -8,7 +8,6 @@ import com.github.teamreflog.reflogserver.member.exception.MemberNotExistExcepti
 import com.github.teamreflog.reflogserver.team.application.dto.InviteAcceptRequest;
 import com.github.teamreflog.reflogserver.team.application.dto.InviteCreateRequest;
 import com.github.teamreflog.reflogserver.team.application.dto.InviteQueryResponse;
-import com.github.teamreflog.reflogserver.team.domain.CrewRepository;
 import com.github.teamreflog.reflogserver.team.domain.Invite;
 import com.github.teamreflog.reflogserver.team.domain.InviteRepository;
 import com.github.teamreflog.reflogserver.team.domain.Team;
@@ -29,7 +28,6 @@ public class InviteService {
 
     private final TeamRepository teamRepository;
     private final InviteRepository inviteRepository;
-    private final CrewRepository crewRepository;
     private final MemberRepository memberRepository;
 
     @Transactional

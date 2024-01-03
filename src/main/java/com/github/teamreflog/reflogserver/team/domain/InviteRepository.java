@@ -6,13 +6,7 @@ import org.springframework.data.repository.Repository;
 
 public interface InviteRepository extends Repository<Invite, Long> {
 
-    Invite save(Invite invite);
-
     List<Invite> findAllByMemberId(Long memberId);
 
-    boolean existsByMemberIdAndTeamId(Long memberId, Long teamId);
-
     Optional<Invite> findById(Long id);
-
-    void delete(Invite invite);
 }

@@ -92,7 +92,11 @@ public class Team extends BaseEntity {
             throw new CrewAlreadyJoinedException();
         }
 
-        crews.add(Crew.of(this.id, invite.getMemberId(), nickname));
+        addCrew(Crew.of(invite.getMemberId(), nickname));
         invites.remove(invite);
+    }
+
+    public void addCrew(final Crew crew) {
+        crews.add(crew);
     }
 }
