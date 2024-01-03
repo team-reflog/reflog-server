@@ -1,7 +1,7 @@
 package com.github.teamreflog.reflogserver.team.ui;
 
 import com.github.teamreflog.reflogserver.auth.annotation.Authenticated;
-import com.github.teamreflog.reflogserver.auth.dto.AuthPrincipal;
+import com.github.teamreflog.reflogserver.auth.application.dto.AuthPrincipal;
 import com.github.teamreflog.reflogserver.team.application.TeamService;
 import com.github.teamreflog.reflogserver.team.application.dto.CrewQueryResponse;
 import com.github.teamreflog.reflogserver.team.application.dto.TeamCreateRequest;

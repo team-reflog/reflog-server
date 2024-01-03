@@ -2,7 +2,7 @@ package com.github.teamreflog.reflogserver.team.application;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 
-import com.github.teamreflog.reflogserver.auth.dto.AuthPrincipal;
+import com.github.teamreflog.reflogserver.auth.application.dto.AuthPrincipal;
 import com.github.teamreflog.reflogserver.common.config.JpaConfig;
 import com.github.teamreflog.reflogserver.team.application.dto.TeamCreateRequest;
 import com.github.teamreflog.reflogserver.team.domain.exception.TeamNameDuplicatedException;

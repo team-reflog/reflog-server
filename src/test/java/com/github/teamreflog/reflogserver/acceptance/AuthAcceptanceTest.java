@@ -5,8 +5,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import com.github.teamreflog.reflogserver.acceptance.fixture.AuthFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.MemberFixture;
-import com.github.teamreflog.reflogserver.auth.dto.LoginRequest;
-import com.github.teamreflog.reflogserver.auth.dto.TokenResponse;
+import com.github.teamreflog.reflogserver.auth.application.dto.LoginRequest;
+import com.github.teamreflog.reflogserver.auth.application.dto.TokenResponse;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

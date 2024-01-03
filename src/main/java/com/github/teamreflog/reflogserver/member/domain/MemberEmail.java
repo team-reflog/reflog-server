@@ -1,6 +1,6 @@
 package com.github.teamreflog.reflogserver.member.domain;
 
-import com.github.teamreflog.reflogserver.member.exception.EmailFormatException;
+import com.github.teamreflog.reflogserver.member.domain.exception.EmailFormatException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import java.util.regex.Pattern;

@@ -1,7 +1,7 @@
 package com.github.teamreflog.reflogserver.team.ui;
 
 import com.github.teamreflog.reflogserver.auth.annotation.Authenticated;
-import com.github.teamreflog.reflogserver.auth.dto.AuthPrincipal;
+import com.github.teamreflog.reflogserver.auth.application.dto.AuthPrincipal;
 import com.github.teamreflog.reflogserver.team.application.InviteService;
 import com.github.teamreflog.reflogserver.team.application.dto.InviteAcceptRequest;
 import com.github.teamreflog.reflogserver.team.application.dto.InviteCreateRequest;
@@ -29,7 +29,7 @@ public class InviteController {
     public void inviteCrew(
             @Authenticated final AuthPrincipal authPrincipal,
             @RequestBody final InviteCreateRequest request) {
-        inviteService.inviteMember(authPrincipal, request);
+        inviteService.inviteCrew(authPrincipal, request);
     }
 
     @GetMapping

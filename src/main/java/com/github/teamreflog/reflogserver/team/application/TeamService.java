@@ -1,11 +1,10 @@
 package com.github.teamreflog.reflogserver.team.application;
 
-import com.github.teamreflog.reflogserver.auth.dto.AuthPrincipal;
+import com.github.teamreflog.reflogserver.auth.application.dto.AuthPrincipal;
 import com.github.teamreflog.reflogserver.team.application.dto.CrewQueryResponse;
 import com.github.teamreflog.reflogserver.team.application.dto.TeamCreateRequest;
 import com.github.teamreflog.reflogserver.team.application.dto.TeamQueryResponse;
 import com.github.teamreflog.reflogserver.team.domain.Crew;
-import com.github.teamreflog.reflogserver.team.domain.CrewRepository;
 import com.github.teamreflog.reflogserver.team.domain.Team;
 import com.github.teamreflog.reflogserver.team.domain.TeamRepository;
 import com.github.teamreflog.reflogserver.team.domain.exception.TeamNameDuplicatedException;
@@ -22,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class TeamService {
 
     private final TeamRepository teamRepository;
-    private final CrewRepository crewRepository;
 
     @Transactional
     public Long createTeam(final AuthPrincipal authPrincipal, final TeamCreateRequest request) {
@@ -33,11 +31,10 @@ public class TeamService {
             throw new TeamNameDuplicatedException();
         }
 
-        final Team team = teamRepository.save(request.toEntity(authPrincipal.memberId()));
+        final Team team = request.toEntity(authPrincipal.memberId());
+        team.addCrew(Crew.of(authPrincipal.memberId(), request.nickname()));
 
-        crewRepository.save(Crew.of(team.getId(), authPrincipal.memberId(), request.nickname()));
-
-        return team.getId();
+        return teamRepository.save(team).getId();
     }
 
     public TeamQueryResponse queryTeam(final Long teamId) {
@@ -50,7 +47,7 @@ public class TeamService {
     public List<CrewQueryResponse> queryCrews(final Long teamId) {
         final Team team = teamRepository.findById(teamId).orElseThrow(TeamNotExistException::new);
 
-        return crewRepository.findAllByTeamId(teamId).stream()
+        return team.getCrews().stream()
                 .map(crew -> CrewQueryResponse.fromEntity(crew, team))
                 .toList();
     }
