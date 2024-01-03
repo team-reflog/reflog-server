@@ -3,9 +3,9 @@ package com.github.teamreflog.reflogserver.invite.service;
 import com.github.teamreflog.reflogserver.auth.dto.AuthPrincipal;
 import com.github.teamreflog.reflogserver.invite.domain.Invite;
 import com.github.teamreflog.reflogserver.invite.domain.InviteRepository;
-import com.github.teamreflog.reflogserver.invite.dto.InvitationRequest;
 import com.github.teamreflog.reflogserver.invite.dto.InviteAcceptRequest;
-import com.github.teamreflog.reflogserver.invite.dto.InviteResponse;
+import com.github.teamreflog.reflogserver.invite.dto.InviteCreateRequest;
+import com.github.teamreflog.reflogserver.invite.dto.InviteQueryResponse;
 import com.github.teamreflog.reflogserver.invite.exception.MemberAlreadyInvitedException;
 import com.github.teamreflog.reflogserver.invite.exception.MemberAlreadyJoinedException;
 import com.github.teamreflog.reflogserver.member.domain.Member;
@@ -34,7 +34,7 @@ public class InviteService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public void inviteMember(final AuthPrincipal authPrincipal, final InvitationRequest request) {
+    public void inviteMember(final AuthPrincipal authPrincipal, final InviteCreateRequest request) {
         final Team team =
                 teamRepository.findById(request.teamId()).orElseThrow(TeamNotExistException::new);
 
@@ -58,14 +58,14 @@ public class InviteService {
         inviteRepository.save(request.toEntity(member.getId()));
     }
 
-    public List<InviteResponse> queryInvites(final AuthPrincipal authPrincipal) {
+    public List<InviteQueryResponse> queryInvites(final AuthPrincipal authPrincipal) {
         final List<Long> teamIds =
                 inviteRepository.findAllByMemberId(authPrincipal.memberId()).stream()
                         .map(Invite::getTeamId)
                         .toList();
 
         return teamRepository.findAllByIdIn(teamIds).stream()
-                .map(InviteResponse::fromEntity)
+                .map(InviteQueryResponse::fromEntity)
                 .toList();
     }
 

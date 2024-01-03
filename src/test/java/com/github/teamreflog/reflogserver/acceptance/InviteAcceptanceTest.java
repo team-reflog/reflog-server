@@ -7,9 +7,9 @@ import com.github.teamreflog.reflogserver.acceptance.fixture.AuthFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.InviteFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.MemberFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.TeamFixture;
-import com.github.teamreflog.reflogserver.invite.dto.InvitationRequest;
 import com.github.teamreflog.reflogserver.invite.dto.InviteAcceptRequest;
-import com.github.teamreflog.reflogserver.invite.dto.InviteResponse;
+import com.github.teamreflog.reflogserver.invite.dto.InviteCreateRequest;
+import com.github.teamreflog.reflogserver.invite.dto.InviteQueryResponse;
 import com.github.teamreflog.reflogserver.team.dto.TeamMemberQueryResponse;
 import io.restassured.RestAssured;
 import java.time.DayOfWeek;
@@ -50,7 +50,7 @@ public class InviteAcceptanceTest extends AcceptanceTest {
                 .all()
                 .auth()
                 .oauth2(ownerAccessToken)
-                .body(new InvitationRequest(memberEmail, teamId))
+                .body(new InviteCreateRequest(memberEmail, teamId))
                 .contentType(APPLICATION_JSON_VALUE)
                 .when()
                 .post("/invites")
@@ -59,7 +59,7 @@ public class InviteAcceptanceTest extends AcceptanceTest {
                 .all()
                 .statusCode(200);
 
-        final List<InviteResponse> result =
+        final List<InviteQueryResponse> result =
                 RestAssured.given()
                         .log()
                         .all()
@@ -73,7 +73,7 @@ public class InviteAcceptanceTest extends AcceptanceTest {
                         .statusCode(200)
                         .extract()
                         .jsonPath()
-                        .getList(".", InviteResponse.class);
+                        .getList(".", InviteQueryResponse.class);
 
         /* then */
         assertThat(result).hasSize(1);
