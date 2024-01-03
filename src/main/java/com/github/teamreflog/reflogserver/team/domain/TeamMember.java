@@ -35,4 +35,8 @@ public class TeamMember extends BaseEntity {
     public static TeamMember of(final Long teamId, final Long memberId, final String nickname) {
         return new TeamMember(null, teamId, memberId, nickname);
     }
+
+    public boolean isSameNickname(final String nickname) {
+        return this.nickname.equals(nickname);
+    }
 }

@@ -2,6 +2,7 @@ package com.github.teamreflog.reflogserver.team.domain;
 
 import com.github.teamreflog.reflogserver.common.entity.BaseEntity;
 import com.github.teamreflog.reflogserver.invite.domain.Invite;
+import com.github.teamreflog.reflogserver.team.exception.NicknameDuplicateException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
@@ -38,7 +39,6 @@ public class Team extends BaseEntity {
     @Column(name = "description", nullable = false)
     private String description;
 
-    // TODO: 연관관계
     @Column(name = "owner_id", nullable = false)
     private Long ownerId;
 
@@ -82,5 +82,14 @@ public class Team extends BaseEntity {
 
     public void addInvite(final Invite entity) {
         invites.add(entity);
+    }
+
+    public void processInvite(final Invite invite, final String nickname) {
+        if (members.stream().anyMatch(member -> member.isSameNickname(nickname))) {
+            throw new NicknameDuplicateException();
+        }
+
+        members.add(TeamMember.of(this.id, invite.getMemberId(), nickname));
+        invites.remove(invite);
     }
 }

@@ -13,9 +13,7 @@ import com.github.teamreflog.reflogserver.member.domain.MemberEmail;
 import com.github.teamreflog.reflogserver.member.domain.MemberRepository;
 import com.github.teamreflog.reflogserver.member.exception.MemberNotExistException;
 import com.github.teamreflog.reflogserver.team.domain.Team;
-import com.github.teamreflog.reflogserver.team.domain.TeamMember;
 import com.github.teamreflog.reflogserver.team.domain.TeamMemberRepository;
-import com.github.teamreflog.reflogserver.team.exception.NicknameDuplicateException;
 import com.github.teamreflog.reflogserver.team.exception.TeamNotExistException;
 import com.github.teamreflog.reflogserver.team.repository.TeamRepository;
 import com.github.teamreflog.reflogserver.topic.exception.NotOwnerException;
@@ -64,20 +62,10 @@ public class InviteService {
             final InviteAcceptRequest request) {
         final Invite invite =
                 inviteRepository.findById(inviteId).orElseThrow(InviteNotExistException::new);
-
         if (!invite.isSameMember(authPrincipal.memberId())) {
             throw new UnauthorizedInviteException();
         }
 
-        if (teamMemberRepository.existsByTeamIdAndNickname(
-                invite.getTeam().getId(), request.nickname())) {
-            throw new NicknameDuplicateException();
-        }
-
-        // TODO: 팀 멤버도 201로 반환?
-        teamMemberRepository.save(
-                TeamMember.of(invite.getTeam().getId(), invite.getMemberId(), request.nickname()));
-
-        inviteRepository.delete(invite);
+        invite.getTeam().processInvite(invite, request.nickname());
     }
 }
