@@ -2,7 +2,7 @@ package com.github.teamreflog.reflogserver.acceptance.fixture;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import com.github.teamreflog.reflogserver.team.dto.TeamCreateRequest;
+import com.github.teamreflog.reflogserver.team.application.dto.TeamCreateRequest;
 import io.restassured.RestAssured;
 import java.time.DayOfWeek;
 import java.util.List;
@@ -18,6 +18,7 @@ public abstract class TeamFixture {
             final String accessToken,
             final String name,
             final String description,
+            final String nickname,
             final List<DayOfWeek> reflectionDays) {
         final String teamId =
                 RestAssured.given()
@@ -25,7 +26,7 @@ public abstract class TeamFixture {
                         .all()
                         .auth()
                         .oauth2(accessToken)
-                        .body(new TeamCreateRequest(name, description, reflectionDays))
+                        .body(new TeamCreateRequest(name, description, nickname, reflectionDays))
                         .contentType(APPLICATION_JSON_VALUE)
                         .when()
                         .post("/teams")

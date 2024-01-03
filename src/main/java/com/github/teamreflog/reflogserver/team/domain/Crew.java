@@ -13,11 +13,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "team_members")
+@Table(name = "crews")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class TeamMember extends BaseEntity {
+public class Crew extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,4 +31,12 @@ public class TeamMember extends BaseEntity {
 
     @Column(name = "nickname", nullable = false)
     private String nickname;
+
+    public static Crew of(final Long teamId, final Long memberId, final String nickname) {
+        return new Crew(null, teamId, memberId, nickname);
+    }
+
+    public boolean isSameNickname(final String nickname) {
+        return this.nickname.equals(nickname);
+    }
 }

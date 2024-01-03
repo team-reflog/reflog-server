@@ -1,2 +1,4 @@
 TRUNCATE TABLE members;
+TRUNCATE TABLE invites;
+TRUNCATE TABLE crews;
 TRUNCATE TABLE teams;

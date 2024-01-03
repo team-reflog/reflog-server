@@ -1,12 +1,12 @@
-package com.github.teamreflog.reflogserver.team.service;
+package com.github.teamreflog.reflogserver.team.application;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 import com.github.teamreflog.reflogserver.auth.dto.AuthPrincipal;
 import com.github.teamreflog.reflogserver.common.config.JpaConfig;
-import com.github.teamreflog.reflogserver.team.dto.TeamCreateRequest;
-import com.github.teamreflog.reflogserver.team.exception.TeamNameDuplicatedException;
-import com.github.teamreflog.reflogserver.team.exception.TeamReflectionDaysEmptyException;
+import com.github.teamreflog.reflogserver.team.application.dto.TeamCreateRequest;
+import com.github.teamreflog.reflogserver.team.domain.exception.TeamNameDuplicatedException;
+import com.github.teamreflog.reflogserver.team.domain.exception.TeamReflectionDaysEmptyException;
 import java.time.DayOfWeek;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -31,6 +31,7 @@ class TeamServiceTest {
                 new TeamCreateRequest(
                         "antifragile",
                         "안티프래질 팀입니다.",
+                        "owner",
                         List.of(
                                 DayOfWeek.MONDAY,
                                 DayOfWeek.WEDNESDAY,
@@ -51,6 +52,7 @@ class TeamServiceTest {
                 new TeamCreateRequest(
                         "antifragile",
                         "안티프래질 팀입니다.",
+                        "owner",
                         List.of(
                                 DayOfWeek.MONDAY,
                                 DayOfWeek.WEDNESDAY,
@@ -72,7 +74,7 @@ class TeamServiceTest {
         /* given */
         final AuthPrincipal authPrincipal = new AuthPrincipal(1L);
         final TeamCreateRequest request =
-                new TeamCreateRequest("antifragile", "안티프래질 팀입니다.", List.of());
+                new TeamCreateRequest("antifragile", "안티프래질 팀입니다.", "owner", List.of());
 
         /* when & then */
         assertThatCode(() -> teamService.createTeam(authPrincipal, request))

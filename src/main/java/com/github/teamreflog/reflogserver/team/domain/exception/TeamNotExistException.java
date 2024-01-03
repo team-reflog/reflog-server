@@ -1,4 +1,4 @@
-package com.github.teamreflog.reflogserver.team.exception;
+package com.github.teamreflog.reflogserver.team.domain.exception;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 

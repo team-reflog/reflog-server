@@ -1,4 +1,4 @@
-package com.github.teamreflog.reflogserver.team.exception;
+package com.github.teamreflog.reflogserver.team.domain.exception;
 
 import com.github.teamreflog.reflogserver.common.exception.ErrorResponse;
 import org.springframework.core.Ordered;

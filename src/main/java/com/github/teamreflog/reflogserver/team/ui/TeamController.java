@@ -1,11 +1,13 @@
-package com.github.teamreflog.reflogserver.team.controller;
+package com.github.teamreflog.reflogserver.team.ui;
 
 import com.github.teamreflog.reflogserver.auth.annotation.Authenticated;
 import com.github.teamreflog.reflogserver.auth.dto.AuthPrincipal;
-import com.github.teamreflog.reflogserver.team.dto.TeamCreateRequest;
-import com.github.teamreflog.reflogserver.team.dto.TeamQueryResponse;
-import com.github.teamreflog.reflogserver.team.service.TeamService;
+import com.github.teamreflog.reflogserver.team.application.TeamService;
+import com.github.teamreflog.reflogserver.team.application.dto.CrewQueryResponse;
+import com.github.teamreflog.reflogserver.team.application.dto.TeamCreateRequest;
+import com.github.teamreflog.reflogserver.team.application.dto.TeamQueryResponse;
 import java.net.URI;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,5 +36,10 @@ public class TeamController {
     @GetMapping("/{id}")
     public TeamQueryResponse queryTeam(@PathVariable("id") final Long teamId) {
         return teamService.queryTeam(teamId);
+    }
+
+    @GetMapping("/{id}/members")
+    public List<CrewQueryResponse> queryCrews(@PathVariable("id") final Long teamId) {
+        return teamService.queryCrews(teamId);
     }
 }
