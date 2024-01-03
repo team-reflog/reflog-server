@@ -9,20 +9,26 @@ public abstract class InviteFixture {
 
     private InviteFixture() {}
 
-    public static void inviteMember(
+    public static Long inviteMember(
             final String accessToken, final String memberEmail, final Long teamId) {
-        RestAssured.given()
-                .log()
-                .all()
-                .auth()
-                .oauth2(accessToken)
-                .body(new InviteCreateRequest(memberEmail, teamId))
-                .contentType(APPLICATION_JSON_VALUE)
-                .when()
-                .post("/invites")
-                .then()
-                .log()
-                .all()
-                .statusCode(200);
+        final String id =
+                RestAssured.given()
+                        .log()
+                        .all()
+                        .auth()
+                        .oauth2(accessToken)
+                        .body(new InviteCreateRequest(memberEmail, teamId))
+                        .contentType(APPLICATION_JSON_VALUE)
+                        .when()
+                        .post("/invites")
+                        .then()
+                        .log()
+                        .all()
+                        .statusCode(201)
+                        .extract()
+                        .header("Location")
+                        .split("/")[2];
+
+        return Long.parseLong(id);
     }
 }

@@ -57,7 +57,7 @@ public class InviteAcceptanceTest extends AcceptanceTest {
                 .then()
                 .log()
                 .all()
-                .statusCode(200);
+                .statusCode(201);
 
         final List<InviteQueryResponse> result =
                 RestAssured.given()
@@ -104,7 +104,7 @@ public class InviteAcceptanceTest extends AcceptanceTest {
                                 DayOfWeek.FRIDAY,
                                 DayOfWeek.SUNDAY));
 
-        InviteFixture.inviteMember(ownerAccessToken, memberEmail, teamId);
+        final Long inviteId = InviteFixture.inviteMember(ownerAccessToken, memberEmail, teamId);
 
         /* when */
         RestAssured.given()
@@ -112,10 +112,10 @@ public class InviteAcceptanceTest extends AcceptanceTest {
                 .all()
                 .auth()
                 .oauth2(memberAccessToken)
-                .body(new InviteAcceptRequest(teamId, "user"))
+                .body(new InviteAcceptRequest("user"))
                 .contentType(APPLICATION_JSON_VALUE)
                 .when()
-                .post("/invites/accept")
+                .post("/invites/{inviteId}/accept", inviteId)
                 .then()
                 .log()
                 .all()
