@@ -1,8 +1,7 @@
 package com.github.teamreflog.reflogserver.team.domain;
 
 import com.github.teamreflog.reflogserver.common.entity.BaseEntity;
-import com.github.teamreflog.reflogserver.invite.domain.Invite;
-import com.github.teamreflog.reflogserver.team.exception.NicknameDuplicateException;
+import com.github.teamreflog.reflogserver.team.domain.exception.NicknameDuplicateException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
@@ -48,7 +47,7 @@ public class Team extends BaseEntity {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private final List<TeamMember> members = new ArrayList<>();
+    private final List<Crew> members = new ArrayList<>();
 
     @OneToMany(
             cascade = CascadeType.ALL,
@@ -89,7 +88,7 @@ public class Team extends BaseEntity {
             throw new NicknameDuplicateException();
         }
 
-        members.add(TeamMember.of(this.id, invite.getMemberId(), nickname));
+        members.add(Crew.of(this.id, invite.getMemberId(), nickname));
         invites.remove(invite);
     }
 }

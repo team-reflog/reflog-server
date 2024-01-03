@@ -6,10 +6,10 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import com.github.teamreflog.reflogserver.acceptance.fixture.AuthFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.MemberFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.TeamFixture;
-import com.github.teamreflog.reflogserver.invite.dto.InviteAcceptRequest;
-import com.github.teamreflog.reflogserver.invite.dto.InviteCreateRequest;
-import com.github.teamreflog.reflogserver.invite.dto.InviteQueryResponse;
-import com.github.teamreflog.reflogserver.team.dto.TeamMemberQueryResponse;
+import com.github.teamreflog.reflogserver.team.application.dto.CrewQueryResponse;
+import com.github.teamreflog.reflogserver.team.application.dto.InviteAcceptRequest;
+import com.github.teamreflog.reflogserver.team.application.dto.InviteCreateRequest;
+import com.github.teamreflog.reflogserver.team.application.dto.InviteQueryResponse;
 import io.restassured.RestAssured;
 import java.time.DayOfWeek;
 import java.util.List;
@@ -157,7 +157,7 @@ public class InviteAcceptanceTest extends AcceptanceTest {
             @Test
             @DisplayName("수락한 팀 멤버 조회할 시 회원이 조회된다.")
             void queryTeamMebmer() {
-                final List<TeamMemberQueryResponse> teamMembers =
+                final List<CrewQueryResponse> crews =
                         RestAssured.given()
                                 .log()
                                 .all()
@@ -171,10 +171,10 @@ public class InviteAcceptanceTest extends AcceptanceTest {
                                 .statusCode(200)
                                 .extract()
                                 .jsonPath()
-                                .getList(".", TeamMemberQueryResponse.class);
+                                .getList(".", CrewQueryResponse.class);
 
-                assertThat(teamMembers).hasSize(2);
-                assertThat(teamMembers).extracting("nickname").contains("owner", "user");
+                assertThat(crews).hasSize(2);
+                assertThat(crews).extracting("nickname").contains("owner", "user");
             }
         }
     }

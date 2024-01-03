@@ -1,7 +1,7 @@
 package com.github.teamreflog.reflogserver.topic.service;
 
 import com.github.teamreflog.reflogserver.team.domain.Team;
-import com.github.teamreflog.reflogserver.team.repository.TeamRepository;
+import com.github.teamreflog.reflogserver.team.domain.TeamRepository;
 import com.github.teamreflog.reflogserver.topic.dto.TopicCreateRequest;
 import com.github.teamreflog.reflogserver.topic.dto.TopicQueryResponse;
 import com.github.teamreflog.reflogserver.topic.exception.NotOwnerException;

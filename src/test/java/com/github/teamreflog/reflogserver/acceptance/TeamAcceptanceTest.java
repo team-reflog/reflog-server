@@ -9,8 +9,8 @@ import com.github.teamreflog.reflogserver.acceptance.fixture.AuthFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.MemberFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.TeamFixture;
 import com.github.teamreflog.reflogserver.auth.dto.TokenResponse;
-import com.github.teamreflog.reflogserver.team.dto.TeamCreateRequest;
-import com.github.teamreflog.reflogserver.team.dto.TeamMemberQueryResponse;
+import com.github.teamreflog.reflogserver.team.application.dto.CrewQueryResponse;
+import com.github.teamreflog.reflogserver.team.application.dto.TeamCreateRequest;
 import io.restassured.RestAssured;
 import java.time.DayOfWeek;
 import java.util.List;
@@ -88,7 +88,7 @@ class TeamAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("팀 멤버를 조회한다.")
-    void queryTeamMembers() {
+    void queryCrews() {
         /* given */
         final Long ownerId = MemberFixture.createMember("reflog@email.com", "reflog");
         final String accessToken = AuthFixture.login("reflog@email.com", "reflog").accessToken();
@@ -105,7 +105,7 @@ class TeamAcceptanceTest extends AcceptanceTest {
                                 DayOfWeek.SUNDAY));
 
         /* when */
-        List<TeamMemberQueryResponse> response =
+        final List<CrewQueryResponse> response =
                 RestAssured.given()
                         .log()
                         .all()
@@ -119,7 +119,7 @@ class TeamAcceptanceTest extends AcceptanceTest {
                         .statusCode(200)
                         .extract()
                         .jsonPath()
-                        .getList(".", TeamMemberQueryResponse.class);
+                        .getList(".", CrewQueryResponse.class);
 
         /* then */
         assertThat(response).hasSize(1);

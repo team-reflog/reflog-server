@@ -4,10 +4,11 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 
 import com.github.teamreflog.reflogserver.auth.dto.AuthPrincipal;
 import com.github.teamreflog.reflogserver.common.config.JpaConfig;
-import com.github.teamreflog.reflogserver.invite.dto.InviteAcceptRequest;
-import com.github.teamreflog.reflogserver.invite.exception.InviteNotExistException;
-import com.github.teamreflog.reflogserver.invite.exception.UnauthorizedInviteException;
-import com.github.teamreflog.reflogserver.team.exception.NicknameDuplicateException;
+import com.github.teamreflog.reflogserver.team.application.InviteService;
+import com.github.teamreflog.reflogserver.team.application.dto.InviteAcceptRequest;
+import com.github.teamreflog.reflogserver.team.domain.exception.InviteNotExistException;
+import com.github.teamreflog.reflogserver.team.domain.exception.NicknameDuplicateException;
+import com.github.teamreflog.reflogserver.team.domain.exception.UnauthorizedInviteException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -54,7 +55,7 @@ class InviteServiceTest {
 
         @Test
         @DisplayName("팀 내 닉네임 중복 시 예외가 발생한다.")
-        @Sql({"/member.sql", "/team.sql", "/team_member.sql", "/invite.sql"})
+        @Sql({"/member.sql", "/team.sql", "/crew.sql", "/invite.sql"})
         void duplicateNicknameInTeamThrowsException() {
             /* given */
             final AuthPrincipal authPrincipal = new AuthPrincipal(2L);

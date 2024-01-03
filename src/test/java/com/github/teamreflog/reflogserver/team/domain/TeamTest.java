@@ -3,7 +3,6 @@ package com.github.teamreflog.reflogserver.team.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.github.teamreflog.reflogserver.invite.domain.Invite;
 import java.time.DayOfWeek;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +37,7 @@ class TeamTest {
         assertAll(
                 () ->
                         assertThat(team.getMembers())
-                                .extracting(TeamMember::getNickname)
+                                .extracting(Crew::getNickname)
                                 .containsExactly("super-duper"),
                 () -> assertThat(team.getInvites()).isEmpty());
     }

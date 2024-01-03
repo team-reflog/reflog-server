@@ -2,7 +2,7 @@ package com.github.teamreflog.reflogserver.acceptance.fixture;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import com.github.teamreflog.reflogserver.team.dto.TeamCreateRequest;
+import com.github.teamreflog.reflogserver.team.application.dto.TeamCreateRequest;
 import io.restassured.RestAssured;
 import java.time.DayOfWeek;
 import java.util.List;
