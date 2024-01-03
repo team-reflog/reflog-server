@@ -9,6 +9,7 @@ import com.github.teamreflog.reflogserver.member.domain.Member;
 import com.github.teamreflog.reflogserver.member.domain.MemberEmail;
 import com.github.teamreflog.reflogserver.member.domain.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,7 +17,9 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     private final MemberRepository memberRepository;
+
     private final JwtProvider jwtProvider;
+    private final PasswordEncoder passwordEncoder;
 
     public TokenResponse login(final LoginRequest request) {
         final Member member =
@@ -24,7 +27,7 @@ public class AuthService {
                         .findByEmail(new MemberEmail(request.email()))
                         .orElseThrow(EmailNotExistException::new);
 
-        if (!member.isMatchedPassword(request.password())) {
+        if (!passwordEncoder.matches(request.password(), member.getPassword())) {
             throw new PasswordNotMatchedException();
         }
 

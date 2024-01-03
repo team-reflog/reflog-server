@@ -3,6 +3,7 @@ package com.github.teamreflog.reflogserver.member.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
+import com.github.teamreflog.reflogserver.auth.config.AuthConfig;
 import com.github.teamreflog.reflogserver.common.config.JpaConfig;
 import com.github.teamreflog.reflogserver.member.domain.MemberEmail;
 import com.github.teamreflog.reflogserver.member.domain.MemberRepository;
@@ -15,7 +16,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
 @DataJpaTest
-@Import({MemberService.class, JpaConfig.class})
+@Import({MemberService.class, AuthConfig.class, JpaConfig.class})
+@DisplayName("통합 테스트: MemberService")
 class MemberServiceTest {
 
     @Autowired MemberService memberService;
