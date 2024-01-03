@@ -9,6 +9,7 @@ import com.github.teamreflog.reflogserver.invite.exception.InviteNotExistExcepti
 import com.github.teamreflog.reflogserver.invite.exception.UnauthorizedInviteException;
 import com.github.teamreflog.reflogserver.team.exception.NicknameDuplicateException;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -23,41 +24,46 @@ class InviteServiceTest {
 
     @Autowired InviteService inviteService;
 
-    @Test
-    @DisplayName("존재하지 않는 초대인 경우 예외가 발생한다.")
-    void inviteNotExistThrowsException() {
-        /* given */
-        final AuthPrincipal authPrincipal = new AuthPrincipal(2L);
-        final InviteAcceptRequest request = new InviteAcceptRequest("owner");
+    @Nested
+    @DisplayName("초대 수락 테스트")
+    class AcceptInviteTest {
 
-        /* when, then */
-        assertThatCode(() -> inviteService.acceptInvite(authPrincipal, 4L, request))
-                .isExactlyInstanceOf(InviteNotExistException.class);
-    }
+        @Test
+        @DisplayName("존재하지 않는 초대인 경우 예외가 발생한다.")
+        void inviteNotExistThrowsException() {
+            /* given */
+            final AuthPrincipal authPrincipal = new AuthPrincipal(2L);
+            final InviteAcceptRequest request = new InviteAcceptRequest("owner");
 
-    @Test
-    @DisplayName("초대 대상 사용자와 요청 사용자 토큰이 일치하지 않는 경우 예외가 발생한다.")
-    @Sql("/invite.sql")
-    void userTokenInvalidThrowsException() {
-        /* given */
-        final AuthPrincipal authPrincipal = new AuthPrincipal(777L);
-        final InviteAcceptRequest request = new InviteAcceptRequest("super-duper-nickname");
+            /* when, then */
+            assertThatCode(() -> inviteService.acceptInvite(authPrincipal, 4L, request))
+                    .isExactlyInstanceOf(InviteNotExistException.class);
+        }
 
-        /* when & then */
-        assertThatCode(() -> inviteService.acceptInvite(authPrincipal, 1L, request))
-                .isExactlyInstanceOf(UnauthorizedInviteException.class);
-    }
+        @Test
+        @DisplayName("초대 대상 사용자와 요청 사용자 토큰이 일치하지 않는 경우 예외가 발생한다.")
+        @Sql("/invite.sql")
+        void userTokenInvalidThrowsException() {
+            /* given */
+            final AuthPrincipal authPrincipal = new AuthPrincipal(777L);
+            final InviteAcceptRequest request = new InviteAcceptRequest("super-duper-nickname");
 
-    @Test
-    @DisplayName("팀 내 닉네임 중복 시 예외가 발생한다.")
-    @Sql({"/member.sql", "/team.sql", "/team_member.sql", "/invite.sql"})
-    void duplicateNicknameInTeamThrowsException() {
-        /* given */
-        final AuthPrincipal authPrincipal = new AuthPrincipal(2L);
-        final InviteAcceptRequest request = new InviteAcceptRequest("owner");
+            /* when & then */
+            assertThatCode(() -> inviteService.acceptInvite(authPrincipal, 1L, request))
+                    .isExactlyInstanceOf(UnauthorizedInviteException.class);
+        }
 
-        /* when */
-        assertThatCode(() -> inviteService.acceptInvite(authPrincipal, 1L, request))
-                .isInstanceOf(NicknameDuplicateException.class);
+        @Test
+        @DisplayName("팀 내 닉네임 중복 시 예외가 발생한다.")
+        @Sql({"/member.sql", "/team.sql", "/team_member.sql", "/invite.sql"})
+        void duplicateNicknameInTeamThrowsException() {
+            /* given */
+            final AuthPrincipal authPrincipal = new AuthPrincipal(2L);
+            final InviteAcceptRequest request = new InviteAcceptRequest("owner");
+
+            /* when */
+            assertThatCode(() -> inviteService.acceptInvite(authPrincipal, 1L, request))
+                    .isInstanceOf(NicknameDuplicateException.class);
+        }
     }
 }
