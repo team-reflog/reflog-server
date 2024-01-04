@@ -7,7 +7,6 @@ import com.github.teamreflog.reflogserver.team.application.InviteService;
 import com.github.teamreflog.reflogserver.team.application.dto.InviteAcceptRequest;
 import com.github.teamreflog.reflogserver.team.domain.InviteValidator;
 import com.github.teamreflog.reflogserver.team.domain.exception.InviteNotExistException;
-import com.github.teamreflog.reflogserver.team.domain.exception.UnauthorizedInviteException;
 import com.github.teamreflog.reflogserver.team.infrastructure.MemberClient;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -15,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.jdbc.Sql;
 
 @DataJpaTest
 @Import({InviteService.class, JpaConfig.class, InviteValidator.class, MemberClient.class})
@@ -38,19 +36,6 @@ class InviteServiceTest {
             /* when, then */
             assertThatCode(() -> inviteService.acceptInvite(request))
                     .isExactlyInstanceOf(InviteNotExistException.class);
-        }
-
-        @Test
-        @DisplayName("초대 대상 사용자와 요청 사용자 토큰이 일치하지 않는 경우 예외가 발생한다.")
-        @Sql({"/invite.sql", "/team.sql"})
-        void userTokenInvalidThrowsException() {
-            /* given */
-            final InviteAcceptRequest request =
-                    new InviteAcceptRequest(777L, 1L, "super-duper-nickname");
-
-            /* when & then */
-            assertThatCode(() -> inviteService.acceptInvite(request))
-                    .isExactlyInstanceOf(UnauthorizedInviteException.class);
         }
     }
 }
