@@ -29,6 +29,7 @@ public class TeamService {
         if (request.reflectionDays().isEmpty()) {
             throw new TeamReflectionDaysEmptyException();
         }
+
         if (teamRepository.existsByName(request.name())) {
             throw new TeamNameDuplicatedException();
         }

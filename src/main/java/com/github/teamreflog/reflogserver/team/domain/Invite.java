@@ -1,6 +1,7 @@
 package com.github.teamreflog.reflogserver.team.domain;
 
 import com.github.teamreflog.reflogserver.common.entity.BaseEntity;
+import com.github.teamreflog.reflogserver.team.domain.exception.UnauthorizedInviteException;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
@@ -43,5 +44,11 @@ public class Invite extends BaseEntity {
 
     public boolean isSameMember(final Long memberId) {
         return this.memberId.equals(memberId);
+    }
+
+    public void accept(final Long memberId) {
+        if (!this.isSameMember(memberId)) {
+            throw new UnauthorizedInviteException();
+        }
     }
 }

@@ -10,15 +10,13 @@ import com.github.teamreflog.reflogserver.team.application.dto.InviteCreateReque
 import com.github.teamreflog.reflogserver.team.application.dto.InviteQueryResponse;
 import com.github.teamreflog.reflogserver.team.domain.Crew;
 import com.github.teamreflog.reflogserver.team.domain.CrewRepository;
+import com.github.teamreflog.reflogserver.team.domain.Crews;
 import com.github.teamreflog.reflogserver.team.domain.Invite;
 import com.github.teamreflog.reflogserver.team.domain.InviteRepository;
 import com.github.teamreflog.reflogserver.team.domain.Team;
 import com.github.teamreflog.reflogserver.team.domain.TeamRepository;
-import com.github.teamreflog.reflogserver.team.domain.exception.CrewAlreadyJoinedException;
 import com.github.teamreflog.reflogserver.team.domain.exception.InviteNotExistException;
-import com.github.teamreflog.reflogserver.team.domain.exception.NicknameDuplicateException;
 import com.github.teamreflog.reflogserver.team.domain.exception.TeamNotExistException;
-import com.github.teamreflog.reflogserver.team.domain.exception.UnauthorizedInviteException;
 import com.github.teamreflog.reflogserver.topic.domain.exception.NotOwnerException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -65,22 +63,13 @@ public class InviteService {
             final InviteAcceptRequest request) {
         final Invite invite =
                 inviteRepository.findById(inviteId).orElseThrow(InviteNotExistException::new);
-        final List<Crew> crews = crewRepository.findAllByTeamId(invite.getTeam().getId());
-
-        if (!invite.isSameMember(authPrincipal.memberId())) {
-            throw new UnauthorizedInviteException();
-        }
-
-        if (crews.stream().anyMatch(crew -> crew.isSameNickname(request.nickname()))) {
-            throw new NicknameDuplicateException();
-        }
-
-        if (crews.stream().anyMatch(crew -> crew.isSameMemberId(invite.getMemberId()))) {
-            throw new CrewAlreadyJoinedException();
-        }
-
-        crewRepository.save(
-                Crew.of(invite.getTeam().getId(), invite.getMemberId(), request.nickname()));
+        invite.accept(authPrincipal.memberId());
         inviteRepository.delete(invite);
+
+        final Crews crews = Crews.from(crewRepository.findAllByTeamId(invite.getTeam().getId()));
+        final Crew crew =
+                Crew.of(invite.getTeam().getId(), invite.getMemberId(), request.nickname());
+        crews.add(crew);
+        crewRepository.save(crew);
     }
 }
