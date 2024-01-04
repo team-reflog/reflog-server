@@ -34,11 +34,11 @@ public class InviteService {
     private final CrewRepository crewRepository;
 
     @Transactional
-    public void inviteCrew(final AuthPrincipal authPrincipal, final InviteCreateRequest request) {
+    public void inviteCrew(final InviteCreateRequest request) {
         final Team team =
                 teamRepository.findById(request.teamId()).orElseThrow(TeamNotExistException::new);
 
-        if (!team.isOwner(authPrincipal.memberId())) {
+        if (!team.isOwner(request.memberId())) {
             throw new NotOwnerException();
         }
 

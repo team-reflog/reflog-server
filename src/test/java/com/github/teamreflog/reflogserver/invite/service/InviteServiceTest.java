@@ -2,7 +2,6 @@ package com.github.teamreflog.reflogserver.invite.service;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 
-import com.github.teamreflog.reflogserver.auth.application.dto.AuthPrincipal;
 import com.github.teamreflog.reflogserver.common.config.JpaConfig;
 import com.github.teamreflog.reflogserver.member.domain.exception.MemberNotExistException;
 import com.github.teamreflog.reflogserver.team.application.InviteService;
@@ -35,11 +34,10 @@ class InviteServiceTest {
         @Sql("/team.sql")
         void throwExceptionNotOwner() {
             /* given */
-            final AuthPrincipal notOwnerPrincipal = new AuthPrincipal(777L);
-            final InviteCreateRequest request = new InviteCreateRequest("crew@email.com", 1L);
+            final InviteCreateRequest request = new InviteCreateRequest(777L, "crew@email.com", 1L);
 
             /* when & then */
-            assertThatCode(() -> inviteService.inviteCrew(notOwnerPrincipal, request))
+            assertThatCode(() -> inviteService.inviteCrew(request))
                     .isExactlyInstanceOf(NotOwnerException.class);
         }
 
@@ -48,11 +46,11 @@ class InviteServiceTest {
         @Sql("/team.sql")
         void throwExceptionNotExistEmailMember() {
             /* given */
-            final AuthPrincipal ownerPrincipal = new AuthPrincipal(1L);
-            final InviteCreateRequest request = new InviteCreateRequest("notExist@email.com", 1L);
+            final InviteCreateRequest request =
+                    new InviteCreateRequest(1L, "notExist@email.com", 1L);
 
             /* when & then */
-            assertThatCode(() -> inviteService.inviteCrew(ownerPrincipal, request))
+            assertThatCode(() -> inviteService.inviteCrew(request))
                     .isExactlyInstanceOf(MemberNotExistException.class);
         }
     }

@@ -57,7 +57,7 @@ public class InviteAcceptanceTest extends AcceptanceTest {
                     .all()
                     .auth()
                     .oauth2(ownerAccessToken)
-                    .body(new InviteCreateRequest(memberEmail, teamId))
+                    .body(new InviteCreateRequest(null, memberEmail, teamId))
                     .contentType(APPLICATION_JSON_VALUE)
                     .when()
                     .post("/invites")
