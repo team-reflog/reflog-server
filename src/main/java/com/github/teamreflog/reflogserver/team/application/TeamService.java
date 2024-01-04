@@ -1,6 +1,5 @@
 package com.github.teamreflog.reflogserver.team.application;
 
-import com.github.teamreflog.reflogserver.auth.application.dto.AuthPrincipal;
 import com.github.teamreflog.reflogserver.team.application.dto.CrewQueryResponse;
 import com.github.teamreflog.reflogserver.team.application.dto.TeamCreateRequest;
 import com.github.teamreflog.reflogserver.team.application.dto.TeamQueryResponse;
@@ -25,7 +24,7 @@ public class TeamService {
     private final CrewRepository crewRepository;
 
     @Transactional
-    public Long createTeam(final AuthPrincipal authPrincipal, final TeamCreateRequest request) {
+    public Long createTeam(final TeamCreateRequest request) {
         if (request.reflectionDays().isEmpty()) {
             throw new TeamReflectionDaysEmptyException();
         }
@@ -34,8 +33,8 @@ public class TeamService {
             throw new TeamNameDuplicatedException();
         }
 
-        final Team team = teamRepository.save(request.toEntity(authPrincipal.memberId()));
-        crewRepository.save(Crew.of(team.getId(), authPrincipal.memberId(), request.nickname()));
+        final Team team = teamRepository.save(request.toEntity());
+        crewRepository.save(Crew.of(team.getId(), request.ownerId(), request.nickname()));
 
         return team.getId();
     }

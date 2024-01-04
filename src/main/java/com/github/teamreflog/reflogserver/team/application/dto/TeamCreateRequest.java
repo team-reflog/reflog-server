@@ -5,9 +5,18 @@ import java.time.DayOfWeek;
 import java.util.List;
 
 public record TeamCreateRequest(
-        String name, String description, String nickname, List<DayOfWeek> reflectionDays) {
+        Long ownerId,
+        String name,
+        String description,
+        String nickname,
+        List<DayOfWeek> reflectionDays) {
 
-    public Team toEntity(final Long ownerId) {
+    public Team toEntity() {
         return Team.of(name, description, ownerId, reflectionDays);
+    }
+
+    public TeamCreateRequest setMemberId(final Long memberId) {
+        return new TeamCreateRequest(
+                memberId, this.name, this.description, this.nickname, this.reflectionDays);
     }
 }

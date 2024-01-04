@@ -28,7 +28,7 @@ public class TeamController {
     public ResponseEntity<Void> createTeam(
             @Authenticated final AuthPrincipal authPrincipal,
             @RequestBody final TeamCreateRequest request) {
-        final Long teamId = teamService.createTeam(authPrincipal, request);
+        final Long teamId = teamService.createTeam(request.setMemberId(authPrincipal.memberId()));
 
         return ResponseEntity.created(URI.create("/teams/" + teamId)).build();
     }

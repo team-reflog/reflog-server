@@ -2,7 +2,6 @@ package com.github.teamreflog.reflogserver.team.application;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 
-import com.github.teamreflog.reflogserver.auth.application.dto.AuthPrincipal;
 import com.github.teamreflog.reflogserver.common.config.JpaConfig;
 import com.github.teamreflog.reflogserver.team.application.dto.TeamCreateRequest;
 import com.github.teamreflog.reflogserver.team.domain.exception.TeamNameDuplicatedException;
@@ -26,9 +25,9 @@ class TeamServiceTest {
     @DisplayName("팀을 생성한다.")
     void createTeam() {
         /* given */
-        final AuthPrincipal authPrincipal = new AuthPrincipal(1L);
         final TeamCreateRequest request =
                 new TeamCreateRequest(
+                        1L,
                         "antifragile",
                         "안티프래질 팀입니다.",
                         "owner",
@@ -39,17 +38,16 @@ class TeamServiceTest {
                                 DayOfWeek.SUNDAY));
 
         /* when & then */
-        assertThatCode(() -> teamService.createTeam(authPrincipal, request))
-                .doesNotThrowAnyException();
+        assertThatCode(() -> teamService.createTeam(request)).doesNotThrowAnyException();
     }
 
     @Test
     @DisplayName("팀 이름이 중복되면 예외가 발생한다.")
     void throwExceptionWithDuplicatedTeamName() {
         /* given */
-        final AuthPrincipal authPrincipal = new AuthPrincipal(1L);
         final TeamCreateRequest request =
                 new TeamCreateRequest(
+                        1L,
                         "antifragile",
                         "안티프래질 팀입니다.",
                         "owner",
@@ -60,10 +58,10 @@ class TeamServiceTest {
                                 DayOfWeek.SUNDAY));
 
         /* when */
-        teamService.createTeam(authPrincipal, request);
+        teamService.createTeam(request);
 
         /* then */
-        assertThatCode(() -> teamService.createTeam(authPrincipal, request))
+        assertThatCode(() -> teamService.createTeam(request))
                 .isExactlyInstanceOf(TeamNameDuplicatedException.class)
                 .hasMessage("이미 사용중인 팀 이름입니다.");
     }
@@ -72,12 +70,11 @@ class TeamServiceTest {
     @DisplayName("회고일이 비어있는 경우 예외가 발생한다.")
     void throwExceptionWithEmptyReflectionDays() {
         /* given */
-        final AuthPrincipal authPrincipal = new AuthPrincipal(1L);
         final TeamCreateRequest request =
-                new TeamCreateRequest("antifragile", "안티프래질 팀입니다.", "owner", List.of());
+                new TeamCreateRequest(1L, "antifragile", "안티프래질 팀입니다.", "owner", List.of());
 
         /* when & then */
-        assertThatCode(() -> teamService.createTeam(authPrincipal, request))
+        assertThatCode(() -> teamService.createTeam(request))
                 .isExactlyInstanceOf(TeamReflectionDaysEmptyException.class)
                 .hasMessage("회고일은 최소 하루 이상이어야 합니다.");
     }
