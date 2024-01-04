@@ -7,9 +7,8 @@ import com.github.teamreflog.reflogserver.team.domain.Crew;
 import com.github.teamreflog.reflogserver.team.domain.CrewRepository;
 import com.github.teamreflog.reflogserver.team.domain.Team;
 import com.github.teamreflog.reflogserver.team.domain.TeamRepository;
-import com.github.teamreflog.reflogserver.team.domain.exception.TeamNameDuplicatedException;
+import com.github.teamreflog.reflogserver.team.domain.TeamValidator;
 import com.github.teamreflog.reflogserver.team.domain.exception.TeamNotExistException;
-import com.github.teamreflog.reflogserver.team.domain.exception.TeamReflectionDaysEmptyException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,18 +21,13 @@ public class TeamService {
 
     private final TeamRepository teamRepository;
     private final CrewRepository crewRepository;
+    private final TeamValidator teamValidator;
 
     @Transactional
     public Long createTeam(final TeamCreateRequest request) {
-        if (request.reflectionDays().isEmpty()) {
-            throw new TeamReflectionDaysEmptyException();
-        }
-
-        if (teamRepository.existsByName(request.name())) {
-            throw new TeamNameDuplicatedException();
-        }
-
+        teamValidator.validateDuplicateTeamName(request.name());
         final Team team = teamRepository.save(request.toEntity());
+
         crewRepository.save(Crew.of(team.getId(), request.ownerId(), request.nickname()));
 
         return team.getId();

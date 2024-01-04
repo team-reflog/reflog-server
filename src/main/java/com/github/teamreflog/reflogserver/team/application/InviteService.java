@@ -13,7 +13,6 @@ import com.github.teamreflog.reflogserver.team.domain.MemberQueryService;
 import com.github.teamreflog.reflogserver.team.domain.Team;
 import com.github.teamreflog.reflogserver.team.domain.TeamRepository;
 import com.github.teamreflog.reflogserver.team.domain.exception.InviteNotExistException;
-import com.github.teamreflog.reflogserver.team.domain.exception.TeamNotExistException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +44,7 @@ public class InviteService {
             final Team team =
                     teamRepository
                             .findById(invite.getTeamId())
-                            .orElseThrow(TeamNotExistException::new);
+                            .orElseThrow(IllegalStateException::new);
 
             responses.add(InviteQueryResponse.fromEntity(invite, team));
         }

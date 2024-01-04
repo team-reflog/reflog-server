@@ -1,6 +1,7 @@
 package com.github.teamreflog.reflogserver.team.domain;
 
 import com.github.teamreflog.reflogserver.common.entity.BaseEntity;
+import com.github.teamreflog.reflogserver.team.domain.exception.TeamReflectionDaysEmptyException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -54,6 +55,10 @@ public class Team extends BaseEntity {
             final String description,
             final Long ownerId,
             final List<DayOfWeek> reflectionDays) {
+        if (reflectionDays.isEmpty()) {
+            throw new TeamReflectionDaysEmptyException();
+        }
+
         return new Team(name, description, ownerId, reflectionDays);
     }
 
