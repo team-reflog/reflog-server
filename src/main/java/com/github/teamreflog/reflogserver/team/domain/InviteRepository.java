@@ -9,4 +9,8 @@ public interface InviteRepository extends Repository<Invite, Long> {
     List<Invite> findAllByMemberId(Long memberId);
 
     Optional<Invite> findById(Long id);
+
+    void delete(Invite invite);
+
+    void save(Invite invite);
 }

@@ -26,7 +26,9 @@ public abstract class TeamFixture {
                         .all()
                         .auth()
                         .oauth2(accessToken)
-                        .body(new TeamCreateRequest(name, description, nickname, reflectionDays))
+                        .body(
+                                new TeamCreateRequest(
+                                        null, name, description, nickname, reflectionDays))
                         .contentType(APPLICATION_JSON_VALUE)
                         .when()
                         .post("/teams")

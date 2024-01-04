@@ -29,13 +29,13 @@ public class InviteController {
     public void inviteCrew(
             @Authenticated final AuthPrincipal authPrincipal,
             @RequestBody final InviteCreateRequest request) {
-        inviteService.inviteCrew(authPrincipal, request);
+        inviteService.inviteCrew(request.setMemberId(authPrincipal.memberId()));
     }
 
     @GetMapping
     public List<InviteQueryResponse> queryInvites(
             @Authenticated final AuthPrincipal authPrincipal) {
-        return inviteService.queryInvites(authPrincipal);
+        return inviteService.queryInvites(authPrincipal.memberId());
     }
 
     @PostMapping("/{id}/accept")
@@ -43,6 +43,7 @@ public class InviteController {
             @Authenticated final AuthPrincipal authPrincipal,
             @PathVariable("id") final Long inviteId,
             @RequestBody final InviteAcceptRequest request) {
-        inviteService.acceptInvite(authPrincipal, inviteId, request);
+        inviteService.acceptInvite(
+                request.setMemberId(authPrincipal.memberId()).setInviteId(inviteId));
     }
 }

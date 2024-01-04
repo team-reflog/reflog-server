@@ -23,14 +23,17 @@ public class Crew extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "team_id", nullable = false)
+    private Long teamId;
+
     @Column(name = "member_id", nullable = false)
     private Long memberId;
 
     @Column(name = "nickname", nullable = false)
     private String nickname;
 
-    public static Crew of(final Long memberId, final String nickname) {
-        return new Crew(null, memberId, nickname);
+    public static Crew of(final Long teamId, final Long memberId, final String nickname) {
+        return new Crew(null, teamId, memberId, nickname);
     }
 
     public boolean isSameNickname(final String nickname) {

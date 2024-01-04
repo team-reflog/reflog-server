@@ -1,15 +1,14 @@
 package com.github.teamreflog.reflogserver.team.application;
 
-import com.github.teamreflog.reflogserver.auth.application.dto.AuthPrincipal;
 import com.github.teamreflog.reflogserver.team.application.dto.CrewQueryResponse;
 import com.github.teamreflog.reflogserver.team.application.dto.TeamCreateRequest;
 import com.github.teamreflog.reflogserver.team.application.dto.TeamQueryResponse;
 import com.github.teamreflog.reflogserver.team.domain.Crew;
+import com.github.teamreflog.reflogserver.team.domain.CrewRepository;
 import com.github.teamreflog.reflogserver.team.domain.Team;
 import com.github.teamreflog.reflogserver.team.domain.TeamRepository;
-import com.github.teamreflog.reflogserver.team.domain.exception.TeamNameDuplicatedException;
+import com.github.teamreflog.reflogserver.team.domain.TeamValidator;
 import com.github.teamreflog.reflogserver.team.domain.exception.TeamNotExistException;
-import com.github.teamreflog.reflogserver.team.domain.exception.TeamReflectionDaysEmptyException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,20 +20,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class TeamService {
 
     private final TeamRepository teamRepository;
+    private final CrewRepository crewRepository;
+    private final TeamValidator teamValidator;
 
     @Transactional
-    public Long createTeam(final AuthPrincipal authPrincipal, final TeamCreateRequest request) {
-        if (request.reflectionDays().isEmpty()) {
-            throw new TeamReflectionDaysEmptyException();
-        }
-        if (teamRepository.existsByName(request.name())) {
-            throw new TeamNameDuplicatedException();
-        }
+    public Long createTeam(final TeamCreateRequest request) {
+        teamValidator.validateDuplicateTeamName(request.name());
+        final Team team = teamRepository.save(request.toEntity());
 
-        final Team team = request.toEntity(authPrincipal.memberId());
-        team.addCrew(Crew.of(authPrincipal.memberId(), request.nickname()));
+        crewRepository.save(Crew.of(team.getId(), request.ownerId(), request.nickname()));
 
-        return teamRepository.save(team).getId();
+        return team.getId();
     }
 
     public TeamQueryResponse queryTeam(final Long teamId) {
@@ -47,7 +43,7 @@ public class TeamService {
     public List<CrewQueryResponse> queryCrews(final Long teamId) {
         final Team team = teamRepository.findById(teamId).orElseThrow(TeamNotExistException::new);
 
-        return team.getCrews().stream()
+        return crewRepository.findAllByTeamId(teamId).stream()
                 .map(crew -> CrewQueryResponse.fromEntity(crew, team))
                 .toList();
     }

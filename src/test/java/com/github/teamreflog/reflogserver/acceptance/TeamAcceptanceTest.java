@@ -34,6 +34,7 @@ class TeamAcceptanceTest extends AcceptanceTest {
                 .oauth2(tokenResponse.accessToken())
                 .body(
                         new TeamCreateRequest(
+                                null,
                                 "antifragile",
                                 "안티프래질 팀입니다.",
                                 "owner",
