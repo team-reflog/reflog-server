@@ -8,11 +8,15 @@ import com.github.teamreflog.reflogserver.member.domain.exception.MemberNotExist
 import com.github.teamreflog.reflogserver.team.application.dto.InviteAcceptRequest;
 import com.github.teamreflog.reflogserver.team.application.dto.InviteCreateRequest;
 import com.github.teamreflog.reflogserver.team.application.dto.InviteQueryResponse;
+import com.github.teamreflog.reflogserver.team.domain.Crew;
+import com.github.teamreflog.reflogserver.team.domain.CrewRepository;
 import com.github.teamreflog.reflogserver.team.domain.Invite;
 import com.github.teamreflog.reflogserver.team.domain.InviteRepository;
 import com.github.teamreflog.reflogserver.team.domain.Team;
 import com.github.teamreflog.reflogserver.team.domain.TeamRepository;
+import com.github.teamreflog.reflogserver.team.domain.exception.CrewAlreadyJoinedException;
 import com.github.teamreflog.reflogserver.team.domain.exception.InviteNotExistException;
+import com.github.teamreflog.reflogserver.team.domain.exception.NicknameDuplicateException;
 import com.github.teamreflog.reflogserver.team.domain.exception.TeamNotExistException;
 import com.github.teamreflog.reflogserver.team.domain.exception.UnauthorizedInviteException;
 import com.github.teamreflog.reflogserver.topic.domain.exception.NotOwnerException;
@@ -29,6 +33,7 @@ public class InviteService {
     private final TeamRepository teamRepository;
     private final InviteRepository inviteRepository;
     private final MemberRepository memberRepository;
+    private final CrewRepository crewRepository;
 
     @Transactional
     public void inviteCrew(final AuthPrincipal authPrincipal, final InviteCreateRequest request) {
@@ -60,10 +65,22 @@ public class InviteService {
             final InviteAcceptRequest request) {
         final Invite invite =
                 inviteRepository.findById(inviteId).orElseThrow(InviteNotExistException::new);
+        final List<Crew> crews = crewRepository.findAllByTeamId(invite.getTeam().getId());
+
         if (!invite.isSameMember(authPrincipal.memberId())) {
             throw new UnauthorizedInviteException();
         }
 
-        invite.getTeam().processInvite(invite, request.nickname());
+        if (crews.stream().anyMatch(crew -> crew.isSameNickname(request.nickname()))) {
+            throw new NicknameDuplicateException();
+        }
+
+        if (crews.stream().anyMatch(crew -> crew.isSameMemberId(invite.getMemberId()))) {
+            throw new CrewAlreadyJoinedException();
+        }
+
+        crewRepository.save(
+                Crew.of(invite.getTeam().getId(), invite.getMemberId(), request.nickname()));
+        inviteRepository.delete(invite);
     }
 }
