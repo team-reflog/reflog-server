@@ -1,15 +1,12 @@
 package com.github.teamreflog.reflogserver.team.domain;
 
 import com.github.teamreflog.reflogserver.common.entity.BaseEntity;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
@@ -41,13 +38,6 @@ public class Team extends BaseEntity {
     @Column(name = "reflection_days", nullable = false)
     private List<DayOfWeek> reflectionDays = new ArrayList<>();
 
-    @OneToMany(
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.LAZY,
-            mappedBy = "team")
-    private final List<Invite> invites = new ArrayList<>();
-
     private Team(
             final String name,
             final String description,
@@ -69,9 +59,5 @@ public class Team extends BaseEntity {
 
     public boolean isOwner(final Long ownerId) {
         return this.ownerId.equals(ownerId);
-    }
-
-    public void addInvite(final Invite entity) {
-        invites.add(entity);
     }
 }

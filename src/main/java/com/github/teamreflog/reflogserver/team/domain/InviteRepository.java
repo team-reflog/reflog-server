@@ -11,4 +11,6 @@ public interface InviteRepository extends Repository<Invite, Long> {
     Optional<Invite> findById(Long id);
 
     void delete(Invite invite);
+
+    void save(Invite invite);
 }

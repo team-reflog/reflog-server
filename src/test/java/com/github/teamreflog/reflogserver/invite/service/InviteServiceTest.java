@@ -3,13 +3,12 @@ package com.github.teamreflog.reflogserver.invite.service;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 import com.github.teamreflog.reflogserver.common.config.JpaConfig;
-import com.github.teamreflog.reflogserver.member.domain.exception.MemberNotExistException;
 import com.github.teamreflog.reflogserver.team.application.InviteService;
 import com.github.teamreflog.reflogserver.team.application.dto.InviteAcceptRequest;
-import com.github.teamreflog.reflogserver.team.application.dto.InviteCreateRequest;
+import com.github.teamreflog.reflogserver.team.domain.InviteValidator;
 import com.github.teamreflog.reflogserver.team.domain.exception.InviteNotExistException;
 import com.github.teamreflog.reflogserver.team.domain.exception.UnauthorizedInviteException;
-import com.github.teamreflog.reflogserver.topic.domain.exception.NotOwnerException;
+import com.github.teamreflog.reflogserver.team.infrastructure.MemberClient;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -19,41 +18,11 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 
 @DataJpaTest
-@Import({InviteService.class, JpaConfig.class})
+@Import({InviteService.class, JpaConfig.class, InviteValidator.class, MemberClient.class})
 @DisplayName("통합 테스트: InviteService")
 class InviteServiceTest {
 
     @Autowired InviteService inviteService;
-
-    @Nested
-    @DisplayName("초대를 할 때")
-    class InviteCrewTest {
-
-        @Test
-        @DisplayName("팀장이 아닌 경우 예외가 발생한다.")
-        @Sql("/team.sql")
-        void throwExceptionNotOwner() {
-            /* given */
-            final InviteCreateRequest request = new InviteCreateRequest(777L, "crew@email.com", 1L);
-
-            /* when & then */
-            assertThatCode(() -> inviteService.inviteCrew(request))
-                    .isExactlyInstanceOf(NotOwnerException.class);
-        }
-
-        @Test
-        @DisplayName("이메일에 해당하는 회원이 존재하지 않는다면 예외가 발생한다.")
-        @Sql("/team.sql")
-        void throwExceptionNotExistEmailMember() {
-            /* given */
-            final InviteCreateRequest request =
-                    new InviteCreateRequest(1L, "notExist@email.com", 1L);
-
-            /* when & then */
-            assertThatCode(() -> inviteService.inviteCrew(request))
-                    .isExactlyInstanceOf(MemberNotExistException.class);
-        }
-    }
 
     @Nested
     @DisplayName("초대를 수락할 때")
