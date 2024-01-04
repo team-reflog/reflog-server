@@ -43,6 +43,7 @@ public class InviteController {
             @Authenticated final AuthPrincipal authPrincipal,
             @PathVariable("id") final Long inviteId,
             @RequestBody final InviteAcceptRequest request) {
-        inviteService.acceptInvite(authPrincipal, inviteId, request);
+        inviteService.acceptInvite(
+                request.setMemberId(authPrincipal.memberId()).setInviteId(inviteId));
     }
 }

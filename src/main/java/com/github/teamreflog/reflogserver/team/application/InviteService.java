@@ -57,13 +57,12 @@ public class InviteService {
     }
 
     @Transactional
-    public void acceptInvite(
-            final AuthPrincipal authPrincipal,
-            final Long inviteId,
-            final InviteAcceptRequest request) {
+    public void acceptInvite(final InviteAcceptRequest request) {
         final Invite invite =
-                inviteRepository.findById(inviteId).orElseThrow(InviteNotExistException::new);
-        invite.accept(authPrincipal.memberId());
+                inviteRepository
+                        .findById(request.inviteId())
+                        .orElseThrow(InviteNotExistException::new);
+        invite.accept(request.memberId());
         inviteRepository.delete(invite);
 
         final Crews crews = Crews.from(crewRepository.findAllByTeamId(invite.getTeam().getId()));

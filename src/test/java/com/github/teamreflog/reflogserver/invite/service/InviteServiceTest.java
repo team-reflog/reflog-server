@@ -65,11 +65,11 @@ class InviteServiceTest {
         @DisplayName("존재하지 않는 초대인 경우 예외가 발생한다.")
         void inviteNotExistThrowsException() {
             /* given */
-            final AuthPrincipal authPrincipal = new AuthPrincipal(2L);
-            final InviteAcceptRequest request = new InviteAcceptRequest("owner");
+            final InviteAcceptRequest request =
+                    new InviteAcceptRequest(2L, 4L, "super-duper-nickname");
 
             /* when, then */
-            assertThatCode(() -> inviteService.acceptInvite(authPrincipal, 4L, request))
+            assertThatCode(() -> inviteService.acceptInvite(request))
                     .isExactlyInstanceOf(InviteNotExistException.class);
         }
 
@@ -78,11 +78,11 @@ class InviteServiceTest {
         @Sql({"/invite.sql", "/team.sql"})
         void userTokenInvalidThrowsException() {
             /* given */
-            final AuthPrincipal authPrincipal = new AuthPrincipal(777L);
-            final InviteAcceptRequest request = new InviteAcceptRequest("super-duper-nickname");
+            final InviteAcceptRequest request =
+                    new InviteAcceptRequest(777L, 1L, "super-duper-nickname");
 
             /* when & then */
-            assertThatCode(() -> inviteService.acceptInvite(authPrincipal, 1L, request))
+            assertThatCode(() -> inviteService.acceptInvite(request))
                     .isExactlyInstanceOf(UnauthorizedInviteException.class);
         }
     }
