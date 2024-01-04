@@ -1,6 +1,5 @@
 package com.github.teamreflog.reflogserver.team.application;
 
-import com.github.teamreflog.reflogserver.auth.application.dto.AuthPrincipal;
 import com.github.teamreflog.reflogserver.member.domain.Member;
 import com.github.teamreflog.reflogserver.member.domain.MemberEmail;
 import com.github.teamreflog.reflogserver.member.domain.MemberRepository;
@@ -50,8 +49,8 @@ public class InviteService {
         team.addInvite(Invite.of(team, member.getId()));
     }
 
-    public List<InviteQueryResponse> queryInvites(final AuthPrincipal authPrincipal) {
-        return inviteRepository.findAllByMemberId(authPrincipal.memberId()).stream()
+    public List<InviteQueryResponse> queryInvites(final Long memberId) {
+        return inviteRepository.findAllByMemberId(memberId).stream()
                 .map(InviteQueryResponse::fromEntity)
                 .toList();
     }

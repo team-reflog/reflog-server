@@ -35,7 +35,7 @@ public class InviteController {
     @GetMapping
     public List<InviteQueryResponse> queryInvites(
             @Authenticated final AuthPrincipal authPrincipal) {
-        return inviteService.queryInvites(authPrincipal);
+        return inviteService.queryInvites(authPrincipal.memberId());
     }
 
     @PostMapping("/{id}/accept")
