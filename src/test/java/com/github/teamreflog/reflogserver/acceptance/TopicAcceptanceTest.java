@@ -61,7 +61,7 @@ class TopicAcceptanceTest extends AcceptanceTest {
                             .all()
                             .auth()
                             .oauth2(ownerAccessToken)
-                            .body(new TopicCreateRequest(teamId, "오늘 하루는 어땠나요?"))
+                            .body(new TopicCreateRequest(null, teamId, "오늘 하루는 어땠나요?"))
                             .contentType(APPLICATION_JSON_VALUE)
                             .when()
                             .post("/topics")

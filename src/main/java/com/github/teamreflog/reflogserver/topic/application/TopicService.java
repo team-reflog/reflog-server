@@ -27,8 +27,8 @@ public class TopicService {
     private final TopicCreateValidator topicCreateValidator;
 
     @Transactional
-    public Long createTopic(final Long ownerId, final TopicCreateRequest request) {
-        topicCreateValidator.validateTeamOwnerAuthorization(request.teamId(), ownerId);
+    public Long createTopic(final TopicCreateRequest request) {
+        topicCreateValidator.validateTeamOwnerAuthorization(request.teamId(), request.memberId());
 
         final Topic newTopic = request.toEntity();
         final Topics topics = Topics.from(topicRepository.findAllByTeamId(request.teamId()));
