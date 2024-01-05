@@ -14,6 +14,7 @@ import java.time.DayOfWeek;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +26,7 @@ public class TopicService {
     private final DayOfWeekProvider dayOfWeekProvider;
     private final TopicCreateValidator topicCreateValidator;
 
+    @Transactional
     public Long createTopic(final Long ownerId, final TopicCreateRequest request) {
         topicCreateValidator.validateTeamOwnerAuthorization(request.teamId(), ownerId);
 
@@ -35,12 +37,14 @@ public class TopicService {
         return topicRepository.save(newTopic).getId();
     }
 
+    @Transactional(readOnly = true)
     public List<TopicQueryResponse> queryTopics(final Long teamId) {
         return topicRepository.findAllByTeamId(teamId).stream()
                 .map(TopicQueryResponse::fromEntity)
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<TopicQueryResponse> queryTodayTopics(final TopicTodayQueryRequest request) {
         final DayOfWeek today = dayOfWeekProvider.getToday(request.timezone());
 
