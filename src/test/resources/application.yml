@@ -1,9 +1,0 @@
-spring:
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
-    show-sql: true
-    defer-datasource-initialization: true
-
-jwt:
-  secret: "6rOo66qp7Iud64u564ut65ah67O27J2066eb7J6I6rKg64uk"
