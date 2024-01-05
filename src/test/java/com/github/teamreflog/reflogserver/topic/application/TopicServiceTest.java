@@ -7,6 +7,8 @@ import com.github.teamreflog.reflogserver.common.config.JpaConfig;
 import com.github.teamreflog.reflogserver.topic.application.dto.TopicCreateRequest;
 import com.github.teamreflog.reflogserver.topic.domain.exception.NotOwnerException;
 import com.github.teamreflog.reflogserver.topic.domain.exception.TeamNotExistException;
+import com.github.teamreflog.reflogserver.topic.infrastructure.DateGeneratorImpl;
+import com.github.teamreflog.reflogserver.topic.infrastructure.DateProviderImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 
 @DataJpaTest
-@Import({TopicService.class, JpaConfig.class})
+@Import({TopicService.class, JpaConfig.class, DateProviderImpl.class, DateGeneratorImpl.class})
 @DisplayName("통합 테스트: TopicService")
 class TopicServiceTest {
 

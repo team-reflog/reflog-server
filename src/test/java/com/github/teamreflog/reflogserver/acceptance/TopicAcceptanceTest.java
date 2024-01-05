@@ -1,33 +1,46 @@
 package com.github.teamreflog.reflogserver.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.matchesRegex;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import com.github.teamreflog.reflogserver.acceptance.fixture.AuthFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.MemberFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.TeamFixture;
-import com.github.teamreflog.reflogserver.acceptance.fixture.TopicFixture;
 import com.github.teamreflog.reflogserver.topic.application.dto.TopicCreateRequest;
 import com.github.teamreflog.reflogserver.topic.application.dto.TopicQueryResponse;
+import com.github.teamreflog.reflogserver.topic.infrastructure.DateGenerator;
+import com.github.teamreflog.reflogserver.topic.infrastructure.DateProviderImpl;
 import io.restassured.RestAssured;
 import java.time.DayOfWeek;
 import java.util.List;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 
 @DisplayName("인수 테스트: 주제")
 class TopicAcceptanceTest extends AcceptanceTest {
 
-    @Test
-    @DisplayName("주제를 생성한다.")
-    void createTopic() {
-        MemberFixture.createMember("reflog@email.com", "reflog");
-        final String accessToken = AuthFixture.login("reflog@email.com", "reflog").accessToken();
-        final Long teamId =
+    @Autowired DateProviderImpl dateProvider;
+
+    @Autowired DateGenerator dateGenerator;
+
+    String ownerAccessToken;
+    Long teamId;
+
+    @Override
+    @BeforeEach
+    void setUp() {
+        super.setUp();
+
+        MemberFixture.createMember("owner@email.com", "owner");
+        ownerAccessToken = AuthFixture.login("owner@email.com", "owner").accessToken();
+        teamId =
                 TeamFixture.createTeam(
-                        accessToken,
+                        ownerAccessToken,
                         "antifragile",
                         "안티프래질 팀입니다.",
                         "owner",
@@ -36,70 +49,144 @@ class TopicAcceptanceTest extends AcceptanceTest {
                                 DayOfWeek.WEDNESDAY,
                                 DayOfWeek.FRIDAY,
                                 DayOfWeek.SUNDAY));
-
-        RestAssured.given()
-                .log()
-                .all()
-                .auth()
-                .oauth2(accessToken)
-                .body(new TopicCreateRequest(teamId, "오늘 하루는 어땠나요?"))
-                .contentType(APPLICATION_JSON_VALUE)
-                .when()
-                .post("/topics")
-                .then()
-                .log()
-                .all()
-                .statusCode(201)
-                .header(HttpHeaders.LOCATION, matchesRegex("/topics/[0-9]+"));
     }
 
-    @Test
-    @DisplayName("특정 팀의 주제 목록을 조회한다.")
-    void queryTopics() {
-        /* given */
-        MemberFixture.createMember("reflog@email.com", "reflog");
-        final String accessToken = AuthFixture.login("reflog@email.com", "reflog").accessToken();
-        final Long teamId =
-                TeamFixture.createTeam(
-                        accessToken,
-                        "antifragile",
-                        "안티프래질 팀입니다.",
-                        "owner",
-                        List.of(
-                                DayOfWeek.MONDAY,
-                                DayOfWeek.WEDNESDAY,
-                                DayOfWeek.FRIDAY,
-                                DayOfWeek.SUNDAY));
-        final List<Long> topicIds =
-                List.of(
-                        TopicFixture.createTopic(accessToken, teamId, "오늘 잠은 잘 잤나요??"),
-                        TopicFixture.createTopic(accessToken, teamId, "오늘 밥은 맛있었나요?"),
-                        TopicFixture.createTopic(accessToken, teamId, "오늘 하루는 어땠나요?"));
+    @Nested
+    @DisplayName("팀장이 주제를 생성하면")
+    class WhenOwnerCreateTopic {
 
-        /* when */
-        final List<TopicQueryResponse> responses =
-                RestAssured.given()
-                        .log()
-                        .all()
-                        .auth()
-                        .oauth2(accessToken)
-                        .when()
-                        .get("/topics?teamId=" + teamId)
-                        .then()
-                        .log()
-                        .all()
-                        .statusCode(200)
-                        .extract()
-                        .body()
-                        .jsonPath()
-                        .getList(".", TopicQueryResponse.class);
+        Long topicId;
 
-        /* then */
-        assertThat(responses)
-                .containsExactlyElementsOf(
-                        List.of(
-                                new TopicQueryResponse(topicIds.get(0), teamId, "오늘 잠은 잘 잤나요??"),
-                                new TopicQueryResponse(topicIds.get(1), teamId, "오늘 밥은 맛있었나요?"),
-                                new TopicQueryResponse(topicIds.get(2), teamId, "오늘 하루는 어땠나요?")));
+        @BeforeEach
+        void setUp() {
+            final String topicLocation =
+                    RestAssured.given()
+                            .log()
+                            .all()
+                            .auth()
+                            .oauth2(ownerAccessToken)
+                            .body(new TopicCreateRequest(teamId, "오늘 하루는 어땠나요?"))
+                            .contentType(APPLICATION_JSON_VALUE)
+                            .when()
+                            .post("/topics")
+                            .then()
+                            .log()
+                            .all()
+                            .statusCode(201)
+                            .extract()
+                            .header(HttpHeaders.LOCATION)
+                            .replace("/topics/", "");
+
+            topicId = Long.parseLong(topicLocation);
+        }
+
+        @Test
+        @DisplayName("생성된 주제 목록을 모두 조회할 수 있다.")
+        void queryTopics() {
+            /* when */
+            final List<TopicQueryResponse> responses =
+                    RestAssured.given()
+                            .log()
+                            .all()
+                            .auth()
+                            .oauth2(ownerAccessToken)
+                            .when()
+                            .get("/topics?teamId=" + teamId)
+                            .then()
+                            .log()
+                            .all()
+                            .statusCode(200)
+                            .extract()
+                            .body()
+                            .jsonPath()
+                            .getList(".", TopicQueryResponse.class);
+
+            /* then */
+            assertThat(responses)
+                    .containsExactly(new TopicQueryResponse(topicId, teamId, "오늘 하루는 어땠나요?"));
+        }
+
+        @Nested
+        @DisplayName("팀이 지정한 요일이면")
+        class IfTeamDesignatedDay {
+
+            @BeforeEach
+            void setUp() {
+                dateProvider.setDateGenerator(timezone -> DayOfWeek.MONDAY);
+            }
+
+            @AfterEach
+            void tearDown() {
+                dateProvider.setDateGenerator(dateGenerator);
+            }
+
+            @Test
+            @DisplayName("오늘의 주제를 조회할 수 있다.")
+            void queryTodayTopic() {
+                /* when */
+                final List<TopicQueryResponse> responses =
+                        RestAssured.given()
+                                .log()
+                                .all()
+                                .auth()
+                                .oauth2(ownerAccessToken)
+                                .header("Time-Zone", "Asia/Seoul")
+                                .when()
+                                .get("/topics/today")
+                                .then()
+                                .log()
+                                .all()
+                                .statusCode(200)
+                                .extract()
+                                .body()
+                                .jsonPath()
+                                .getList(".", TopicQueryResponse.class);
+
+                /* then */
+                assertThat(responses)
+                        .containsExactly(new TopicQueryResponse(topicId, teamId, "오늘 하루는 어땠나요?"));
+            }
+        }
+
+        @Nested
+        @DisplayName("팀이 지정한 요일이 아니면")
+        class IfNotTeamDesignatedDay {
+
+            @BeforeEach
+            void setUp() {
+                dateProvider.setDateGenerator(timezone -> DayOfWeek.TUESDAY);
+            }
+
+            @AfterEach
+            void tearDown() {
+                dateProvider.setDateGenerator(dateGenerator);
+            }
+
+            @Test
+            @DisplayName("오늘의 주제가 보이지 않는다.")
+            void queryTodayTopic() {
+                /* when */
+                final List<TopicQueryResponse> responses =
+                        RestAssured.given()
+                                .log()
+                                .all()
+                                .auth()
+                                .oauth2(ownerAccessToken)
+                                .header("Time-Zone", "Asia/Seoul")
+                                .when()
+                                .get("/topics/today")
+                                .then()
+                                .log()
+                                .all()
+                                .statusCode(200)
+                                .extract()
+                                .body()
+                                .jsonPath()
+                                .getList(".", TopicQueryResponse.class);
+
+                /* then */
+                assertThat(responses).isEmpty();
+            }
+        }
     }
 }

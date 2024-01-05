@@ -65,4 +65,8 @@ public class Team extends BaseEntity {
     public boolean isOwner(final Long ownerId) {
         return this.ownerId.equals(ownerId);
     }
+
+    public boolean containsReflectionDay(final DayOfWeek dayOfWeek) {
+        return reflectionDays.contains(dayOfWeek);
+    }
 }

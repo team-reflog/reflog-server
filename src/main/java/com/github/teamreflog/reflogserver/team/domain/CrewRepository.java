@@ -8,4 +8,6 @@ public interface CrewRepository extends Repository<Crew, Long> {
     List<Crew> findAllByTeamId(Long teamId);
 
     void save(Crew of);
+
+    List<Crew> findAllByMemberId(Long memberId);
 }
