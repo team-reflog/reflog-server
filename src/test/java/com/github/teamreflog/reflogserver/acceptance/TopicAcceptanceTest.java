@@ -8,7 +8,6 @@ import com.github.teamreflog.reflogserver.acceptance.fixture.MemberFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.TeamFixture;
 import com.github.teamreflog.reflogserver.topic.application.dto.TopicCreateRequest;
 import com.github.teamreflog.reflogserver.topic.application.dto.TopicQueryResponse;
-import com.github.teamreflog.reflogserver.topic.infrastructure.DateGenerator;
 import com.github.teamreflog.reflogserver.topic.infrastructure.DateProviderImpl;
 import io.restassured.RestAssured;
 import java.time.DayOfWeek;
@@ -25,9 +24,6 @@ import org.springframework.http.HttpHeaders;
 class TopicAcceptanceTest extends AcceptanceTest {
 
     @Autowired DateProviderImpl dateProvider;
-
-    @Autowired DateGenerator dateGenerator;
-
     String ownerAccessToken;
     Long teamId;
 
@@ -112,12 +108,12 @@ class TopicAcceptanceTest extends AcceptanceTest {
 
             @BeforeEach
             void setUp() {
-                dateProvider.setDateGenerator(timezone -> DayOfWeek.MONDAY);
+                dateProvider.setDayOfWeekGenerator(timezone -> DayOfWeek.MONDAY);
             }
 
             @AfterEach
             void tearDown() {
-                dateProvider.setDateGenerator(dateGenerator);
+                dateProvider.setDefaultDayOfWeekGenerator();
             }
 
             @Test
@@ -154,12 +150,12 @@ class TopicAcceptanceTest extends AcceptanceTest {
 
             @BeforeEach
             void setUp() {
-                dateProvider.setDateGenerator(timezone -> DayOfWeek.TUESDAY);
+                dateProvider.setDayOfWeekGenerator(timezone -> DayOfWeek.TUESDAY);
             }
 
             @AfterEach
             void tearDown() {
-                dateProvider.setDateGenerator(dateGenerator);
+                dateProvider.setDefaultDayOfWeekGenerator();
             }
 
             @Test
