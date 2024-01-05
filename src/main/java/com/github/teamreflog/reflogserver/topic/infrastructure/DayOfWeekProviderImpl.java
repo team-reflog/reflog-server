@@ -1,14 +1,15 @@
 package com.github.teamreflog.reflogserver.topic.infrastructure;
 
-import com.github.teamreflog.reflogserver.topic.domain.DateProvider;
+import com.github.teamreflog.reflogserver.topic.domain.DayOfWeekProvider;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import org.springframework.stereotype.Component;
 
+// TODO: class로 옮기기
 @Component
-public class DateProviderImpl implements DateProvider {
+public class DayOfWeekProviderImpl implements DayOfWeekProvider {
 
     private static final DayOfWeekGenerator DEFAULT_DAY_OF_WEEK_GENERATOR =
             timezone -> ZonedDateTime.of(LocalDateTime.now(), ZoneId.of(timezone)).getDayOfWeek();

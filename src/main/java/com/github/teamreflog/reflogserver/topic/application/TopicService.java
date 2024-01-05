@@ -6,7 +6,7 @@ import com.github.teamreflog.reflogserver.team.domain.TeamRepository;
 import com.github.teamreflog.reflogserver.topic.application.dto.TopicCreateRequest;
 import com.github.teamreflog.reflogserver.topic.application.dto.TopicQueryResponse;
 import com.github.teamreflog.reflogserver.topic.application.dto.TopicTodayQueryRequest;
-import com.github.teamreflog.reflogserver.topic.domain.DateProvider;
+import com.github.teamreflog.reflogserver.topic.domain.DayOfWeekProvider;
 import com.github.teamreflog.reflogserver.topic.domain.Topic;
 import com.github.teamreflog.reflogserver.topic.domain.TopicRepository;
 import com.github.teamreflog.reflogserver.topic.domain.Topics;
@@ -25,7 +25,7 @@ public class TopicService {
     private final TeamRepository teamRepository;
     private final TopicRepository topicRepository;
     private final CrewRepository crewRepository;
-    private final DateProvider dateProvider;
+    private final DayOfWeekProvider dayOfWeekProvider;
 
     public Long createTopic(final Long ownerId, final TopicCreateRequest request) {
         final Team team =
@@ -50,7 +50,7 @@ public class TopicService {
     // TODO: refactoring
     @Transactional(readOnly = true)
     public List<TopicQueryResponse> queryTodayTopics(final TopicTodayQueryRequest request) {
-        final DayOfWeek today = dateProvider.getToday(request.timezone());
+        final DayOfWeek today = dayOfWeekProvider.getToday(request.timezone());
 
         return crewRepository.findAllByMemberId(request.memberId()).stream()
                 .map(

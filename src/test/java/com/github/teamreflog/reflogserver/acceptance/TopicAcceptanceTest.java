@@ -8,7 +8,7 @@ import com.github.teamreflog.reflogserver.acceptance.fixture.MemberFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.TeamFixture;
 import com.github.teamreflog.reflogserver.topic.application.dto.TopicCreateRequest;
 import com.github.teamreflog.reflogserver.topic.application.dto.TopicQueryResponse;
-import com.github.teamreflog.reflogserver.topic.infrastructure.DateProviderImpl;
+import com.github.teamreflog.reflogserver.topic.infrastructure.DayOfWeekProviderImpl;
 import io.restassured.RestAssured;
 import java.time.DayOfWeek;
 import java.util.List;
@@ -23,7 +23,7 @@ import org.springframework.http.HttpHeaders;
 @DisplayName("인수 테스트: 주제")
 class TopicAcceptanceTest extends AcceptanceTest {
 
-    @Autowired DateProviderImpl dateProvider;
+    @Autowired DayOfWeekProviderImpl dateProvider;
     String ownerAccessToken;
     Long teamId;
 

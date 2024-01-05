@@ -1,13 +1,16 @@
 package com.github.teamreflog.reflogserver.acceptance;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 import com.github.teamreflog.reflogserver.acceptance.fixture.AuthFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.InviteFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.MemberFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.TeamFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.TopicFixture;
 import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionCreateRequest;
-import com.github.teamreflog.reflogserver.topic.application.dto.TopicQueryResponse;
-import com.github.teamreflog.reflogserver.topic.infrastructure.DateProviderImpl;
+import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionQueryResponse;
+import com.github.teamreflog.reflogserver.topic.infrastructure.DayOfWeekProviderImpl;
 import io.restassured.RestAssured;
 import java.time.DayOfWeek;
 import java.util.List;
@@ -15,16 +18,17 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 
+@DisplayName("인수 테스트: 회고")
 public class ReflectionAcceptanceTest extends AcceptanceTest {
 
-    @Autowired DateProviderImpl dateProvider;
+    @Autowired DayOfWeekProviderImpl dateProvider;
 
     String crewToken;
     Long topicId;
-    List<TopicQueryResponse> topicQueryResponses;
 
     @Override
     @BeforeEach
@@ -53,7 +57,7 @@ public class ReflectionAcceptanceTest extends AcceptanceTest {
         crewToken = AuthFixture.login("crew@email.com", "crew").accessToken();
 
         InviteFixture.inviteAndAccept(ownerToken, crewToken, "crew@email.com", teamId);
-        topicQueryResponses = TopicFixture.queryTodayTopics(crewToken);
+        TopicFixture.queryTodayTopics(crewToken);
     }
 
     @AfterEach
@@ -75,6 +79,7 @@ public class ReflectionAcceptanceTest extends AcceptanceTest {
                             .all()
                             .auth()
                             .oauth2(crewToken)
+                            .contentType(APPLICATION_JSON_VALUE)
                             .body(new ReflectionCreateRequest(null, topicId, "힘들었어요 🥲"))
                             .when()
                             .post("/reflections")
@@ -86,7 +91,33 @@ public class ReflectionAcceptanceTest extends AcceptanceTest {
                             .header(HttpHeaders.LOCATION)
                             .split("/")[2];
 
-            final Long reflectionId = Long.parseLong(reflectionLocation);
+            reflectionId = Long.parseLong(reflectionLocation);
+        }
+
+        @Test
+        @DisplayName("오늘 쓴 회고를 확인할 수 있다.")
+        void queryTodayReflections() {
+            final List<ReflectionQueryResponse> responses =
+                    RestAssured.given()
+                            .log()
+                            .all()
+                            .auth()
+                            .oauth2(crewToken)
+                            .header("Time-Zone", "Asia/Seoul")
+                            .when()
+                            .get("/reflections/today")
+                            .then()
+                            .log()
+                            .all()
+                            .statusCode(200)
+                            .extract()
+                            .body()
+                            .jsonPath()
+                            .getList(".", ReflectionQueryResponse.class);
+
+            assertThat(responses)
+                    .containsExactly(
+                            new ReflectionQueryResponse(reflectionId, topicId, "힘들었어요 🥲"));
         }
 
         // TODO: 회고를 작성한 주제가 Check 표시가 되었는지 확인
