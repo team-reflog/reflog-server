@@ -8,9 +8,11 @@ import com.github.teamreflog.reflogserver.acceptance.fixture.InviteFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.MemberFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.TeamFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.TopicFixture;
+import com.github.teamreflog.reflogserver.acceptance.helper.DayOfWeekProviderBeanChanger;
 import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionCreateRequest;
 import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionQueryResponse;
-import com.github.teamreflog.reflogserver.topic.infrastructure.DayOfWeekProviderImpl;
+import com.github.teamreflog.reflogserver.topic.application.TopicService;
+import com.github.teamreflog.reflogserver.topic.domain.DayOfWeekProvider;
 import io.restassured.RestAssured;
 import java.time.DayOfWeek;
 import java.util.List;
@@ -25,7 +27,7 @@ import org.springframework.http.HttpHeaders;
 @DisplayName("인수 테스트: 회고")
 public class ReflectionAcceptanceTest extends AcceptanceTest {
 
-    @Autowired DayOfWeekProviderImpl dateProvider;
+    @Autowired TopicService service;
 
     String crewToken;
     Long topicId;
@@ -36,7 +38,14 @@ public class ReflectionAcceptanceTest extends AcceptanceTest {
         super.setUp();
 
         /* 오늘은 월요일 */
-        dateProvider.setDayOfWeekGenerator(timezone -> DayOfWeek.MONDAY);
+        DayOfWeekProviderBeanChanger.changeDateProvider(
+                service,
+                new DayOfWeekProvider() {
+                    @Override
+                    public DayOfWeek getToday(final String timezone) {
+                        return DayOfWeek.MONDAY;
+                    }
+                });
 
         MemberFixture.createMember("owner@email.com", "owner");
         final String ownerToken = AuthFixture.login("owner@email.com", "owner").accessToken();
@@ -62,7 +71,7 @@ public class ReflectionAcceptanceTest extends AcceptanceTest {
 
     @AfterEach
     void tearDown() {
-        dateProvider.setDefaultDayOfWeekGenerator();
+        DayOfWeekProviderBeanChanger.changeDateProvider(service, new DayOfWeekProvider());
     }
 
     @Nested
