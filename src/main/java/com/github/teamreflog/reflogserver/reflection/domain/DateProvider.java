@@ -1,5 +1,6 @@
 package com.github.teamreflog.reflogserver.reflection.domain;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -9,11 +10,11 @@ import org.springframework.stereotype.Component;
 public class DateProvider {
 
     public DateRange getTodayRange(final String timezone) {
-        return getTodayRange(timezone, LocalDateTime.now());
+        return getTodayRange(Instant.now(), timezone);
     }
 
-    DateRange getTodayRange(final String timezone, final LocalDateTime now) {
-        final ZonedDateTime zonedDateTime = ZonedDateTime.of(now, ZoneId.of(timezone));
+    DateRange getTodayRange(final Instant utc, final String timezone) {
+        final ZonedDateTime zonedDateTime = utc.atZone(ZoneId.of(timezone));
 
         final LocalDateTime start =
                 ZonedDateTime.of(
