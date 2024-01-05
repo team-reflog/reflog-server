@@ -44,6 +44,7 @@ public class TopicController {
     public List<TopicQueryResponse> queryTodayTopics(
             @Authenticated final AuthPrincipal principal,
             @RequestHeader("Time-Zone") final String timezone) {
+
         return topicService.queryTodayTopics(
                 new TopicTodayQueryRequest(principal.memberId(), timezone));
     }
