@@ -26,6 +26,7 @@ jobs:
           java-version: '17'
           distribution: 'corretto'
 
+        # TODO
       - name: Copy dev yml file
         run: cp config/application-dev.yml src/main/resources/application-dev.yml
 
