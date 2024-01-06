@@ -2,7 +2,7 @@ name: Java CD with Code Deploy
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: [ "cd" ]
 
 env:
   AWS_REGION: ap-northeast-2
