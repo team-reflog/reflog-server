@@ -2,21 +2,19 @@ package com.github.teamreflog.reflogserver.invite.service;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 
-import com.github.teamreflog.reflogserver.common.config.JpaConfig;
 import com.github.teamreflog.reflogserver.team.application.InviteService;
 import com.github.teamreflog.reflogserver.team.application.dto.InviteAcceptRequest;
-import com.github.teamreflog.reflogserver.team.domain.InviteValidator;
 import com.github.teamreflog.reflogserver.team.domain.exception.InviteNotExistException;
-import com.github.teamreflog.reflogserver.team.infrastructure.MemberClient;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 
-@DataJpaTest
-@Import({InviteService.class, JpaConfig.class, InviteValidator.class, MemberClient.class})
+@Sql(scripts = "/clear.sql", executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
+@SpringBootTest
 @DisplayName("통합 테스트: InviteService")
 class InviteServiceTest {
 

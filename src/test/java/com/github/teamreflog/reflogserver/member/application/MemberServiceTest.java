@@ -3,8 +3,6 @@ package com.github.teamreflog.reflogserver.member.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
-import com.github.teamreflog.reflogserver.auth.config.AuthConfig;
-import com.github.teamreflog.reflogserver.common.config.JpaConfig;
 import com.github.teamreflog.reflogserver.member.application.dto.MemberJoinRequest;
 import com.github.teamreflog.reflogserver.member.domain.MemberEmail;
 import com.github.teamreflog.reflogserver.member.domain.MemberRepository;
@@ -12,11 +10,12 @@ import com.github.teamreflog.reflogserver.member.domain.exception.EmailDuplicate
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 
-@DataJpaTest
-@Import({MemberService.class, AuthConfig.class, JpaConfig.class})
+@Sql(scripts = "/clear.sql", executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
+@SpringBootTest
 @DisplayName("통합 테스트: MemberService")
 class MemberServiceTest {
 

@@ -3,19 +3,17 @@ package com.github.teamreflog.reflogserver.auth.application;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 import com.github.teamreflog.reflogserver.auth.application.dto.LoginRequest;
-import com.github.teamreflog.reflogserver.auth.config.AuthConfig;
 import com.github.teamreflog.reflogserver.auth.exception.EmailNotExistException;
 import com.github.teamreflog.reflogserver.auth.exception.PasswordNotMatchedException;
-import com.github.teamreflog.reflogserver.auth.infrastructure.JwtProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 
-@DataJpaTest
-@Import({AuthService.class, AuthConfig.class, JwtProvider.class})
+@Sql(scripts = "/clear.sql", executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
+@SpringBootTest
 @DisplayName("통합 테스트: AuthService")
 class AuthServiceTest {
 
