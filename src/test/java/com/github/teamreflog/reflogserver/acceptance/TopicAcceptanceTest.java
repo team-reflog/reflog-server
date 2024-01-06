@@ -6,9 +6,11 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import com.github.teamreflog.reflogserver.acceptance.fixture.AuthFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.MemberFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.TeamFixture;
+import com.github.teamreflog.reflogserver.acceptance.helper.DayOfWeekProviderBeanChanger;
+import com.github.teamreflog.reflogserver.topic.application.TopicService;
 import com.github.teamreflog.reflogserver.topic.application.dto.TopicCreateRequest;
 import com.github.teamreflog.reflogserver.topic.application.dto.TopicQueryResponse;
-import com.github.teamreflog.reflogserver.topic.infrastructure.DayOfWeekProviderImpl;
+import com.github.teamreflog.reflogserver.topic.domain.DayOfWeekProvider;
 import io.restassured.RestAssured;
 import java.time.DayOfWeek;
 import java.util.List;
@@ -23,9 +25,10 @@ import org.springframework.http.HttpHeaders;
 @DisplayName("인수 테스트: 주제")
 class TopicAcceptanceTest extends AcceptanceTest {
 
-    @Autowired DayOfWeekProviderImpl dateProvider;
     String ownerAccessToken;
     Long teamId;
+
+    @Autowired TopicService service;
 
     @Override
     @BeforeEach
@@ -108,12 +111,19 @@ class TopicAcceptanceTest extends AcceptanceTest {
 
             @BeforeEach
             void setUp() {
-                dateProvider.setDayOfWeekGenerator(timezone -> DayOfWeek.MONDAY);
+                DayOfWeekProviderBeanChanger.changeDateProvider(
+                        service,
+                        new DayOfWeekProvider() {
+                            @Override
+                            public DayOfWeek getToday(final String timezone) {
+                                return DayOfWeek.MONDAY;
+                            }
+                        });
             }
 
             @AfterEach
             void tearDown() {
-                dateProvider.setDefaultDayOfWeekGenerator();
+                DayOfWeekProviderBeanChanger.changeDateProvider(service, new DayOfWeekProvider());
             }
 
             @Test
@@ -150,12 +160,19 @@ class TopicAcceptanceTest extends AcceptanceTest {
 
             @BeforeEach
             void setUp() {
-                dateProvider.setDayOfWeekGenerator(timezone -> DayOfWeek.TUESDAY);
+                DayOfWeekProviderBeanChanger.changeDateProvider(
+                        service,
+                        new DayOfWeekProvider() {
+                            @Override
+                            public DayOfWeek getToday(final String timezone) {
+                                return DayOfWeek.TUESDAY;
+                            }
+                        });
             }
 
             @AfterEach
             void tearDown() {
-                dateProvider.setDefaultDayOfWeekGenerator();
+                DayOfWeekProviderBeanChanger.changeDateProvider(service, new DayOfWeekProvider());
             }
 
             @Test
