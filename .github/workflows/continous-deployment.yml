@@ -2,7 +2,7 @@ name: Java CD with Code Deploy
 
 on:
   push:
-    branches: [ "cd" ]
+    branches: [ "develop" ]
 
 env:
   AWS_REGION: ap-northeast-2
@@ -26,7 +26,6 @@ jobs:
           java-version: '17'
           distribution: 'corretto'
 
-        # TODO
       - name: Copy dev yml file
         run: cp config/application-dev.yml src/main/resources/application-dev.yml
 
