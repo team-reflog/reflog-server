@@ -4,8 +4,8 @@ import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionC
 import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionQueryResponse;
 import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionTodayQueryRequest;
 import com.github.teamreflog.reflogserver.reflection.domain.DateProvider;
-import com.github.teamreflog.reflogserver.reflection.domain.DateRange;
 import com.github.teamreflog.reflogserver.reflection.domain.ReflectionRepository;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,16 +20,17 @@ public class ReflectionService {
 
     @Transactional
     public Long createReflection(final ReflectionCreateRequest request) {
-        return reflectionRepository.save(request.toEntity()).getId();
+        final LocalDate localDate = dateProvider.getTodayOfZone(request.timezone());
+
+        return reflectionRepository.save(request.toEntity(localDate)).getId();
     }
 
     public List<ReflectionQueryResponse> queryTodayReflections(
             final ReflectionTodayQueryRequest request) {
-        final DateRange range = dateProvider.getTodayRange(request.timezone());
 
         return reflectionRepository
-                .findAllByMemberIdAndCreatedAtBetween(
-                        request.memberId(), range.start(), range.end())
+                .findAllByMemberIdAndReflectionDate(
+                        request.memberId(), dateProvider.getTodayOfZone(request.timezone()))
                 .stream()
                 .map(ReflectionQueryResponse::fromEntity)
                 .toList();

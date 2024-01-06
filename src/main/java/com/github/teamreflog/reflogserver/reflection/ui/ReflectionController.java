@@ -27,9 +27,11 @@ public class ReflectionController {
     @PostMapping
     public ResponseEntity<Void> createReflection(
             @Authenticated final AuthPrincipal authPrincipal,
-            @RequestBody final ReflectionCreateRequest request) {
+            @RequestBody final ReflectionCreateRequest request,
+            @RequestHeader("Time-Zone") final String timezone) {
         final Long reflectionId =
-                reflectionService.createReflection(request.setMemberId(authPrincipal.memberId()));
+                reflectionService.createReflection(
+                        request.setMemberId(authPrincipal.memberId()).setTimezone(timezone));
 
         return ResponseEntity.created(URI.create("/reflections/" + reflectionId)).build();
     }

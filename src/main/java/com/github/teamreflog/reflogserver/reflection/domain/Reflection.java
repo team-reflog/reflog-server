@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,7 +33,14 @@ public class Reflection extends BaseEntity {
     @Column(name = "content", columnDefinition = "TEXT", nullable = false, updatable = false)
     private String content;
 
-    public static Reflection of(final Long memberId, final Long topicId, final String content) {
-        return new Reflection(null, memberId, topicId, content);
+    @Column(name = "reflection_date", nullable = false, updatable = false)
+    private LocalDate reflectionDate;
+
+    public static Reflection of(
+            final Long memberId,
+            final Long topicId,
+            final String content,
+            final LocalDate reflectionDate) {
+        return new Reflection(null, memberId, topicId, content, reflectionDate);
     }
 }
