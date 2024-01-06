@@ -156,7 +156,7 @@ public class InviteAcceptanceTest extends AcceptanceTest {
 
             @Test
             @DisplayName("수락한 팀 멤버 조회할 시 회원이 조회된다.")
-            void queryTeamMebmer() {
+            void queryTeamMember() {
                 final List<CrewQueryResponse> crews =
                         RestAssured.given()
                                 .log()
@@ -175,6 +175,93 @@ public class InviteAcceptanceTest extends AcceptanceTest {
 
                 assertThat(crews).hasSize(2);
                 assertThat(crews).extracting("nickname").contains("owner", "user");
+            }
+        }
+
+        @Nested
+        @DisplayName("회원이 초대를 거절하면")
+        class rejectInviteTest {
+
+            Long inviteId;
+
+            @BeforeEach
+            void setUp() {
+                final List<InviteQueryResponse> result =
+                        RestAssured.given()
+                                .log()
+                                .all()
+                                .auth()
+                                .oauth2(memberAccessToken)
+                                .when()
+                                .get("/invites")
+                                .then()
+                                .log()
+                                .all()
+                                .statusCode(200)
+                                .extract()
+                                .jsonPath()
+                                .getList(".", InviteQueryResponse.class);
+
+                inviteId = result.get(0).id();
+
+                RestAssured.given()
+                        .log()
+                        .all()
+                        .auth()
+                        .oauth2(memberAccessToken)
+                        .contentType(APPLICATION_JSON_VALUE)
+                        .when()
+                        .delete("/invites/{inviteId}/reject", inviteId)
+                        .then()
+                        .log()
+                        .all()
+                        .statusCode(200)
+                        .extract();
+            }
+
+            @Test
+            @DisplayName("회원의 초대 목록에서 거절한 초대가 삭제된다.")
+            void deleteRejectedInvite() {
+                final List<InviteQueryResponse> result =
+                        RestAssured.given()
+                                .log()
+                                .all()
+                                .auth()
+                                .oauth2(memberAccessToken)
+                                .when()
+                                .get("/invites")
+                                .then()
+                                .log()
+                                .all()
+                                .statusCode(200)
+                                .extract()
+                                .jsonPath()
+                                .getList(".", InviteQueryResponse.class);
+
+                assertThat(result).isEmpty();
+            }
+
+            @Test
+            @DisplayName("거절한 팀 멤버 조회할 시 회원이 조회되지 않는다.")
+            void queryTeamMember() {
+                final List<CrewQueryResponse> crews =
+                        RestAssured.given()
+                                .log()
+                                .all()
+                                .auth()
+                                .oauth2(memberAccessToken)
+                                .when()
+                                .get("/teams/{teamId}/members", teamId)
+                                .then()
+                                .log()
+                                .all()
+                                .statusCode(200)
+                                .extract()
+                                .jsonPath()
+                                .getList(".", CrewQueryResponse.class);
+
+                assertThat(crews).hasSize(1);
+                assertThat(crews).extracting("nickname").contains("owner");
             }
         }
     }

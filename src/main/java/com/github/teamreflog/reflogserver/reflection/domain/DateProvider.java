@@ -1,31 +1,26 @@
 package com.github.teamreflog.reflogserver.reflection.domain;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
-@AllArgsConstructor
 public class DateProvider {
 
-    private static final NowGenerator DEFAULT_NOW_GENERATOR = LocalDateTime::now;
-
-    private final NowGenerator nowGenerator;
-
-    public DateProvider() {
-        this(DEFAULT_NOW_GENERATOR);
+    public DateRange getTodayRange(final String timezone) {
+        return getTodayRange(Instant.now(), timezone);
     }
 
-    public DateRange getTodayRange(final String timezone) {
-        final ZonedDateTime now = ZonedDateTime.of(nowGenerator.getNow(), ZoneId.of(timezone));
+    DateRange getTodayRange(final Instant utc, final String timezone) {
+        final ZonedDateTime zonedDateTime = utc.atZone(ZoneId.of(timezone));
 
         final LocalDateTime start =
                 ZonedDateTime.of(
-                                now.getYear(),
-                                now.getMonthValue(),
-                                now.getDayOfMonth(),
+                                zonedDateTime.getYear(),
+                                zonedDateTime.getMonthValue(),
+                                zonedDateTime.getDayOfMonth(),
                                 0,
                                 0,
                                 0,
@@ -34,9 +29,9 @@ public class DateProvider {
                         .toLocalDateTime();
         final LocalDateTime end =
                 ZonedDateTime.of(
-                                now.getYear(),
-                                now.getMonthValue(),
-                                now.getDayOfMonth(),
+                                zonedDateTime.getYear(),
+                                zonedDateTime.getMonthValue(),
+                                zonedDateTime.getDayOfMonth(),
                                 23,
                                 59,
                                 59,
@@ -45,10 +40,5 @@ public class DateProvider {
                         .toLocalDateTime();
 
         return new DateRange(start, end);
-    }
-
-    public interface NowGenerator {
-
-        LocalDateTime getNow();
     }
 }

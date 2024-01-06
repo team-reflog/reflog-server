@@ -1,8 +1,18 @@
 package com.github.teamreflog.reflogserver.topic.domain;
 
 import java.time.DayOfWeek;
+import java.time.Instant;
+import java.time.ZoneId;
+import org.springframework.stereotype.Component;
 
-public interface DayOfWeekProvider {
+@Component
+public class DayOfWeekProvider {
 
-    DayOfWeek getToday(String timezone);
+    public DayOfWeek getToday(final String timezone) {
+        return getDayOfWeek(Instant.now(), timezone);
+    }
+
+    DayOfWeek getDayOfWeek(final Instant utc, final String timezone) {
+        return utc.atZone(ZoneId.of(timezone)).getDayOfWeek();
+    }
 }

@@ -6,9 +6,11 @@ import com.github.teamreflog.reflogserver.team.application.InviteService;
 import com.github.teamreflog.reflogserver.team.application.dto.InviteAcceptRequest;
 import com.github.teamreflog.reflogserver.team.application.dto.InviteCreateRequest;
 import com.github.teamreflog.reflogserver.team.application.dto.InviteQueryResponse;
+import com.github.teamreflog.reflogserver.team.application.dto.InviteRejectRequest;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,5 +47,12 @@ public class InviteController {
             @RequestBody final InviteAcceptRequest request) {
         inviteService.acceptInvite(
                 request.setMemberId(authPrincipal.memberId()).setInviteId(inviteId));
+    }
+
+    @DeleteMapping("/{id}/reject")
+    public void rejectInvite(
+            @Authenticated final AuthPrincipal authPrincipal,
+            @PathVariable("id") final Long inviteId) {
+        inviteService.rejectInvite(new InviteRejectRequest(authPrincipal.memberId(), inviteId));
     }
 }

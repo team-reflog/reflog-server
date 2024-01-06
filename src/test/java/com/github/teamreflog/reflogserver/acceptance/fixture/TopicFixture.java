@@ -22,7 +22,7 @@ public abstract class TopicFixture {
                         .all()
                         .auth()
                         .oauth2(accessToken)
-                        .body(new TopicCreateRequest(teamId, content))
+                        .body(new TopicCreateRequest(null, teamId, content))
                         .contentType(APPLICATION_JSON_VALUE)
                         .when()
                         .post("/topics")
