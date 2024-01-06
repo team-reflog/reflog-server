@@ -31,7 +31,7 @@ jobs:
         run: cp config/application-dev.yml src/main/resources/application-dev.yml
 
       - name: Build with Gradle
-        run: ./gradlew build -x test
+        run: ./gradlew bootJar -x test
 
       - name: Make zip file
         run: zip -r ./$GITHUB_SHA.zip .
