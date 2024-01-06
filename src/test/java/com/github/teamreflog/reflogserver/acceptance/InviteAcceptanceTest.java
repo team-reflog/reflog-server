@@ -156,7 +156,7 @@ public class InviteAcceptanceTest extends AcceptanceTest {
 
             @Test
             @DisplayName("수락한 팀 멤버 조회할 시 회원이 조회된다.")
-            void queryTeamMebmer() {
+            void queryTeamMember() {
                 final List<CrewQueryResponse> crews =
                         RestAssured.given()
                                 .log()
@@ -177,5 +177,9 @@ public class InviteAcceptanceTest extends AcceptanceTest {
                 assertThat(crews).extracting("nickname").contains("owner", "user");
             }
         }
+
+        @Nested
+        @DisplayName("회원이 초대를 거절하면")
+        class rejectInviteTest {}
     }
 }
