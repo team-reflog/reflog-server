@@ -29,7 +29,7 @@ public class TopicController {
     public ResponseEntity<Void> createTopic(
             @Authenticated final AuthPrincipal principal,
             @RequestBody final TopicCreateRequest request) {
-        final Long topicId = topicService.createTopic(principal.memberId(), request);
+        final Long topicId = topicService.createTopic(request.setMemberId(principal.memberId()));
 
         return ResponseEntity.created(URI.create("/topics/" + topicId)).build();
     }
