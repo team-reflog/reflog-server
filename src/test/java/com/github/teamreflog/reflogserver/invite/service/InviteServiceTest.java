@@ -38,4 +38,21 @@ class InviteServiceTest {
                     .isExactlyInstanceOf(InviteNotExistException.class);
         }
     }
+
+    @Nested
+    @DisplayName("초대를 거절할 때")
+    class RejectInviteTest {
+
+        @Test
+        @DisplayName("존재하지 않는 초대인 경우 예외가 발생한다.")
+        void inviteNotExistThrowsException() {
+            /* given */
+            final InviteAcceptRequest request =
+                    new InviteAcceptRequest(2L, 4L, "super-duper-nickname");
+
+            /* when, then */
+            assertThatCode(() -> inviteService.acceptInvite(request))
+                    .isExactlyInstanceOf(InviteNotExistException.class);
+        }
+    }
 }

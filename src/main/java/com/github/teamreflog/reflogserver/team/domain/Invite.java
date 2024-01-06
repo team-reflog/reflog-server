@@ -43,4 +43,10 @@ public class Invite extends BaseEntity {
             throw new UnauthorizedInviteException();
         }
     }
+
+    public void reject(final Long memberId) {
+        if (!this.isSameMember(memberId)) {
+            throw new UnauthorizedInviteException();
+        }
+    }
 }
