@@ -26,6 +26,9 @@ jobs:
           java-version: '17'
           distribution: 'corretto'
 
+      - name: Copy dev yml file
+        run: cp config/application-dev.yml src/main/resources/application-dev.yml
+
       - name: Build with Gradle
         run: ./gradlew build -x test
 
