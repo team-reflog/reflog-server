@@ -21,4 +21,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(
                 new ErrorResponse("일시적인 에러가 발생했습니다. 잠시 후 다시 시도해주세요."), INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(ReflogIllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleReflogIllegalArgumentException(
+            final ReflogIllegalArgumentException e) {
+        log.info("Requested with rong argument", e);
+
+        return new ResponseEntity<>(new ErrorResponse(e.getMessage()), e.getStatus());
+    }
 }
