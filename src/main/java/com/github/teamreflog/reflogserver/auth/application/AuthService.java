@@ -2,7 +2,7 @@ package com.github.teamreflog.reflogserver.auth.application;
 
 import com.github.teamreflog.reflogserver.auth.application.dto.LoginRequest;
 import com.github.teamreflog.reflogserver.auth.application.dto.TokenResponse;
-import com.github.teamreflog.reflogserver.auth.infrastructure.JwtProvider;
+import com.github.teamreflog.reflogserver.auth.domain.JwtProvider;
 import com.github.teamreflog.reflogserver.common.exception.ReflogIllegalArgumentException;
 import com.github.teamreflog.reflogserver.member.domain.Member;
 import com.github.teamreflog.reflogserver.member.domain.MemberEmail;

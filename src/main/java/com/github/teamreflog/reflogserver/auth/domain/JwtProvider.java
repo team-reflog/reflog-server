@@ -1,4 +1,4 @@
-package com.github.teamreflog.reflogserver.auth.infrastructure;
+package com.github.teamreflog.reflogserver.auth.domain;
 
 import com.github.teamreflog.reflogserver.auth.exception.JwtInvalidException;
 import io.jsonwebtoken.Claims;
