@@ -1,5 +1,6 @@
 package com.github.teamreflog.reflogserver.team.application;
 
+import com.github.teamreflog.reflogserver.common.exception.ReflogIllegalArgumentException;
 import com.github.teamreflog.reflogserver.team.application.dto.CrewQueryResponse;
 import com.github.teamreflog.reflogserver.team.application.dto.TeamCreateRequest;
 import com.github.teamreflog.reflogserver.team.application.dto.TeamQueryResponse;
@@ -8,7 +9,6 @@ import com.github.teamreflog.reflogserver.team.domain.CrewRepository;
 import com.github.teamreflog.reflogserver.team.domain.Team;
 import com.github.teamreflog.reflogserver.team.domain.TeamRepository;
 import com.github.teamreflog.reflogserver.team.domain.TeamValidator;
-import com.github.teamreflog.reflogserver.team.domain.exception.TeamNotExistException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -37,11 +37,12 @@ public class TeamService {
         return teamRepository
                 .findById(teamId)
                 .map(TeamQueryResponse::fromEntity)
-                .orElseThrow(TeamNotExistException::new);
+                .orElseThrow(ReflogIllegalArgumentException::new);
     }
 
     public List<CrewQueryResponse> queryCrews(final Long teamId) {
-        final Team team = teamRepository.findById(teamId).orElseThrow(TeamNotExistException::new);
+        final Team team =
+                teamRepository.findById(teamId).orElseThrow(ReflogIllegalArgumentException::new);
 
         return crewRepository.findAllByTeamId(teamId).stream()
                 .map(crew -> CrewQueryResponse.fromEntity(crew, team))

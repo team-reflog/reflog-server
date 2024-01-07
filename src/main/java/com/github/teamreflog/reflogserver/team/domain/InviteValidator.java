@@ -1,6 +1,6 @@
 package com.github.teamreflog.reflogserver.team.domain;
 
-import com.github.teamreflog.reflogserver.team.domain.exception.TeamNotExistException;
+import com.github.teamreflog.reflogserver.common.exception.ReflogIllegalArgumentException;
 import com.github.teamreflog.reflogserver.topic.domain.exception.NotOwnerException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,8 @@ public class InviteValidator {
     private final TeamRepository teamRepository;
 
     public void validateTeamOwnerAuthorization(final Long memberId, final Long teamId) {
-        final Team team = teamRepository.findById(teamId).orElseThrow(TeamNotExistException::new);
+        final Team team =
+                teamRepository.findById(teamId).orElseThrow(ReflogIllegalArgumentException::new);
 
         validateTeamOwnerAuthorization(memberId, team);
     }
