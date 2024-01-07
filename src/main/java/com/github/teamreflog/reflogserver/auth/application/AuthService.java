@@ -2,9 +2,9 @@ package com.github.teamreflog.reflogserver.auth.application;
 
 import com.github.teamreflog.reflogserver.auth.application.dto.LoginRequest;
 import com.github.teamreflog.reflogserver.auth.application.dto.TokenResponse;
-import com.github.teamreflog.reflogserver.auth.exception.EmailNotExistException;
 import com.github.teamreflog.reflogserver.auth.exception.PasswordNotMatchedException;
 import com.github.teamreflog.reflogserver.auth.infrastructure.JwtProvider;
+import com.github.teamreflog.reflogserver.common.exception.ReflogIllegalArgumentException;
 import com.github.teamreflog.reflogserver.member.domain.Member;
 import com.github.teamreflog.reflogserver.member.domain.MemberEmail;
 import com.github.teamreflog.reflogserver.member.domain.MemberRepository;
@@ -25,7 +25,7 @@ public class AuthService {
         final Member member =
                 memberRepository
                         .findByEmail(new MemberEmail(request.email()))
-                        .orElseThrow(EmailNotExistException::new);
+                        .orElseThrow(ReflogIllegalArgumentException::new);
 
         if (!passwordEncoder.matches(request.password(), member.getPassword())) {
             throw new PasswordNotMatchedException();
