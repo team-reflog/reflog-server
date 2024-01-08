@@ -44,11 +44,8 @@ jobs:
       - name: Verify code format with Spotless
         run: ./gradlew spotlessCheck
 
-      - name: Test with Gradle and Jacoco
-        run: ./gradlew test jacocoTestReport
-
-      - name: Analyze with SonarCloud
+      - name: Test with Gradle and Jacoco then analyze with SonarCloud
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew sonar --info
+        run: ./gradlew test jacocoTestReport sonar --info
