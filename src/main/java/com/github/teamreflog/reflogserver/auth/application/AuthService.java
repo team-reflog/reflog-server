@@ -2,14 +2,13 @@ package com.github.teamreflog.reflogserver.auth.application;
 
 import com.github.teamreflog.reflogserver.auth.application.dto.LoginRequest;
 import com.github.teamreflog.reflogserver.auth.application.dto.TokenResponse;
-import com.github.teamreflog.reflogserver.auth.exception.EmailNotExistException;
-import com.github.teamreflog.reflogserver.auth.exception.PasswordNotMatchedException;
-import com.github.teamreflog.reflogserver.auth.infrastructure.JwtProvider;
+import com.github.teamreflog.reflogserver.auth.domain.JwtProvider;
+import com.github.teamreflog.reflogserver.common.exception.ReflogIllegalArgumentException;
 import com.github.teamreflog.reflogserver.member.domain.Member;
 import com.github.teamreflog.reflogserver.member.domain.MemberEmail;
 import com.github.teamreflog.reflogserver.member.domain.MemberRepository;
+import com.github.teamreflog.reflogserver.member.domain.MemberValidator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,19 +16,16 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     private final MemberRepository memberRepository;
-
+    private final MemberValidator memberValidator; // TODO: auth -> member 의존 중 -> 같은 도메인 영역이라는 힌트!
     private final JwtProvider jwtProvider;
-    private final PasswordEncoder passwordEncoder;
 
     public TokenResponse login(final LoginRequest request) {
         final Member member =
                 memberRepository
                         .findByEmail(new MemberEmail(request.email()))
-                        .orElseThrow(EmailNotExistException::new);
+                        .orElseThrow(ReflogIllegalArgumentException::new);
 
-        if (!passwordEncoder.matches(request.password(), member.getPassword())) {
-            throw new PasswordNotMatchedException();
-        }
+        memberValidator.validatePassword(member, request.password());
 
         return new TokenResponse(
                 jwtProvider.generateAccessToken(member.getId()),

@@ -1,5 +1,6 @@
 package com.github.teamreflog.reflogserver.auth.infrastructure;
 
+import com.github.teamreflog.reflogserver.auth.domain.JwtProvider;
 import com.github.teamreflog.reflogserver.auth.exception.JwtInvalidException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 @Component
-public class JwtProvider {
+public class JwtProviderImpl implements JwtProvider {
 
     private static final long ACCESS_TOKEN_EXPIRATION_MILLIS = TimeUnit.HOURS.toMillis(1);
     private static final long REFRESH_TOKEN_EXPIRATION_MILLIS = TimeUnit.DAYS.toMillis(7);
@@ -23,7 +24,7 @@ public class JwtProvider {
     private final JwtParser parser;
     private final JwtBuilder builder;
 
-    public JwtProvider(@Value("${jwt.secret}") final String secret) {
+    public JwtProviderImpl(@Value("${jwt.secret}") final String secret) {
         final SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
 
         this.builder = Jwts.builder().signWith(key);

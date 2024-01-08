@@ -4,9 +4,9 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.github.teamreflog.reflogserver.common.exception.ReflogIllegalArgumentException;
 import com.github.teamreflog.reflogserver.member.domain.MemberEmail;
 import com.github.teamreflog.reflogserver.member.domain.MemberRepository;
-import com.github.teamreflog.reflogserver.member.domain.exception.MemberNotExistException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,11 +27,11 @@ class MemberClientTest {
     @DisplayName("이메일에 해당하는 회원이 존재하지 않는다면 예외가 발생한다.")
     void throwExceptionNotExistEmailMember() {
         /* given */
-        String notExistEmail = "notExist@email.com";
+        final String notExistEmail = "notExist@email.com";
         when(memberRepository.existsByEmail(new MemberEmail(notExistEmail))).thenReturn(false);
 
         /* when & then */
         assertThatCode(() -> memberClient.getIdByEmail(notExistEmail))
-                .isExactlyInstanceOf(MemberNotExistException.class);
+                .isExactlyInstanceOf(ReflogIllegalArgumentException.class);
     }
 }

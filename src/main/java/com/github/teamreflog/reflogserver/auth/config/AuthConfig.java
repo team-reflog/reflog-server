@@ -1,15 +1,16 @@
 package com.github.teamreflog.reflogserver.auth.config;
 
+import com.github.teamreflog.reflogserver.auth.domain.MemberPasswordEncoder;
+import com.github.teamreflog.reflogserver.auth.infrastructure.MemberPasswordEncoderImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class AuthConfig {
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    public MemberPasswordEncoder passwordEncoder() {
+        return new MemberPasswordEncoderImpl(new BCryptPasswordEncoder());
     }
 }

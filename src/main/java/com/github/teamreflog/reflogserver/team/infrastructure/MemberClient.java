@@ -1,8 +1,8 @@
 package com.github.teamreflog.reflogserver.team.infrastructure;
 
+import com.github.teamreflog.reflogserver.common.exception.ReflogIllegalArgumentException;
 import com.github.teamreflog.reflogserver.member.domain.MemberEmail;
 import com.github.teamreflog.reflogserver.member.domain.MemberRepository;
-import com.github.teamreflog.reflogserver.member.domain.exception.MemberNotExistException;
 import com.github.teamreflog.reflogserver.team.domain.MemberQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ public class MemberClient implements MemberQueryService {
     public Long getIdByEmail(final String email) {
         return memberRepository
                 .findByEmail(new MemberEmail(email))
-                .orElseThrow(MemberNotExistException::new)
+                .orElseThrow(ReflogIllegalArgumentException::new)
                 .getId();
     }
 }
