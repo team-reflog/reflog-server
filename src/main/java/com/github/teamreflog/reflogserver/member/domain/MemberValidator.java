@@ -1,10 +1,10 @@
 package com.github.teamreflog.reflogserver.member.domain;
 
+import com.github.teamreflog.reflogserver.auth.domain.MemberPasswordEncoder;
 import com.github.teamreflog.reflogserver.auth.exception.PasswordNotMatchedException;
 import com.github.teamreflog.reflogserver.member.domain.exception.EmailDuplicatedException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class MemberValidator {
 
     private final MemberRepository memberRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final MemberPasswordEncoder passwordEncoder;
 
     public void validateEmailDuplicated(final String email) {
         validateEmailDuplicated(memberRepository.findByEmail(new MemberEmail(email)));
