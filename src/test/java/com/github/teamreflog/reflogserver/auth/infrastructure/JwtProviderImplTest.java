@@ -1,4 +1,4 @@
-package com.github.teamreflog.reflogserver.auth.domain;
+package com.github.teamreflog.reflogserver.auth.infrastructure;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
@@ -9,14 +9,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("단위 테스트: JwtProvider")
-class JwtProviderTest {
+@DisplayName("단위 테스트: JwtProviderImpl")
+class JwtProviderImplTest {
 
-    JwtProvider jwtProvider;
+    JwtProviderImpl jwtProviderImpl;
 
     @BeforeEach
     void setUp() {
-        jwtProvider = new JwtProvider("6rOo66qp7Iud64u564ut65ah67O27J2066eb7J6I6rKg64uk");
+        jwtProviderImpl = new JwtProviderImpl("6rOo66qp7Iud64u564ut65ah67O27J2066eb7J6I6rKg64uk");
     }
 
     @Test
@@ -26,8 +26,8 @@ class JwtProviderTest {
         final Long memberId = 777L;
 
         /* when */
-        final String token = jwtProvider.generateAccessToken(memberId);
-        final Long subject = jwtProvider.parseSubject(token);
+        final String token = jwtProviderImpl.generateAccessToken(memberId);
+        final Long subject = jwtProviderImpl.parseSubject(token);
 
         /* then */
         assertThat(subject).isEqualTo(memberId);
@@ -40,8 +40,8 @@ class JwtProviderTest {
         final Long memberId = 777L;
 
         /* when */
-        final String token = jwtProvider.generateRefreshToken(memberId);
-        final Long subject = jwtProvider.parseSubject(token);
+        final String token = jwtProviderImpl.generateRefreshToken(memberId);
+        final Long subject = jwtProviderImpl.parseSubject(token);
 
         /* then */
         assertThat(subject).isEqualTo(memberId);
@@ -55,7 +55,7 @@ class JwtProviderTest {
                 "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI3NzciLCJleHAiOjE3MDQwMTkwNTV9.Gq8SgcYQEPv_W7yKpzHbCQPDGx9YyllLDD6f8vo8p_Q";
 
         /* when & then */
-        assertThatCode(() -> jwtProvider.parseSubject(expired))
+        assertThatCode(() -> jwtProviderImpl.parseSubject(expired))
                 .isInstanceOf(JwtInvalidException.class)
                 .hasMessage("유효하지 않은 토큰입니다.");
     }
@@ -67,7 +67,7 @@ class JwtProviderTest {
         final String header = "Bearer ekfrEjrqhRdlaktdlTrpTek";
 
         /* when */
-        final String jwt = jwtProvider.extractToken(header);
+        final String jwt = jwtProviderImpl.extractToken(header);
 
         /* then */
         assertThat(jwt).isEqualTo("ekfrEjrqhRdlaktdlTrpTek");
@@ -79,11 +79,11 @@ class JwtProviderTest {
         /* given & when & then */
         assertAll(
                 () ->
-                        assertThatCode(() -> jwtProvider.extractToken(null))
+                        assertThatCode(() -> jwtProviderImpl.extractToken(null))
                                 .isInstanceOf(JwtInvalidException.class)
                                 .hasMessage("유효하지 않은 토큰입니다."),
                 () ->
-                        assertThatCode(() -> jwtProvider.extractToken(""))
+                        assertThatCode(() -> jwtProviderImpl.extractToken(""))
                                 .isInstanceOf(JwtInvalidException.class)
                                 .hasMessage("유효하지 않은 토큰입니다."));
     }
@@ -98,11 +98,11 @@ class JwtProviderTest {
         /* when */
         assertAll(
                 () ->
-                        assertThatCode(() -> jwtProvider.extractToken(noType))
+                        assertThatCode(() -> jwtProviderImpl.extractToken(noType))
                                 .isInstanceOf(JwtInvalidException.class)
                                 .hasMessage("유효하지 않은 토큰입니다."),
                 () ->
-                        assertThatCode(() -> jwtProvider.extractToken(wrongType))
+                        assertThatCode(() -> jwtProviderImpl.extractToken(wrongType))
                                 .isInstanceOf(JwtInvalidException.class)
                                 .hasMessage("유효하지 않은 토큰입니다."));
     }
