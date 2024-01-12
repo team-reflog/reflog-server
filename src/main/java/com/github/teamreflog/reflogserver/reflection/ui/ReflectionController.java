@@ -1,7 +1,7 @@
 package com.github.teamreflog.reflogserver.reflection.ui;
 
-import com.github.teamreflog.reflogserver.auth.annotation.Authenticated;
 import com.github.teamreflog.reflogserver.auth.application.dto.AuthPrincipal;
+import com.github.teamreflog.reflogserver.auth.domain.Authenticated;
 import com.github.teamreflog.reflogserver.auth.domain.Authorities;
 import com.github.teamreflog.reflogserver.auth.domain.MemberRole;
 import com.github.teamreflog.reflogserver.reflection.application.ReflectionService;
