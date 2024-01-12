@@ -5,8 +5,10 @@ import com.github.teamreflog.reflogserver.reflection.application.dto.CommentQuer
 import com.github.teamreflog.reflogserver.reflection.application.dto.CommentQueryResponse;
 import com.github.teamreflog.reflogserver.reflection.domain.Comment;
 import com.github.teamreflog.reflogserver.reflection.domain.CommentRepository;
+import com.github.teamreflog.reflogserver.reflection.domain.CommentValidator;
 import com.github.teamreflog.reflogserver.reflection.domain.CrewData;
 import com.github.teamreflog.reflogserver.reflection.domain.CrewQueryClient;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final CrewQueryClient crewQueryClient; // TODO: 의존 확인
+    private final CrewQueryClient crewQueryClient;
+    private final CommentValidator commentValidator;
 
     @Transactional
     public Long createComment(final CommentCreateRequest request) {
@@ -32,19 +35,15 @@ public class CommentService {
 
     @Transactional(readOnly = true)
     public List<CommentQueryResponse> queryComments(final CommentQueryRequest request) {
-        // TODO: 검증
+        commentValidator.validateAccess(request.memberId(), request.reflectionId());
 
-        final List<Comment> comments =
-                commentRepository.findAllByReflectionId(request.reflectionId());
+        final List<CommentQueryResponse> responses = new ArrayList<>();
+        for (final Comment comment :
+                commentRepository.findAllByReflectionId(request.reflectionId())) {
+            final CrewData crewData = crewQueryClient.getCrewDataByCrewId(comment.getCrewId());
+            responses.add(new CommentQueryResponse(crewData.nickname(), comment.getContent()));
+        }
 
-        return comments.stream()
-                .map(
-                        comment -> {
-                            final CrewData crewData =
-                                    crewQueryClient.getCrewDataByCrewId(comment.getCrewId());
-                            return new CommentQueryResponse(
-                                    crewData.nickname(), comment.getContent());
-                        })
-                .toList();
+        return responses;
     }
 }
