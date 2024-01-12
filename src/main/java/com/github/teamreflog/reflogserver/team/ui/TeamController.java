@@ -43,7 +43,7 @@ public class TeamController {
     }
 
     @Authorities(MemberRole.MEMBER)
-    @GetMapping("/{id}/members")
+    @GetMapping("/{id}/members") // TODO: crews로 바꾸고 CrewController로 빼기
     public List<CrewQueryResponse> queryCrews(@PathVariable("id") final Long teamId) {
         return teamService.queryCrews(teamId);
     }

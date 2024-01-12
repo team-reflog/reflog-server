@@ -18,6 +18,7 @@ public class ReflectionService {
     private final ReflectionRepository reflectionRepository;
     private final DateProvider dateProvider;
 
+    // TODO: 회고일에만 회고를 작성할 수 있다.
     @Transactional
     public Long createReflection(final ReflectionCreateRequest request) {
         final LocalDate localDate = dateProvider.getTodayOfZone(request.timezone());
