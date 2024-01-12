@@ -5,8 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.github.teamreflog.reflogserver.auth.domain.ClaimType;
-import com.github.teamreflog.reflogserver.auth.domain.Jwt;
-import com.github.teamreflog.reflogserver.auth.domain.JwtParser;
+import com.github.teamreflog.reflogserver.auth.domain.Token;
+import com.github.teamreflog.reflogserver.auth.domain.TokenParser;
 import com.github.teamreflog.reflogserver.auth.exception.JwtInvalidException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -17,17 +17,17 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 // TODO: 테스트 고민, 인프라 테스트는 구현체에 의존하여 테스트한다?
-@DisplayName("단위 테스트: JwtParserImpl")
-class JwtParserImplTest {
+@DisplayName("단위 테스트: TokenParserImpl")
+class TokenParserImplTest {
 
     static final SecretKey SECRET_KEY =
             Keys.hmacShaKeyFor("asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf".getBytes());
 
-    JwtParser parser;
+    TokenParser parser;
 
     @BeforeEach
     void setUp() {
-        parser = new JwtParserImpl(Jwts.parser().verifyWith(SECRET_KEY).build());
+        parser = new TokenParserImpl(Jwts.parser().verifyWith(SECRET_KEY).build());
     }
 
     @Nested
@@ -42,7 +42,7 @@ class JwtParserImplTest {
                     "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxIiwicm9sZSI6Ik1FTUJFUiIsImV4cCI6OTk5OTk5OTk5OX0.gBhNpEccOhdlwNRg3jcVGTw_fXLY2nKkObcp6P_tUqvbKQvGiLcfGpQzmP9rEPbo";
 
             /* when */
-            final Jwt jwt = parser.parse(token);
+            final Token jwt = parser.parse(token);
 
             /* then */
             assertAll(

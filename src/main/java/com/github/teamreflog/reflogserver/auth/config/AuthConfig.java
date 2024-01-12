@@ -1,11 +1,11 @@
 package com.github.teamreflog.reflogserver.auth.config;
 
-import com.github.teamreflog.reflogserver.auth.domain.JwtParser;
-import com.github.teamreflog.reflogserver.auth.domain.JwtProvider;
 import com.github.teamreflog.reflogserver.auth.domain.MemberPasswordEncoder;
-import com.github.teamreflog.reflogserver.auth.infrastructure.JwtParserImpl;
-import com.github.teamreflog.reflogserver.auth.infrastructure.JwtProviderImpl;
+import com.github.teamreflog.reflogserver.auth.domain.TokenParser;
+import com.github.teamreflog.reflogserver.auth.domain.TokenProvider;
 import com.github.teamreflog.reflogserver.auth.infrastructure.MemberPasswordEncoderImpl;
+import com.github.teamreflog.reflogserver.auth.infrastructure.TokenParserImpl;
+import com.github.teamreflog.reflogserver.auth.infrastructure.TokenProviderImpl;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,13 +22,14 @@ public class AuthConfig {
     }
 
     @Bean
-    public JwtProvider jwtProvider(@Value("${jwt.secret}") final String secret) {
-        return new JwtProviderImpl(Jwts.builder().signWith(Keys.hmacShaKeyFor(secret.getBytes())));
+    public TokenProvider jwtProvider(@Value("${jwt.secret}") final String secret) {
+        return new TokenProviderImpl(
+                Jwts.builder().signWith(Keys.hmacShaKeyFor(secret.getBytes())));
     }
 
     @Bean
-    public JwtParser jwtParser(@Value("${jwt.secret}") final String secret) {
-        return new JwtParserImpl(
+    public TokenParser jwtParser(@Value("${jwt.secret}") final String secret) {
+        return new TokenParserImpl(
                 Jwts.parser().verifyWith(Keys.hmacShaKeyFor(secret.getBytes())).build());
     }
 }

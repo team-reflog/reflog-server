@@ -1,8 +1,8 @@
 package com.github.teamreflog.reflogserver.auth.infrastructure;
 
 import com.github.teamreflog.reflogserver.auth.domain.ClaimType;
-import com.github.teamreflog.reflogserver.auth.domain.Jwt;
-import com.github.teamreflog.reflogserver.auth.domain.JwtParser;
+import com.github.teamreflog.reflogserver.auth.domain.Token;
+import com.github.teamreflog.reflogserver.auth.domain.TokenParser;
 import com.github.teamreflog.reflogserver.auth.exception.JwtInvalidException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -12,12 +12,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.util.StringUtils;
 
 @RequiredArgsConstructor
-public class JwtParserImpl implements JwtParser {
+public class TokenParserImpl implements TokenParser {
 
     private final io.jsonwebtoken.JwtParser parser;
 
     @Override
-    public Jwt parse(final String token) {
+    public Token parse(final String token) {
         if (!StringUtils.hasText(token)) {
             throw new JwtInvalidException();
         }
@@ -35,7 +35,7 @@ public class JwtParserImpl implements JwtParser {
                 claimByName.put(type, claims.get(claimName, String.class));
             }
 
-            return new Jwt(claimByName);
+            return new Token(claimByName);
         } catch (final JwtException e) {
             throw new JwtInvalidException(e);
         }

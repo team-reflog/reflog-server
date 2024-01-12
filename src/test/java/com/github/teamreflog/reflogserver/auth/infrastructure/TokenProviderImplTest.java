@@ -9,17 +9,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("단위 테스트: JwtProviderImpl")
-class JwtProviderImplTest {
+@DisplayName("단위 테스트: TokenProviderImpl")
+class TokenProviderImplTest {
 
     static final SecretKey SECRET_KEY =
             Keys.hmacShaKeyFor("asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf".getBytes());
 
-    JwtProviderImpl jwtProviderImpl;
+    TokenProviderImpl jwtProviderImpl;
 
     @BeforeEach
     void setUp() {
-        jwtProviderImpl = new JwtProviderImpl(Jwts.builder().signWith(SECRET_KEY));
+        jwtProviderImpl = new TokenProviderImpl(Jwts.builder().signWith(SECRET_KEY));
     }
 
     @Test

@@ -5,11 +5,11 @@ import static org.springframework.http.HttpMethod.OPTIONS;
 import com.github.teamreflog.reflogserver.auth.application.dto.AuthPrincipal;
 import com.github.teamreflog.reflogserver.auth.domain.Authorities;
 import com.github.teamreflog.reflogserver.auth.domain.ClaimType;
-import com.github.teamreflog.reflogserver.auth.domain.Jwt;
 import com.github.teamreflog.reflogserver.auth.domain.JwtExtractor;
-import com.github.teamreflog.reflogserver.auth.domain.JwtParser;
-import com.github.teamreflog.reflogserver.auth.domain.JwtProvider;
 import com.github.teamreflog.reflogserver.auth.domain.MemberRole;
+import com.github.teamreflog.reflogserver.auth.domain.Token;
+import com.github.teamreflog.reflogserver.auth.domain.TokenParser;
+import com.github.teamreflog.reflogserver.auth.domain.TokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +24,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
     private static final String AUTH_PRINCIPAL = "authPrincipal";
 
-    private final JwtProvider jwtProvider;
-    private final JwtParser jwtParser;
+    private final TokenProvider tokenProvider;
+    private final TokenParser tokenParser;
     private final JwtExtractor jwtExtractor;
 
     // TODO: Refactor and test
@@ -47,7 +47,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         }
 
         final String token = jwtExtractor.extract(request.getHeader(HttpHeaders.AUTHORIZATION));
-        final Jwt jwt = jwtParser.parse(token);
+        final Token jwt = tokenParser.parse(token);
 
         for (final MemberRole role : authorities.roles()) {
             if (jwt.hasRole(role.name())) {
