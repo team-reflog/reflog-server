@@ -1,6 +1,7 @@
 package com.github.teamreflog.reflogserver.team.domain;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.repository.Repository;
 
 public interface CrewRepository extends Repository<Crew, Long> {
@@ -10,4 +11,8 @@ public interface CrewRepository extends Repository<Crew, Long> {
     void save(Crew of);
 
     List<Crew> findAllByMemberId(Long memberId);
+
+    Optional<Crew> findById(Long crewId);
+
+    Optional<Crew> findByMemberIdAndTeamId(Long memberId, Long teamId);
 }

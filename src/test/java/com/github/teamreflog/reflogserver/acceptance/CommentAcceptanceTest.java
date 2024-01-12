@@ -1,11 +1,16 @@
 package com.github.teamreflog.reflogserver.acceptance;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import com.github.teamreflog.reflogserver.acceptance.fixture.AuthFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.InviteFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.MemberFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.ReflectionFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.TeamFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.TopicFixture;
+import com.github.teamreflog.reflogserver.reflection.application.dto.CommentCreateRequest;
+import com.github.teamreflog.reflogserver.reflection.application.dto.CommentQueryResponse;
 import io.restassured.RestAssured;
 import java.time.DayOfWeek;
 import java.util.List;
@@ -13,6 +18,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
 
 @DisplayName("인수 테스트: 댓글")
 public class CommentAcceptanceTest extends AcceptanceTest {
@@ -54,16 +60,48 @@ public class CommentAcceptanceTest extends AcceptanceTest {
         @BeforeEach
         void setUp() {
             RestAssured.given()
+                    .log()
+                    .all()
                     .auth()
                     .oauth2(crewToken)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(new CommentCreateRequest(null, null, "오늘 하루도 수고하셨습니다."))
                     .when()
                     .post("/reflections/{reflectionId}/comments", reflectionId)
                     .then()
+                    .log()
+                    .all()
                     .statusCode(201);
         }
 
         @Test
         @DisplayName("댓글을 조회할 수 있다.")
-        void test() {}
+        void queryComment() {
+            final List<CommentQueryResponse> commentQueryResponses =
+                    RestAssured.given()
+                            .log()
+                            .all()
+                            .auth()
+                            .oauth2(crewToken)
+                            .when()
+                            .get("/reflections/{reflectionId}/comments", reflectionId)
+                            .then()
+                            .log()
+                            .all()
+                            .statusCode(200)
+                            .extract()
+                            .body()
+                            .jsonPath()
+                            .getList(".", CommentQueryResponse.class);
+
+            assertAll(
+                    () -> assertThat(commentQueryResponses).hasSize(1),
+                    () ->
+                            assertThat(commentQueryResponses.get(0).nickname())
+                                    .isEqualTo("super-duper-nickname"),
+                    () ->
+                            assertThat(commentQueryResponses.get(0).content())
+                                    .isEqualTo("오늘 하루도 수고하셨습니다."));
+        }
     }
 }
