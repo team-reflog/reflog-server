@@ -14,7 +14,7 @@ class JwtTest {
     @DisplayName("토큰에서 클레임을 추출한다.")
     void getClaim() {
         /* given */
-        final Map<ClaimType, Object> claims =
+        final Map<ClaimType, String> claims =
                 Map.of(
                         ClaimType.MEMBER_ID, "1",
                         ClaimType.ROLE, "MEMBER");

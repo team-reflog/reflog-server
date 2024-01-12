@@ -25,14 +25,14 @@ public class JwtParserImpl implements JwtParser {
         try {
             final Claims claims = (Claims) parser.parse(token).getPayload();
 
-            final Map<ClaimType, Object> claimByName = new EnumMap<>(ClaimType.class);
+            final Map<ClaimType, String> claimByName = new EnumMap<>(ClaimType.class);
             for (final ClaimType type : ClaimType.values()) {
                 final String claimName = type.getClaimName();
                 if (!claims.containsKey(claimName)) {
                     throw new JwtInvalidException();
                 }
 
-                claimByName.put(type, claims.get(claimName));
+                claimByName.put(type, claims.get(claimName, String.class));
             }
 
             return new Jwt(claimByName);
