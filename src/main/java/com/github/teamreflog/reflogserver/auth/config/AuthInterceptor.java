@@ -2,6 +2,7 @@ package com.github.teamreflog.reflogserver.auth.config;
 
 import static org.springframework.http.HttpMethod.OPTIONS;
 
+import com.github.teamreflog.reflogserver.auth.application.dto.AuthPrincipal;
 import com.github.teamreflog.reflogserver.auth.domain.Authorities;
 import com.github.teamreflog.reflogserver.auth.domain.Token;
 import com.github.teamreflog.reflogserver.auth.domain.TokenParser;
@@ -45,7 +46,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         if (Arrays.stream(authorities.roles()).noneMatch(token::hasRole)) {
             throw new JwtInvalidException();
         }
-        request.setAttribute(AUTH_PRINCIPAL, token.getSubject());
+        request.setAttribute(AUTH_PRINCIPAL, new AuthPrincipal(token.getSubject()));
 
         return true;
     }
