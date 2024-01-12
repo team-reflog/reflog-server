@@ -8,14 +8,14 @@ import com.github.teamreflog.reflogserver.reflection.application.CommentService;
 import com.github.teamreflog.reflogserver.reflection.application.dto.CommentCreateRequest;
 import com.github.teamreflog.reflogserver.reflection.application.dto.CommentQueryRequest;
 import com.github.teamreflog.reflogserver.reflection.application.dto.CommentQueryResponse;
+import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -26,15 +26,16 @@ public class CommentController {
 
     @Authorities(MemberRole.MEMBER)
     @PostMapping("/reflections/{reflectionId}/comments")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void createComment(
+    public ResponseEntity<Void> createComment(
             @Authenticated final AuthPrincipal authPrincipal,
             @PathVariable("reflectionId") final Long reflectionId,
             @RequestBody final CommentCreateRequest request) {
-        commentService.createComment(
-                request.setMemberId(authPrincipal.memberId()).setReflectionId(reflectionId));
+        final Long commentId =
+                commentService.createComment(
+                        request.setMemberId(authPrincipal.memberId())
+                                .setReflectionId(reflectionId));
 
-        // TODO: Location header
+        return ResponseEntity.created(URI.create("/comments/" + commentId)).build();
     }
 
     @Authorities(MemberRole.MEMBER)

@@ -1,6 +1,7 @@
 package com.github.teamreflog.reflogserver.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.matchesRegex;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.github.teamreflog.reflogserver.acceptance.fixture.AuthFixture;
@@ -18,6 +19,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 @DisplayName("인수 테스트: 댓글")
@@ -71,7 +73,8 @@ public class CommentAcceptanceTest extends AcceptanceTest {
                     .then()
                     .log()
                     .all()
-                    .statusCode(201);
+                    .statusCode(201)
+                    .header(HttpHeaders.LOCATION, matchesRegex("/comments/[0-9]+"));
         }
 
         @Test
