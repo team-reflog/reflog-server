@@ -2,9 +2,9 @@ package com.github.teamreflog.reflogserver.auth.domain;
 
 import java.util.Map;
 
-public record Jwt(Map<String, Object> claims) {
+public record Jwt(Map<ClaimType, Object> claimByName) {
 
     public String getClaim(final ClaimType type) {
-        return String.valueOf(claims.get(type.getClaimName()));
+        return String.valueOf(claimByName.get(type));
     }
 }

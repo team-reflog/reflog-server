@@ -14,10 +14,10 @@ class JwtTest {
     @DisplayName("토큰에서 클레임을 추출한다.")
     void getClaim() {
         /* given */
-        final Map<String, Object> claims =
+        final Map<ClaimType, Object> claims =
                 Map.of(
-                        "sub", "1",
-                        "role", "MEMBER");
+                        ClaimType.MEMBER_ID, "1",
+                        ClaimType.ROLE, "MEMBER");
         final Jwt jwt = new Jwt(claims);
 
         /* when */

@@ -6,7 +6,7 @@ import com.github.teamreflog.reflogserver.auth.domain.JwtParser;
 import com.github.teamreflog.reflogserver.auth.exception.JwtInvalidException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.StringUtils;
@@ -25,13 +25,14 @@ public class JwtParserImpl implements JwtParser {
         try {
             final Claims claims = (Claims) parser.parse(token).getPayload();
 
-            final Map<String, Object> claimByName = new HashMap<>();
+            final Map<ClaimType, Object> claimByName = new EnumMap<>(ClaimType.class);
             for (final ClaimType type : ClaimType.values()) {
-                if (!claims.containsKey(type.getClaimName())) {
+                final String claimName = type.getClaimName();
+                if (!claims.containsKey(claimName)) {
                     throw new JwtInvalidException();
                 }
 
-                claimByName.put(type.getClaimName(), claims.get(type.getClaimName()));
+                claimByName.put(type, claims.get(claimName));
             }
 
             return new Jwt(claimByName);
