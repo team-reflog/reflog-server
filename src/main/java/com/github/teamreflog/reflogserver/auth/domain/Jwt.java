@@ -5,7 +5,7 @@ import java.util.Map;
 public record Jwt(Map<ClaimType, String> claimByName) {
 
     public String getClaim(final ClaimType type) {
-        return String.valueOf(claimByName.get(type));
+        return claimByName.get(type);
     }
 
     public boolean hasRole(final String name) {
