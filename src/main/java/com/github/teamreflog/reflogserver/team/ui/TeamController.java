@@ -2,6 +2,8 @@ package com.github.teamreflog.reflogserver.team.ui;
 
 import com.github.teamreflog.reflogserver.auth.annotation.Authenticated;
 import com.github.teamreflog.reflogserver.auth.application.dto.AuthPrincipal;
+import com.github.teamreflog.reflogserver.auth.domain.Authorities;
+import com.github.teamreflog.reflogserver.auth.domain.MemberRole;
 import com.github.teamreflog.reflogserver.team.application.TeamService;
 import com.github.teamreflog.reflogserver.team.application.dto.CrewQueryResponse;
 import com.github.teamreflog.reflogserver.team.application.dto.TeamCreateRequest;
@@ -24,6 +26,7 @@ public class TeamController {
 
     private final TeamService teamService;
 
+    @Authorities(MemberRole.MEMBER)
     @PostMapping
     public ResponseEntity<Void> createTeam(
             @Authenticated final AuthPrincipal authPrincipal,
@@ -33,11 +36,13 @@ public class TeamController {
         return ResponseEntity.created(URI.create("/teams/" + teamId)).build();
     }
 
+    @Authorities(MemberRole.MEMBER)
     @GetMapping("/{id}")
     public TeamQueryResponse queryTeam(@PathVariable("id") final Long teamId) {
         return teamService.queryTeam(teamId);
     }
 
+    @Authorities(MemberRole.MEMBER)
     @GetMapping("/{id}/members")
     public List<CrewQueryResponse> queryCrews(@PathVariable("id") final Long teamId) {
         return teamService.queryCrews(teamId);

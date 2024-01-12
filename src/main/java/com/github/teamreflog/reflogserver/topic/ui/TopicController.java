@@ -2,6 +2,8 @@ package com.github.teamreflog.reflogserver.topic.ui;
 
 import com.github.teamreflog.reflogserver.auth.annotation.Authenticated;
 import com.github.teamreflog.reflogserver.auth.application.dto.AuthPrincipal;
+import com.github.teamreflog.reflogserver.auth.domain.Authorities;
+import com.github.teamreflog.reflogserver.auth.domain.MemberRole;
 import com.github.teamreflog.reflogserver.topic.application.TopicService;
 import com.github.teamreflog.reflogserver.topic.application.dto.TopicCreateRequest;
 import com.github.teamreflog.reflogserver.topic.application.dto.TopicQueryResponse;
@@ -25,6 +27,7 @@ public class TopicController {
 
     private final TopicService topicService;
 
+    @Authorities(MemberRole.MEMBER)
     @PostMapping
     public ResponseEntity<Void> createTopic(
             @Authenticated final AuthPrincipal principal,
@@ -35,11 +38,13 @@ public class TopicController {
     }
 
     // TODO: 팀에 속한 주제만 조회할 수 있도록 변경
+    @Authorities(MemberRole.MEMBER)
     @GetMapping
     public List<TopicQueryResponse> queryTopics(@RequestParam("teamId") final Long teamId) {
         return topicService.queryTopics(teamId);
     }
 
+    @Authorities(MemberRole.MEMBER)
     @GetMapping("/today")
     public List<TopicQueryResponse> queryTodayTopics(
             @Authenticated final AuthPrincipal principal,
