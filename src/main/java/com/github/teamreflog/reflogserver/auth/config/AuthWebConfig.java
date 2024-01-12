@@ -16,8 +16,7 @@ public class AuthWebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(final InterceptorRegistry registry) {
-        registry.addInterceptor(authenticationInterceptor)
-                .addPathPatterns("/**");
+        registry.addInterceptor(authenticationInterceptor).addPathPatterns("/**");
     }
 
     @Override
