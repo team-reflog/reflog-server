@@ -13,10 +13,12 @@ public class AuthWebConfig implements WebMvcConfigurer {
 
     private final AuthPrincipalResolver authPrincipalResolver;
     private final AuthenticationInterceptor authenticationInterceptor;
+    private final AuthorizationInterceptor AuthorizationInterceptor;
 
     @Override
     public void addInterceptors(final InterceptorRegistry registry) {
         registry.addInterceptor(authenticationInterceptor).addPathPatterns("/**");
+        registry.addInterceptor(AuthorizationInterceptor).addPathPatterns("/**");
     }
 
     @Override

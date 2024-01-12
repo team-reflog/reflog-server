@@ -1,27 +1,21 @@
 package com.github.teamreflog.reflogserver.auth.config;
 
-import static org.springframework.http.HttpMethod.OPTIONS;
-
+import com.github.teamreflog.reflogserver.auth.application.dto.AuthPrincipal;
 import com.github.teamreflog.reflogserver.auth.domain.Authorities;
+import com.github.teamreflog.reflogserver.auth.domain.MemberRole;
 import com.github.teamreflog.reflogserver.auth.domain.Token;
-import com.github.teamreflog.reflogserver.auth.domain.TokenParser;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
-@RequiredArgsConstructor
-public class AuthenticationInterceptor implements HandlerInterceptor {
+public class AuthorizationInterceptor implements HandlerInterceptor {
 
     private static final String TOKEN = "token";
+    private static final String AUTH_PRINCIPAL = "authPrincipal";
 
-    private final TokenParser tokenParser;
-
-    // TODO: Refactor and test
     @Override
     public boolean preHandle(
             final HttpServletRequest request,
@@ -34,15 +28,15 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        /* CORS preflight */
-        if (OPTIONS.matches(request.getMethod())) {
-            response.setStatus(HttpServletResponse.SC_ACCEPTED);
-            return true;
+        final Token token = (Token) request.getAttribute(TOKEN);
+        for (final MemberRole role : authorities.roles()) {
+            if (token.hasRole(role.name())) {
+                request.setAttribute(AUTH_PRINCIPAL, new AuthPrincipal(token.getSubject()));
+
+                return true;
+            }
         }
 
-        final Token jwt = tokenParser.parse(request.getHeader(HttpHeaders.AUTHORIZATION));
-        request.setAttribute(TOKEN, jwt);
-
-        return true;
+        return false;
     }
 }
