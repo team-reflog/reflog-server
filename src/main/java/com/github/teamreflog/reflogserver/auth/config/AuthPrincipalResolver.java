@@ -1,7 +1,7 @@
 package com.github.teamreflog.reflogserver.auth.config;
 
-import com.github.teamreflog.reflogserver.auth.annotation.Authenticated;
 import com.github.teamreflog.reflogserver.auth.application.dto.AuthPrincipal;
+import com.github.teamreflog.reflogserver.auth.domain.Authenticated;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;

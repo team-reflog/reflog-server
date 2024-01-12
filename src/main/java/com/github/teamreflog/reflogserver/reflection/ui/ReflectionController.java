@@ -1,7 +1,9 @@
 package com.github.teamreflog.reflogserver.reflection.ui;
 
-import com.github.teamreflog.reflogserver.auth.annotation.Authenticated;
 import com.github.teamreflog.reflogserver.auth.application.dto.AuthPrincipal;
+import com.github.teamreflog.reflogserver.auth.domain.Authenticated;
+import com.github.teamreflog.reflogserver.auth.domain.Authorities;
+import com.github.teamreflog.reflogserver.auth.domain.MemberRole;
 import com.github.teamreflog.reflogserver.reflection.application.ReflectionService;
 import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionCreateRequest;
 import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionQueryResponse;
@@ -24,6 +26,7 @@ public class ReflectionController {
 
     private final ReflectionService reflectionService;
 
+    @Authorities(MemberRole.MEMBER)
     @PostMapping
     public ResponseEntity<Void> createReflection(
             @Authenticated final AuthPrincipal authPrincipal,
@@ -36,6 +39,7 @@ public class ReflectionController {
         return ResponseEntity.created(URI.create("/reflections/" + reflectionId)).build();
     }
 
+    @Authorities(MemberRole.MEMBER)
     @GetMapping("/today")
     public List<ReflectionQueryResponse> getTodayReflections(
             @Authenticated final AuthPrincipal authPrincipal,

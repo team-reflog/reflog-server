@@ -1,4 +1,4 @@
-package com.github.teamreflog.reflogserver.auth.annotation;
+package com.github.teamreflog.reflogserver.auth.domain;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

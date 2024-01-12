@@ -3,6 +3,8 @@ package com.github.teamreflog.reflogserver.auth.ui;
 import com.github.teamreflog.reflogserver.auth.application.AuthService;
 import com.github.teamreflog.reflogserver.auth.application.dto.LoginRequest;
 import com.github.teamreflog.reflogserver.auth.application.dto.TokenResponse;
+import com.github.teamreflog.reflogserver.auth.domain.Authorities;
+import com.github.teamreflog.reflogserver.auth.domain.MemberRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +25,7 @@ public class AuthController {
         return authService.login(request);
     }
 
+    @Authorities(MemberRole.MEMBER)
     @PostMapping("/refresh")
     public TokenResponse refresh(
             @RequestHeader(HttpHeaders.AUTHORIZATION) final String refreshToken) {
