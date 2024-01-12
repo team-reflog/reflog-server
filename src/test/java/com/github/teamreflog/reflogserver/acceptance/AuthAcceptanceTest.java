@@ -48,6 +48,20 @@ class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    @DisplayName("OPTIONS 메서드는 누구나 호출할 수 있다.")
+    void options() {
+        RestAssured.given()
+                .log()
+                .all()
+                .when()
+                .options("/auth-acceptance-test/preflight")
+                .then()
+                .log()
+                .all()
+                .statusCode(202);
+    }
+
+    @Test
     @DisplayName("회원 가입을 하면 로그인에 성공한다.")
     void createMember() {
         MemberFixture.createMember("reflog@email.com", "reflog");

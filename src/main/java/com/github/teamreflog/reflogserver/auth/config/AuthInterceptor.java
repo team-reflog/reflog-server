@@ -5,8 +5,10 @@ import static org.springframework.http.HttpMethod.OPTIONS;
 import com.github.teamreflog.reflogserver.auth.domain.Authorities;
 import com.github.teamreflog.reflogserver.auth.domain.Token;
 import com.github.teamreflog.reflogserver.auth.domain.TokenParser;
+import com.github.teamreflog.reflogserver.auth.exception.JwtInvalidException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -15,13 +17,12 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
 @RequiredArgsConstructor
-public class AuthenticationInterceptor implements HandlerInterceptor {
+public class AuthInterceptor implements HandlerInterceptor {
 
-    private static final String TOKEN = "token";
+    private static final String AUTH_PRINCIPAL = "authPrincipal";
 
     private final TokenParser tokenParser;
 
-    // TODO: Refactor and test
     @Override
     public boolean preHandle(
             final HttpServletRequest request,
@@ -40,8 +41,11 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        final Token jwt = tokenParser.parse(request.getHeader(HttpHeaders.AUTHORIZATION));
-        request.setAttribute(TOKEN, jwt);
+        final Token token = tokenParser.parse(request.getHeader(HttpHeaders.AUTHORIZATION));
+        if (Arrays.stream(authorities.roles()).noneMatch(token::hasRole)) {
+            throw new JwtInvalidException();
+        }
+        request.setAttribute(AUTH_PRINCIPAL, token.getSubject());
 
         return true;
     }
