@@ -62,6 +62,24 @@ class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    @DisplayName("인가 애너테이션에 역할이 있는 API는 해당 역할이 없으면 호출할 수 없다.")
+    void memberAuthFail() {
+        final String token =
+                "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxIiwiZXhwIjo5OTk5OTk5OTk5fQ.keu_gpdcxuDLrrKmY90rVRbC2J-ZbLF6pR574166-S-Ta_ZoSIqewiJTVj77wQm9";
+
+        RestAssured.given()
+                .log()
+                .all()
+                .header(HttpHeaders.AUTHORIZATION, token)
+                .when()
+                .get("/auth-acceptance-test/member-auth")
+                .then()
+                .log()
+                .all()
+                .statusCode(401);
+    }
+
+    @Test
     @DisplayName("회원 가입을 하면 로그인에 성공한다.")
     void createMember() {
         MemberFixture.createMember("reflog@email.com", "reflog");
