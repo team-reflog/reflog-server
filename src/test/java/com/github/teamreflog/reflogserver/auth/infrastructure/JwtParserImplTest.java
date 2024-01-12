@@ -20,14 +20,14 @@ import org.junit.jupiter.api.Test;
 @DisplayName("단위 테스트: JwtParserImpl")
 class JwtParserImplTest {
 
-    static SecretKey secret =
+    static final SecretKey SECRET_KEY =
             Keys.hmacShaKeyFor("asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf".getBytes());
 
     JwtParser parser;
 
     @BeforeEach
     void setUp() {
-        parser = new JwtParserImpl(Jwts.parser().verifyWith(secret).build());
+        parser = new JwtParserImpl(Jwts.parser().verifyWith(SECRET_KEY).build());
     }
 
     @Nested
@@ -59,6 +59,47 @@ class JwtParserImplTest {
 
             /* when, then */
             assertThatCode(() -> parser.parse("token"))
+                    .isInstanceOf(JwtInvalidException.class)
+                    .hasMessage("유효하지 않은 토큰입니다.");
+        }
+
+        @Test
+        @DisplayName("만료된 JWT를 디코딩하면 예외가 발생한다.")
+        void throwExceptionWithExpiredJwt() {
+            /* given */
+            final String expired =
+                    "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxIiwicm9sZSI6Ik1FTUJFUiIsImV4cCI6MTcwNTAwMDAwMH0.WnDG4XnyKX9nwl1W1MXggvaj43231oqgxADB4PCzo32RoKReDpMhs3Xpt82jcNbe";
+
+            /* when & then */
+            assertThatCode(() -> parser.parse(expired))
+                    .isInstanceOf(JwtInvalidException.class)
+                    .hasMessage("유효하지 않은 토큰입니다.");
+        }
+
+        @Test
+        @DisplayName("헤더에 토큰이 없으면 예외가 발생한다.")
+        void throwExceptionWithNotExistHeader() {
+            /* given & when & then */
+            assertAll(
+                    () ->
+                            assertThatCode(() -> parser.parse(null))
+                                    .isInstanceOf(JwtInvalidException.class)
+                                    .hasMessage("유효하지 않은 토큰입니다."),
+                    () ->
+                            assertThatCode(() -> parser.parse(""))
+                                    .isInstanceOf(JwtInvalidException.class)
+                                    .hasMessage("유효하지 않은 토큰입니다."));
+        }
+
+        @Test
+        @DisplayName("헤더에 지정된 claim이 없으면 예외가 발생한다.")
+        void throwExceptionWithNotExistClaim() {
+            /* given */
+            final String noSubject =
+                    "eyJhbGciOiJIUzM4NCJ9.eyJyb2xlIjoiTUVNQkVSIiwiZXhwIjo5OTk5OTk5OTk5fQ.fpZCMUnDn5HdBsYsYQC4HYwHnrQManIEfKbYN12QNBqFlxWqCL9hkO7pK6u6oeFA";
+
+            /* when & then */
+            assertThatCode(() -> parser.parse(noSubject))
                     .isInstanceOf(JwtInvalidException.class)
                     .hasMessage("유효하지 않은 토큰입니다.");
         }

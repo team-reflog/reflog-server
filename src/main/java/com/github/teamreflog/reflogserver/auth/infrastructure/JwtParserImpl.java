@@ -6,9 +6,10 @@ import com.github.teamreflog.reflogserver.auth.domain.JwtParser;
 import com.github.teamreflog.reflogserver.auth.exception.JwtInvalidException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
-import java.util.Arrays;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.StringUtils;
 
 @RequiredArgsConstructor
 public class JwtParserImpl implements JwtParser {
@@ -17,15 +18,23 @@ public class JwtParserImpl implements JwtParser {
 
     @Override
     public Jwt parse(final String token) {
+        if (!StringUtils.hasText(token)) {
+            throw new JwtInvalidException();
+        }
+
         try {
             final Claims claims = (Claims) parser.parse(token).getPayload();
 
-            return new Jwt(
-                    Arrays.stream(ClaimType.values())
-                            .collect(
-                                    Collectors.toUnmodifiableMap(
-                                            ClaimType::getClaimName,
-                                            claimType -> claims.get(claimType.getClaimName()))));
+            final Map<String, Object> claimByName = new HashMap<>();
+            for (final ClaimType type : ClaimType.values()) {
+                if (!claims.containsKey(type.getClaimName())) {
+                    throw new JwtInvalidException();
+                }
+
+                claimByName.put(type.getClaimName(), claims.get(type.getClaimName()));
+            }
+
+            return new Jwt(claimByName);
         } catch (final JwtException e) {
             throw new JwtInvalidException(e);
         }
