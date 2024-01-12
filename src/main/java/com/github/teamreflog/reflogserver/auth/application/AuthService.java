@@ -2,7 +2,6 @@ package com.github.teamreflog.reflogserver.auth.application;
 
 import com.github.teamreflog.reflogserver.auth.application.dto.LoginRequest;
 import com.github.teamreflog.reflogserver.auth.application.dto.TokenResponse;
-import com.github.teamreflog.reflogserver.auth.domain.JwtExtractor;
 import com.github.teamreflog.reflogserver.auth.domain.Token;
 import com.github.teamreflog.reflogserver.auth.domain.TokenParser;
 import com.github.teamreflog.reflogserver.auth.domain.TokenProvider;
@@ -22,7 +21,6 @@ public class AuthService {
     private final MemberValidator memberValidator; // TODO: auth -> member 의존 중 -> 같은 도메인 영역이라는 힌트!
     private final TokenProvider tokenProvider;
     private final TokenParser tokenParser;
-    private final JwtExtractor jwtExtractor;
 
     public TokenResponse login(final LoginRequest request) {
         final Member member =
@@ -38,8 +36,7 @@ public class AuthService {
     }
 
     public TokenResponse refresh(final String header) {
-        final String token = jwtExtractor.extract(header);
-        final Token jwt = tokenParser.parse(token);
+        final Token jwt = tokenParser.parse(header);
         final Long memberId = jwt.getSubject();
 
         return new TokenResponse(

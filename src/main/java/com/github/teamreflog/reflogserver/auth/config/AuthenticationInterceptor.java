@@ -4,7 +4,6 @@ import static org.springframework.http.HttpMethod.OPTIONS;
 
 import com.github.teamreflog.reflogserver.auth.application.dto.AuthPrincipal;
 import com.github.teamreflog.reflogserver.auth.domain.Authorities;
-import com.github.teamreflog.reflogserver.auth.domain.JwtExtractor;
 import com.github.teamreflog.reflogserver.auth.domain.MemberRole;
 import com.github.teamreflog.reflogserver.auth.domain.Token;
 import com.github.teamreflog.reflogserver.auth.domain.TokenParser;
@@ -25,7 +24,6 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
     private final TokenProvider tokenProvider;
     private final TokenParser tokenParser;
-    private final JwtExtractor jwtExtractor;
 
     // TODO: Refactor and test
     @Override
@@ -45,9 +43,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        final String token = jwtExtractor.extract(request.getHeader(HttpHeaders.AUTHORIZATION));
-        final Token jwt = tokenParser.parse(token);
-
+        final Token jwt = tokenParser.parse(request.getHeader(HttpHeaders.AUTHORIZATION));
         for (final MemberRole role : authorities.roles()) {
             if (jwt.hasRole(role.name())) {
                 request.setAttribute(AUTH_PRINCIPAL, new AuthPrincipal(jwt.getSubject()));

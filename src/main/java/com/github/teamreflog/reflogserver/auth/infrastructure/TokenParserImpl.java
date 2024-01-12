@@ -9,18 +9,16 @@ import io.jsonwebtoken.JwtException;
 import java.util.EnumMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.springframework.util.StringUtils;
 
+// TODO: JWT exception 분기 상세화 후 추상화
 @RequiredArgsConstructor
 public class TokenParserImpl implements TokenParser {
 
     private final io.jsonwebtoken.JwtParser parser;
 
     @Override
-    public Token parse(final String token) {
-        if (!StringUtils.hasText(token)) {
-            throw new JwtInvalidException();
-        }
+    public Token parse(final String header) {
+        final String token = extract(header);
 
         try {
             final Claims claims = (Claims) parser.parse(token).getPayload();
@@ -39,5 +37,13 @@ public class TokenParserImpl implements TokenParser {
         } catch (final JwtException e) {
             throw new JwtInvalidException(e);
         }
+    }
+
+    String extract(final String header) {
+        if (header == null || !header.startsWith("Bearer ")) {
+            throw new JwtInvalidException();
+        }
+
+        return header.substring(7);
     }
 }
