@@ -1,6 +1,8 @@
 package com.github.teamreflog.reflogserver.auth.infrastructure;
 
+import com.github.teamreflog.reflogserver.auth.domain.ClaimType;
 import com.github.teamreflog.reflogserver.auth.domain.JwtProvider;
+import com.github.teamreflog.reflogserver.auth.domain.MemberRole;
 import io.jsonwebtoken.JwtBuilder;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -25,7 +27,8 @@ public class JwtProviderImpl implements JwtProvider {
     }
 
     private String generateToken(final Long id, final long duration) {
-        return builder.subject(String.valueOf(id))
+        return builder.claim(ClaimType.MEMBER_ID.getClaimName(), String.valueOf(id))
+                .claim(ClaimType.ROLE.getClaimName(), MemberRole.MEMBER)
                 .expiration(new Date(System.currentTimeMillis() + duration))
                 .compact();
     }
