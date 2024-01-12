@@ -16,6 +16,39 @@ import org.springframework.http.HttpHeaders;
 class AuthAcceptanceTest extends AcceptanceTest {
 
     @Test
+    @DisplayName("인가 애너테이션이 없는 API는 누구나 호출할 수 있다.")
+    void noAuth() {
+        RestAssured.given()
+                .log()
+                .all()
+                .when()
+                .get("/auth-acceptance-test/no-auth")
+                .then()
+                .log()
+                .all()
+                .statusCode(200);
+    }
+
+    @Test
+    @DisplayName("인가 애너테이션에 회원 역할이 있는 API는 JWT 토큰에 회원 역할이 있으면 호출할 수 있다.")
+    void memberAuth() {
+        MemberFixture.createMember("reflog@email.com", "reflog");
+        final TokenResponse response = AuthFixture.login("reflog@email.com", "reflog");
+
+        RestAssured.given()
+                .log()
+                .all()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + response.accessToken())
+                .when()
+                .get("/auth-acceptance-test/member-auth")
+                .then()
+                .log()
+                .all()
+                .statusCode(200);
+    }
+
+
+    @Test
     @DisplayName("회원 가입을 하면 로그인에 성공한다.")
     void createMember() {
         MemberFixture.createMember("reflog@email.com", "reflog");
