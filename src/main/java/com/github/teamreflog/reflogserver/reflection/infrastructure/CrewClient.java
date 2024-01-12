@@ -20,9 +20,9 @@ public class CrewClient implements CrewQueryClient {
     private final ReflectionRepository reflectionRepository;
 
     @Override
-    public CrewData getCrewDataByCrewId(final Long crewId) {
+    public CrewData getCrewDataById(final Long id) {
         return crewRepository
-                .findById(crewId)
+                .findById(id)
                 .map(crew -> new CrewData(crew.getId(), crew.getNickname()))
                 .orElseThrow(ReflogIllegalArgumentException::new);
     }

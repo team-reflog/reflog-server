@@ -40,7 +40,7 @@ public class CommentService {
         final List<CommentQueryResponse> responses = new ArrayList<>();
         for (final Comment comment :
                 commentRepository.findAllByReflectionId(request.reflectionId())) {
-            final CrewData crewData = crewQueryClient.getCrewDataByCrewId(comment.getCrewId());
+            final CrewData crewData = crewQueryClient.getCrewDataById(comment.getCrewId());
             responses.add(new CommentQueryResponse(crewData.nickname(), comment.getContent()));
         }
 
