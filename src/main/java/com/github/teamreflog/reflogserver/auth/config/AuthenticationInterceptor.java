@@ -49,7 +49,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         final String token = jwtExtractor.extract(request.getHeader(HttpHeaders.AUTHORIZATION));
         final Jwt jwt = jwtParser.parse(token);
 
-        for (final MemberRole role : authorities.value()) {
+        for (final MemberRole role : authorities.roles()) {
             if (jwt.hasRole(role.name())) {
                 final Long memberId = Long.valueOf(jwt.getClaim(ClaimType.MEMBER_ID));
                 request.setAttribute(AUTH_PRINCIPAL, new AuthPrincipal(memberId));
