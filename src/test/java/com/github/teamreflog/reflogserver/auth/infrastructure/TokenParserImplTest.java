@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import com.github.teamreflog.reflogserver.auth.domain.ClaimType;
 import com.github.teamreflog.reflogserver.auth.domain.Token;
 import com.github.teamreflog.reflogserver.auth.domain.TokenParser;
 import com.github.teamreflog.reflogserver.auth.exception.JwtInvalidException;
@@ -45,9 +44,7 @@ class TokenParserImplTest {
             final Token jwt = parser.parse(token);
 
             /* then */
-            assertAll(
-                    () -> assertThat(jwt.getClaim(ClaimType.MEMBER_ID)).isEqualTo("1"),
-                    () -> assertThat(jwt.getClaim(ClaimType.ROLE)).isEqualTo("MEMBER"));
+            assertThat(jwt.getSubject()).isEqualTo(1L);
         }
 
         @Test

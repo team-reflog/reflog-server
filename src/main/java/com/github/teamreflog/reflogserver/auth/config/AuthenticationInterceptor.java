@@ -4,7 +4,6 @@ import static org.springframework.http.HttpMethod.OPTIONS;
 
 import com.github.teamreflog.reflogserver.auth.application.dto.AuthPrincipal;
 import com.github.teamreflog.reflogserver.auth.domain.Authorities;
-import com.github.teamreflog.reflogserver.auth.domain.ClaimType;
 import com.github.teamreflog.reflogserver.auth.domain.JwtExtractor;
 import com.github.teamreflog.reflogserver.auth.domain.MemberRole;
 import com.github.teamreflog.reflogserver.auth.domain.Token;
@@ -51,8 +50,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
         for (final MemberRole role : authorities.roles()) {
             if (jwt.hasRole(role.name())) {
-                final Long memberId = Long.valueOf(jwt.getClaim(ClaimType.MEMBER_ID));
-                request.setAttribute(AUTH_PRINCIPAL, new AuthPrincipal(memberId));
+                request.setAttribute(AUTH_PRINCIPAL, new AuthPrincipal(jwt.getSubject()));
 
                 return true;
             }

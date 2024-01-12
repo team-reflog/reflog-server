@@ -1,7 +1,6 @@
 package com.github.teamreflog.reflogserver.auth.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
@@ -20,13 +19,7 @@ class TokenTest {
                         ClaimType.ROLE, "MEMBER");
         final Token token = new Token(claims);
 
-        /* when */
-        final String subject = token.getClaim(ClaimType.MEMBER_ID);
-        final String role = token.getClaim(ClaimType.ROLE);
-
-        /* then */
-        assertAll(
-                () -> assertThat(subject).isEqualTo("1"),
-                () -> assertThat(role).isEqualTo("MEMBER"));
+        /* when & then */
+        assertThat(token.getSubject()).isEqualTo(1L);
     }
 }

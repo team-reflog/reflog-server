@@ -4,8 +4,8 @@ import java.util.Map;
 
 public record Token(Map<ClaimType, String> claimByName) {
 
-    public String getClaim(final ClaimType type) {
-        return claimByName.get(type);
+    public Long getSubject() {
+        return Long.valueOf(claimByName.get(ClaimType.MEMBER_ID));
     }
 
     public boolean hasRole(final String name) {

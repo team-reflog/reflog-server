@@ -2,7 +2,6 @@ package com.github.teamreflog.reflogserver.auth.application;
 
 import com.github.teamreflog.reflogserver.auth.application.dto.LoginRequest;
 import com.github.teamreflog.reflogserver.auth.application.dto.TokenResponse;
-import com.github.teamreflog.reflogserver.auth.domain.ClaimType;
 import com.github.teamreflog.reflogserver.auth.domain.JwtExtractor;
 import com.github.teamreflog.reflogserver.auth.domain.Token;
 import com.github.teamreflog.reflogserver.auth.domain.TokenParser;
@@ -41,7 +40,7 @@ public class AuthService {
     public TokenResponse refresh(final String header) {
         final String token = jwtExtractor.extract(header);
         final Token jwt = tokenParser.parse(token);
-        final Long memberId = Long.valueOf(jwt.getClaim(ClaimType.MEMBER_ID));
+        final Long memberId = jwt.getSubject();
 
         return new TokenResponse(
                 tokenProvider.generateAccessToken(memberId),
