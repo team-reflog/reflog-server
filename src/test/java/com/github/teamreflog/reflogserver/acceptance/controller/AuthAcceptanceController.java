@@ -11,11 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthAcceptanceController {
 
     @GetMapping("/no-auth")
-    public void noAuth() {
-    }
+    public void noAuth() {}
 
     @Authorities(MemberRole.MEMBER)
     @GetMapping("/member-auth")
-    public void memberAuth() {
-    }
+    public void memberAuth() {}
 }

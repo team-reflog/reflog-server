@@ -47,7 +47,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
                 .statusCode(200);
     }
 
-
     @Test
     @DisplayName("회원 가입을 하면 로그인에 성공한다.")
     void createMember() {
