@@ -14,7 +14,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-// TODO: 테스트 고민, 인프라 테스트는 구현체에 의존하여 테스트한다?
 @DisplayName("단위 테스트: TokenParserImpl")
 class TokenParserImplTest {
 
