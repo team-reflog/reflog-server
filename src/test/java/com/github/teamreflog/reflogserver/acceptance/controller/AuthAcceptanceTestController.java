@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth-acceptance-test")
-public class AuthAcceptanceController {
+public class AuthAcceptanceTestController {
 
     @GetMapping("/no-auth")
     public void noAuth() {}
