@@ -2,10 +2,11 @@ package com.github.teamreflog.reflogserver.auth.config;
 
 import com.github.teamreflog.reflogserver.auth.application.dto.AuthPrincipal;
 import com.github.teamreflog.reflogserver.auth.domain.Authorities;
-import com.github.teamreflog.reflogserver.auth.domain.MemberRole;
 import com.github.teamreflog.reflogserver.auth.domain.Token;
+import com.github.teamreflog.reflogserver.auth.exception.JwtInvalidException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -29,14 +30,11 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
         }
 
         final Token token = (Token) request.getAttribute(TOKEN);
-        for (final MemberRole role : authorities.roles()) {
-            if (token.hasRole(role)) {
-                request.setAttribute(AUTH_PRINCIPAL, new AuthPrincipal(token.getSubject()));
-
-                return true;
-            }
+        if (Arrays.stream(authorities.roles()).noneMatch(token::hasRole)) {
+            throw new JwtInvalidException();
         }
+        request.setAttribute(AUTH_PRINCIPAL, new AuthPrincipal(token.getSubject()));
 
-        return false;
+        return true;
     }
 }
