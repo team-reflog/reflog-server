@@ -12,7 +12,7 @@ public class Token {
         return Long.valueOf(claimByName.get(ClaimType.MEMBER_ID));
     }
 
-    public boolean hasRole(final String name) {
-        return claimByName.get(ClaimType.ROLE).equals(name);
+    public boolean hasRole(final MemberRole role) {
+        return role.matches(claimByName.get(ClaimType.ROLE));
     }
 }

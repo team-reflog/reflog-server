@@ -30,7 +30,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 
         final Token token = (Token) request.getAttribute(TOKEN);
         for (final MemberRole role : authorities.roles()) {
-            if (token.hasRole(role.name())) {
+            if (token.hasRole(role)) {
                 request.setAttribute(AUTH_PRINCIPAL, new AuthPrincipal(token.getSubject()));
 
                 return true;
