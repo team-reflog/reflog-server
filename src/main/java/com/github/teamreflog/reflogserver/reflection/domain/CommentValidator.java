@@ -9,11 +9,11 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CommentValidator {
 
-    private final CrewQueryClient crewQueryClient;
+    private final CrewQueryService crewQueryService;
 
     public void validateAccess(final Long memberId, final Long reflectionId) {
         try {
-            crewQueryClient.getCrewDataByMemberIdAndReflectionId(memberId, reflectionId);
+            crewQueryService.getCrewDataByMemberIdAndReflectionId(memberId, reflectionId);
         } catch (final ReflogIllegalArgumentException e) {
             throw new CommentNotAccessException(e);
         }

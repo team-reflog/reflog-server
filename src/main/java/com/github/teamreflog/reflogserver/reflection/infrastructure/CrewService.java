@@ -2,7 +2,7 @@ package com.github.teamreflog.reflogserver.reflection.infrastructure;
 
 import com.github.teamreflog.reflogserver.common.exception.ReflogIllegalArgumentException;
 import com.github.teamreflog.reflogserver.reflection.domain.CrewData;
-import com.github.teamreflog.reflogserver.reflection.domain.CrewQueryClient;
+import com.github.teamreflog.reflogserver.reflection.domain.CrewQueryService;
 import com.github.teamreflog.reflogserver.reflection.domain.Reflection;
 import com.github.teamreflog.reflogserver.reflection.domain.ReflectionRepository;
 import com.github.teamreflog.reflogserver.team.domain.CrewRepository;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class CrewClient implements CrewQueryClient {
+public class CrewService implements CrewQueryService {
 
     private final CrewRepository crewRepository;
     private final TopicRepository topicRepository;

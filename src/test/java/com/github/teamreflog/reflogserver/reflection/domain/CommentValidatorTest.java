@@ -16,12 +16,12 @@ import org.junit.jupiter.api.Test;
 class CommentValidatorTest {
 
     CommentValidator commentValidator;
-    CrewQueryClient crewQueryClient;
+    CrewQueryService crewQueryService;
 
     @BeforeEach
     void setUp() {
-        crewQueryClient = mock(CrewQueryClient.class);
-        commentValidator = new CommentValidator(crewQueryClient);
+        crewQueryService = mock(CrewQueryService.class);
+        commentValidator = new CommentValidator(crewQueryService);
     }
 
     @Nested
@@ -32,7 +32,7 @@ class CommentValidatorTest {
         @DisplayName("회원이 회고의 팀의 크루가 아닌 경우 예외가 발생한다")
         void throwExceptionWhenMemberIsNotCrewOfReflection() {
             /* given */
-            given(crewQueryClient.getCrewDataByMemberIdAndReflectionId(any(), any()))
+            given(crewQueryService.getCrewDataByMemberIdAndReflectionId(any(), any()))
                     .willThrow(ReflogIllegalArgumentException.class);
 
             /* when & then */

@@ -7,7 +7,7 @@ import com.github.teamreflog.reflogserver.reflection.domain.Comment;
 import com.github.teamreflog.reflogserver.reflection.domain.CommentRepository;
 import com.github.teamreflog.reflogserver.reflection.domain.CommentValidator;
 import com.github.teamreflog.reflogserver.reflection.domain.CrewData;
-import com.github.teamreflog.reflogserver.reflection.domain.CrewQueryClient;
+import com.github.teamreflog.reflogserver.reflection.domain.CrewQueryService;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -19,13 +19,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final CrewQueryClient crewQueryClient;
+    private final CrewQueryService crewQueryService;
     private final CommentValidator commentValidator;
 
     @Transactional
     public Long createComment(final CommentCreateRequest request) {
         final CrewData crewData =
-                crewQueryClient.getCrewDataByMemberIdAndReflectionId(
+                crewQueryService.getCrewDataByMemberIdAndReflectionId(
                         request.memberId(), request.reflectionId());
 
         return commentRepository
@@ -40,7 +40,7 @@ public class CommentService {
         final List<CommentQueryResponse> responses = new ArrayList<>();
         for (final Comment comment :
                 commentRepository.findAllByReflectionId(request.reflectionId())) {
-            final CrewData crewData = crewQueryClient.getCrewDataById(comment.getCrewId());
+            final CrewData crewData = crewQueryService.getCrewDataById(comment.getCrewId());
             responses.add(new CommentQueryResponse(crewData.nickname(), comment.getContent()));
         }
 
