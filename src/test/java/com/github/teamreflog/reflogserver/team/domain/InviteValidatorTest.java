@@ -29,6 +29,6 @@ class InviteValidatorTest {
         /* when & then */
         assertThatCode(() -> inviteValidator.validateTeamOwnerAuthorization(notOwnerMemberId, team))
                 .isExactlyInstanceOf(InviteNotAccessException.class)
-                .hasMessage("팀장만 초대할 수 있습니다.");
+                .hasMessage("초대할 권한이 없습니다.");
     }
 }
