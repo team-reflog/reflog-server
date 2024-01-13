@@ -12,7 +12,7 @@ public interface CrewRepository extends Repository<Crew, Long> {
 
     List<Crew> findAllByMemberId(Long memberId);
 
-    Optional<Crew> findById(Long crewId);
+    Optional<Crew> findById(Long id);
 
     Optional<Crew> findByMemberIdAndTeamId(Long memberId, Long teamId);
 }
