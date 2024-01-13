@@ -1,10 +1,10 @@
 package com.github.teamreflog.reflogserver.team.domain.exception;
 
-import org.springframework.http.HttpStatus;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 public class InviteNotAccessException extends TeamException {
 
     public InviteNotAccessException() {
-        super(HttpStatus.UNAUTHORIZED, "팀장만 초대할 수 있습니다.");
+        super(UNAUTHORIZED, "초대할 권한이 없습니다.");
     }
 }
