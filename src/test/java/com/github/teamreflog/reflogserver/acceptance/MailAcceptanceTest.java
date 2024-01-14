@@ -25,10 +25,10 @@ public class MailAcceptanceTest extends AcceptanceTest {
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .body(
                                     """
-                                    {
-                                        "email": "reflog@email.com"
-                                    }
-                                    """)
+                                            {
+                                                "email": "reflog@email.com"
+                                            }
+                                            """)
                             .when()
                             .post("/mails/send")
                             .then()
@@ -38,7 +38,7 @@ public class MailAcceptanceTest extends AcceptanceTest {
                             .extract()
                             .body()
                             .jsonPath()
-                            .getString("authMailId");
+                            .getString("id");
         }
 
         @Test
@@ -50,11 +50,11 @@ public class MailAcceptanceTest extends AcceptanceTest {
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(
                             """
-                            {
-                                "authMailId": "%s",
-                                "authNumber": 240114
-                            }
-                            """
+                                    {
+                                        "id": "%s",
+                                        "code": 240114
+                                    }
+                                    """
                                     .formatted(authMailId))
                     .when()
                     .post("/mails/verify")
