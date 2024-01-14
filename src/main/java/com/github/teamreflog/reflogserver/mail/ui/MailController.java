@@ -5,7 +5,6 @@ import com.github.teamreflog.reflogserver.mail.application.dto.MailSendRequest;
 import com.github.teamreflog.reflogserver.mail.application.dto.MailSendResponse;
 import com.github.teamreflog.reflogserver.mail.application.dto.MailVerifyRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,8 +23,7 @@ public class MailController {
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<Void> verifyAuthMail(@RequestBody final MailVerifyRequest request) {
-
-        return ResponseEntity.ok().build();
+    public void verifyAuthMail(@RequestBody final MailVerifyRequest request) {
+        mailService.verifyAuthMail(request);
     }
 }

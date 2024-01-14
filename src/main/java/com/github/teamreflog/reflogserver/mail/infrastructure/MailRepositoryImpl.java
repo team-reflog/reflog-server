@@ -30,4 +30,9 @@ public class MailRepositoryImpl implements MailRepository {
 
         return mailAuthDataById.get(id);
     }
+
+    @Override
+    public void update(final String id, final MailAuthData newData) {
+        mailAuthDataById.put(id, newData);
+    }
 }
