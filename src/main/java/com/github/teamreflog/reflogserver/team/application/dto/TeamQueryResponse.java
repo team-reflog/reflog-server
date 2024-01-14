@@ -5,7 +5,7 @@ import java.time.DayOfWeek;
 import java.util.List;
 
 public record TeamQueryResponse(
-        Long id, String name, String description, Long ownerId, List<DayOfWeek> daysOfWeek) {
+        Long id, String name, String description, Long ownerId, List<DayOfWeek> reflectionDays) {
 
     public static TeamQueryResponse fromEntity(final Team team) {
         return new TeamQueryResponse(
