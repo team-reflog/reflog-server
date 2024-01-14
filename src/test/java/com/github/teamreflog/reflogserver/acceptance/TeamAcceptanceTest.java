@@ -1,51 +1,59 @@
 package com.github.teamreflog.reflogserver.acceptance;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.matchesRegex;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import com.github.teamreflog.reflogserver.acceptance.fixture.AuthFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.MemberFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.TeamFixture;
-import com.github.teamreflog.reflogserver.auth.application.dto.TokenResponse;
-import com.github.teamreflog.reflogserver.team.application.dto.CrewQueryResponse;
-import com.github.teamreflog.reflogserver.team.application.dto.TeamCreateRequest;
-import com.github.teamreflog.reflogserver.team.application.dto.TeamQueryResponse;
 import io.restassured.RestAssured;
 import java.time.DayOfWeek;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 
 @DisplayName("인수 테스트: 팀")
 class TeamAcceptanceTest extends AcceptanceTest {
 
-    @Test
-    @DisplayName("팀을 생성한다.")
-    void createTeam() {
-        MemberFixture.createMember("reflog@email.com", "reflog");
-        final TokenResponse tokenResponse = AuthFixture.login("reflog@email.com", "reflog");
+    Long ownerId;
+    String ownerAccessToken;
 
+    @Override
+    @BeforeEach
+    void setUp() {
+        super.setUp();
+
+        ownerId = MemberFixture.createMember("reflog@email.com", "reflog");
+        ownerAccessToken = AuthFixture.login("reflog@email.com", "reflog").accessToken();
+    }
+
+    @Test
+    @DisplayName("팀을 생성할 수 있다.")
+    void createTeam() {
         RestAssured.given()
                 .log()
                 .all()
                 .auth()
-                .oauth2(tokenResponse.accessToken())
-                .body(
-                        new TeamCreateRequest(
-                                null,
-                                "antifragile",
-                                "안티프래질 팀입니다.",
-                                "owner",
-                                List.of(
-                                        DayOfWeek.MONDAY,
-                                        DayOfWeek.WEDNESDAY,
-                                        DayOfWeek.FRIDAY,
-                                        DayOfWeek.SUNDAY)))
+                .oauth2(ownerAccessToken)
                 .contentType(APPLICATION_JSON_VALUE)
+                .body(
+                        """
+                        {
+                            "name": "antifragile",
+                            "description": "안티프래질 팀입니다.",
+                            "nickname": "owner",
+                            "reflectionDays": [
+                                "MONDAY",
+                                "WEDNESDAY",
+                                "FRIDAY",
+                                "SUNDAY"
+                            ]
+                        }
+                        """)
                 .when()
                 .post("/teams")
                 .then()
@@ -55,133 +63,120 @@ class TeamAcceptanceTest extends AcceptanceTest {
                 .header(HttpHeaders.LOCATION, matchesRegex("/teams/[0-9]+"));
     }
 
-    @Test
-    @DisplayName("팀 정보를 조회할 수 있다.")
-    void queryTeam() {
-        final Long memberId = MemberFixture.createMember("reflog@email.com", "reflog");
-        final String accessToken = AuthFixture.login("reflog@email.com", "reflog").accessToken();
-        final Long teamId =
-                TeamFixture.createTeam(
-                        accessToken,
-                        "antifragile",
-                        "안티프래질 팀입니다.",
-                        "owner",
-                        List.of(
-                                DayOfWeek.MONDAY,
-                                DayOfWeek.WEDNESDAY,
-                                DayOfWeek.FRIDAY,
-                                DayOfWeek.SUNDAY));
+    @Nested
+    @DisplayName("팀을 생성하면")
+    class WhenCreateTeam {
 
-        RestAssured.given()
-                .log()
-                .all()
-                .auth()
-                .oauth2(accessToken)
-                .when()
-                .get("/teams/" + teamId)
-                .then()
-                .log()
-                .all()
-                .statusCode(200)
-                .body("name", equalTo("antifragile"))
-                .body("description", equalTo("안티프래질 팀입니다."))
-                .body("ownerId", equalTo(memberId.intValue()))
-                .body(
-                        "reflectionDays",
-                        equalTo(List.of("MONDAY", "WEDNESDAY", "FRIDAY", "SUNDAY")));
+        Long teamId;
+
+        @BeforeEach
+        void setUp() {
+            teamId =
+                    TeamFixture.createTeam(
+                            ownerAccessToken,
+                            "antifragile",
+                            "안티프래질 팀입니다.",
+                            "owner",
+                            List.of(
+                                    DayOfWeek.MONDAY,
+                                    DayOfWeek.WEDNESDAY,
+                                    DayOfWeek.FRIDAY,
+                                    DayOfWeek.SUNDAY));
+        }
+
+        @Test
+        @DisplayName("팀 정보를 조회할 수 있다.")
+        void queryTeam() {
+            RestAssured.given()
+                    .log()
+                    .all()
+                    .auth()
+                    .oauth2(ownerAccessToken)
+                    .when()
+                    .get("/teams/" + teamId)
+                    .then()
+                    .log()
+                    .all()
+                    .statusCode(200)
+                    .body("name", equalTo("antifragile"))
+                    .body("description", equalTo("안티프래질 팀입니다."))
+                    .body("ownerId", equalTo(ownerId.intValue()))
+                    .body(
+                            "reflectionDays",
+                            equalTo(List.of("MONDAY", "WEDNESDAY", "FRIDAY", "SUNDAY")));
+        }
+
+        @Test
+        @DisplayName("팀 멤버를 조회한다.")
+        void queryCrews() {
+            RestAssured.given()
+                    .log()
+                    .all()
+                    .auth()
+                    .oauth2(ownerAccessToken)
+                    .when()
+                    .get("/teams/{teamId}/members", teamId)
+                    .then()
+                    .log()
+                    .all()
+                    .statusCode(200)
+                    .body("size()", equalTo(1))
+                    .body("[0].isOwner", equalTo(true))
+                    .body("[0].nickname", equalTo("owner"))
+                    .body("[0].memberId", equalTo(ownerId.intValue()));
+        }
     }
 
-    @Test
-    @DisplayName("속한 팀들을 조회할 수 있다.")
-    void queryTeams() {
-        final Long memberId = MemberFixture.createMember("reflog@email.com", "reflog");
-        final String accessToken = AuthFixture.login("reflog@email.com", "reflog").accessToken();
-        TeamFixture.createTeam(
-                accessToken,
-                "anti",
-                "안티 팀입니다.",
-                "anti-owner",
-                List.of(DayOfWeek.MONDAY, DayOfWeek.SUNDAY));
-        TeamFixture.createTeam(
-                accessToken,
-                "fragile",
-                "프래질 팀입니다.",
-                "fragile-owner",
-                List.of(DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY));
+    @Nested
+    @DisplayName("팀을 두 개 생성하면")
+    class WhenCreateTwoTeam {
 
-        /* when */
-        final List<TeamQueryResponse> response =
-                RestAssured.given()
-                        .log()
-                        .all()
-                        .auth()
-                        .oauth2(accessToken)
-                        .when()
-                        .get("/teams")
-                        .then()
-                        .log()
-                        .all()
-                        .statusCode(200)
-                        .extract()
-                        .jsonPath()
-                        .getList(".", TeamQueryResponse.class);
+        Long firstTeamId, secondTeamId;
 
-        /* then */
-        assertAll(
-                () -> assertThat(response).hasSize(2),
-                () -> assertThat(response.get(0).name()).isEqualTo("anti"),
-                () -> assertThat(response.get(0).description()).isEqualTo("안티 팀입니다."),
-                () -> assertThat(response.get(0).ownerId()).isEqualTo(memberId),
-                () ->
-                        assertThat(response.get(0).reflectionDays())
-                                .containsExactly(DayOfWeek.MONDAY, DayOfWeek.SUNDAY),
-                () -> assertThat(response.get(1).name()).isEqualTo("fragile"),
-                () -> assertThat(response.get(1).description()).isEqualTo("프래질 팀입니다."),
-                () -> assertThat(response.get(1).ownerId()).isEqualTo(memberId),
-                () ->
-                        assertThat(response.get(1).reflectionDays())
-                                .containsExactly(DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY));
-    }
+        @BeforeEach
+        void setUp() {
+            firstTeamId =
+                    TeamFixture.createTeam(
+                            ownerAccessToken,
+                            "anti",
+                            "안티 팀입니다.",
+                            "anti-owner",
+                            List.of(DayOfWeek.MONDAY));
 
-    @Test
-    @DisplayName("팀 멤버를 조회한다.")
-    void queryCrews() {
-        /* given */
-        final Long ownerId = MemberFixture.createMember("reflog@email.com", "reflog");
-        final String accessToken = AuthFixture.login("reflog@email.com", "reflog").accessToken();
-        final Long teamId =
-                TeamFixture.createTeam(
-                        accessToken,
-                        "antifragile",
-                        "안티프래질 팀입니다.",
-                        "owner",
-                        List.of(
-                                DayOfWeek.MONDAY,
-                                DayOfWeek.WEDNESDAY,
-                                DayOfWeek.FRIDAY,
-                                DayOfWeek.SUNDAY));
+            secondTeamId =
+                    TeamFixture.createTeam(
+                            ownerAccessToken,
+                            "fragile",
+                            "프래질 팀입니다.",
+                            "fragile-owner",
+                            List.of(DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY));
+        }
 
-        /* when */
-        final List<CrewQueryResponse> response =
-                RestAssured.given()
-                        .log()
-                        .all()
-                        .auth()
-                        .oauth2(accessToken)
-                        .when()
-                        .get("/teams/{teamId}/members", teamId)
-                        .then()
-                        .log()
-                        .all()
-                        .statusCode(200)
-                        .extract()
-                        .jsonPath()
-                        .getList(".", CrewQueryResponse.class);
-
-        /* then */
-        assertThat(response).hasSize(1);
-        assertThat(response.get(0).isOwner()).isTrue();
-        assertThat(response.get(0).nickname()).isEqualTo("owner");
-        assertThat(response.get(0).memberId()).isEqualTo(ownerId);
+        @Test
+        @DisplayName("참가한 모든 팀의 정보를 조회할 수 있다.")
+        void queryTeams() {
+            RestAssured.given()
+                    .log()
+                    .all()
+                    .auth()
+                    .oauth2(ownerAccessToken)
+                    .when()
+                    .get("/teams")
+                    .then()
+                    .log()
+                    .all()
+                    .statusCode(200)
+                    .body("size()", equalTo(2))
+                    .body("[0].id", equalTo(firstTeamId.intValue()))
+                    .body("[0].name", equalTo("anti"))
+                    .body("[0].description", equalTo("안티 팀입니다."))
+                    .body("[0].ownerId", equalTo(ownerId.intValue()))
+                    .body("[0].reflectionDays", equalTo(List.of("MONDAY")))
+                    .body("[1].id", equalTo(secondTeamId.intValue()))
+                    .body("[1].name", equalTo("fragile"))
+                    .body("[1].description", equalTo("프래질 팀입니다."))
+                    .body("[1].ownerId", equalTo(ownerId.intValue()))
+                    .body("[1].reflectionDays", equalTo(List.of("WEDNESDAY", "THURSDAY")));
+        }
     }
 }
