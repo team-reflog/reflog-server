@@ -30,15 +30,15 @@ public class AuthInterceptor implements HandlerInterceptor {
             final HttpServletResponse response,
             final Object handler)
             throws Exception {
-        final HandlerMethod handlerMethod = (HandlerMethod) handler;
-        final Authorities authorities = handlerMethod.getMethodAnnotation(Authorities.class);
-        if (authorities == null) {
-            return true;
-        }
-
         /* CORS preflight */
         if (OPTIONS.matches(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_ACCEPTED);
+            return true;
+        }
+
+        final HandlerMethod handlerMethod = (HandlerMethod) handler;
+        final Authorities authorities = handlerMethod.getMethodAnnotation(Authorities.class);
+        if (authorities == null) {
             return true;
         }
 
