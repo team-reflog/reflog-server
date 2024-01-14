@@ -14,8 +14,36 @@ public class MailAcceptanceTest extends AcceptanceTest {
     @DisplayName("인증 메일을 보낼 때")
     class WhenSendAuthMail {
 
+        String authMailId;
+
         @BeforeEach
         void setUp() {
+            authMailId =
+                    RestAssured.given()
+                            .log()
+                            .all()
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .body(
+                                    """
+                                    {
+                                        "email": "reflog@email.com"
+                                    }
+                                    """)
+                            .when()
+                            .post("/mails/send")
+                            .then()
+                            .log()
+                            .all()
+                            .statusCode(200)
+                            .extract()
+                            .body()
+                            .jsonPath()
+                            .getString("authMailId");
+        }
+
+        @Test
+        @DisplayName("인증 번호를 검증한다.")
+        void verifyAuthNumber() {
             RestAssured.given()
                     .log()
                     .all()
@@ -23,29 +51,17 @@ public class MailAcceptanceTest extends AcceptanceTest {
                     .body(
                             """
                             {
-                                "email": "reflog@email.com"
+                                "authMailId": "%s",
+                                "authNumber": 240114
                             }
-                            """)
+                            """
+                                    .formatted(authMailId))
                     .when()
-                    .post("/mails/send")
+                    .post("/mails/verify")
                     .then()
                     .log()
                     .all()
                     .statusCode(200);
-        }
-
-        @Test
-        @DisplayName("인증 번호를 검증한다.")
-        void verifyAuthNumber() {
-            //            RestAssured.given()
-            //                    .log()
-            //                    .all()
-            //                    .when()
-            //                    .get("/mails/verify")
-            //                    .then()
-            //                    .log()
-            //                    .all()
-            //                    .statusCode(200);
         }
     }
 }
