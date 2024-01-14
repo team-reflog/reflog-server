@@ -2,7 +2,7 @@ package com.github.teamreflog.reflogserver.team.domain;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 
-import com.github.teamreflog.reflogserver.topic.domain.exception.NotOwnerException;
+import com.github.teamreflog.reflogserver.team.domain.exception.InviteNotAccessException;
 import java.time.DayOfWeek;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,11 +23,12 @@ class InviteValidatorTest {
     @DisplayName("팀장이 아닌 경우 예외가 발생한다.")
     void throwExceptionNotOwner() {
         /* given */
-        Long notOwnerMemberId = 777L;
-        Team team = Team.of("anti-fragile", "anti", 1L, List.of(DayOfWeek.FRIDAY));
+        final Long notOwnerMemberId = 777L;
+        final Team team = Team.of("anti-fragile", "anti", 1L, List.of(DayOfWeek.FRIDAY));
 
         /* when & then */
         assertThatCode(() -> inviteValidator.validateTeamOwnerAuthorization(notOwnerMemberId, team))
-                .isExactlyInstanceOf(NotOwnerException.class);
+                .isExactlyInstanceOf(InviteNotAccessException.class)
+                .hasMessage("초대할 권한이 없습니다.");
     }
 }
