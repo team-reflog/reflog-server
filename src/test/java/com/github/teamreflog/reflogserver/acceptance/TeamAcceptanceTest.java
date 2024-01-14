@@ -185,6 +185,11 @@ class TeamAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.name()).isEqualTo("antifragile"),
                 () -> assertThat(response.description()).isEqualTo("안티프래질 팀입니다."),
                 () -> assertThat(response.ownerId()).isNotNull(),
+                () -> assertThat(response.crews()).hasSize(1),
+                () -> assertThat(response.crews().get(0).nickname()).isEqualTo("owner"),
+                () -> assertThat(response.crews().get(0).memberId()).isEqualTo(response.ownerId()),
+                () -> assertThat(response.crews().get(0).isOwner()).isTrue(),
+                () -> assertThat(response.crews().get(0).joinedAt()).isNotNull(),
                 () ->
                         assertThat(response.reflectionDays())
                                 .containsExactly(

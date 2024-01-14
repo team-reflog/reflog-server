@@ -66,8 +66,8 @@ public class TeamService {
 
     @Transactional(readOnly = true)
     public TeamQueryDetailResponse queryTeamDetails(final TeamQueryDetailRequest request) {
-        if (crewRepository.findAllByTeamId(request.teamId()).stream()
-                .noneMatch(crew -> crew.isSameMemberId(request.memberId()))) {
+        final List<Crew> crews = crewRepository.findAllByTeamId(request.teamId());
+        if (crews.stream().noneMatch(crew -> crew.isSameMemberId(request.memberId()))) {
             throw new ReflogIllegalArgumentException();
         }
 
@@ -78,6 +78,6 @@ public class TeamService {
         final List<TopicData> topicData =
                 topicQueryService.getAllTopicDataByTeamId(request.teamId());
 
-        return TeamQueryDetailResponse.from(team, topicData);
+        return TeamQueryDetailResponse.from(team, crews, topicData);
     }
 }
