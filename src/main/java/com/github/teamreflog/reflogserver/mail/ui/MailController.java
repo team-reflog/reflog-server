@@ -1,9 +1,10 @@
 package com.github.teamreflog.reflogserver.mail.ui;
 
+import com.github.teamreflog.reflogserver.mail.application.MailService;
 import com.github.teamreflog.reflogserver.mail.application.dto.MailSendRequest;
 import com.github.teamreflog.reflogserver.mail.application.dto.MailSendResponse;
 import com.github.teamreflog.reflogserver.mail.application.dto.MailVerifyRequest;
-import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,12 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/mails")
+@RequiredArgsConstructor
 public class MailController {
+
+    private final MailService mailService;
 
     @PostMapping("/send")
     public MailSendResponse sendAuthMail(@RequestBody final MailSendRequest request) {
-
-        return new MailSendResponse(UUID.randomUUID().toString());
+        return mailService.sendAuthMail(request);
     }
 
     @PostMapping("/verify")
