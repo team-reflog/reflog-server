@@ -7,6 +7,8 @@ import com.github.teamreflog.reflogserver.auth.domain.MemberRole;
 import com.github.teamreflog.reflogserver.team.application.TeamService;
 import com.github.teamreflog.reflogserver.team.application.dto.CrewQueryResponse;
 import com.github.teamreflog.reflogserver.team.application.dto.TeamCreateRequest;
+import com.github.teamreflog.reflogserver.team.application.dto.TeamQueryDetailRequest;
+import com.github.teamreflog.reflogserver.team.application.dto.TeamQueryDetailResponse;
 import com.github.teamreflog.reflogserver.team.application.dto.TeamQueryResponse;
 import java.net.URI;
 import java.util.List;
@@ -46,6 +48,15 @@ public class TeamController {
     @GetMapping
     public List<TeamQueryResponse> queryTeams(@Authenticated final AuthPrincipal authPrincipal) {
         return teamService.queryTeams(authPrincipal.memberId());
+    }
+
+    @Authorities(MemberRole.MEMBER)
+    @GetMapping("/{id}/detail")
+    public TeamQueryDetailResponse queryTeamDetails(
+            @Authenticated final AuthPrincipal authPrincipal,
+            @PathVariable("id") final Long teamId) {
+        return teamService.queryTeamDetails(
+                new TeamQueryDetailRequest(authPrincipal.memberId(), teamId));
     }
 
     @Authorities(MemberRole.MEMBER)
