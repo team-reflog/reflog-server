@@ -55,7 +55,7 @@ public abstract class InviteFixture {
                 .all()
                 .auth()
                 .oauth2(inviteeAccessToken)
-                .body(new InviteAcceptRequest(null, null, "user"))
+                .body(new InviteAcceptRequest(null, null, "super-duper-nickname"))
                 .contentType(APPLICATION_JSON_VALUE)
                 .when()
                 .post("/invites/{inviteId}/accept", inviteId)

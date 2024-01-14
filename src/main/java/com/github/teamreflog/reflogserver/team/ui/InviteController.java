@@ -28,6 +28,7 @@ public class InviteController {
 
     private final InviteService inviteService;
 
+    // TODO: /teams/{id}/invites으로 바꿔야하는거 아닌가?
     @Authorities(MemberRole.MEMBER)
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

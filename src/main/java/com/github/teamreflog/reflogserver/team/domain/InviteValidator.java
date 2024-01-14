@@ -1,7 +1,7 @@
 package com.github.teamreflog.reflogserver.team.domain;
 
 import com.github.teamreflog.reflogserver.common.exception.ReflogIllegalArgumentException;
-import com.github.teamreflog.reflogserver.topic.domain.exception.NotOwnerException;
+import com.github.teamreflog.reflogserver.team.domain.exception.InviteNotAccessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +20,7 @@ public class InviteValidator {
 
     void validateTeamOwnerAuthorization(final Long memberId, final Team team) {
         if (!team.isOwner(memberId)) {
-            throw new NotOwnerException();
+            throw new InviteNotAccessException();
         }
     }
 }
