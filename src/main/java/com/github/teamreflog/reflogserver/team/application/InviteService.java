@@ -32,11 +32,11 @@ public class InviteService {
     private final MemberQueryService memberQueryService;
 
     @Transactional
-    public void inviteCrew(final InviteCreateRequest request) {
+    public Long inviteCrew(final InviteCreateRequest request) {
         inviteValidator.validateTeamOwnerAuthorization(request.memberId(), request.teamId());
         final Long memberId = memberQueryService.getIdByEmail(request.email());
 
-        inviteRepository.save(Invite.of(request.teamId(), memberId));
+        return inviteRepository.save(Invite.of(request.teamId(), memberId)).getId();
     }
 
     public List<InviteQueryResponse> queryInvites(final Long memberId) {

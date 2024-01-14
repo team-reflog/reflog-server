@@ -1,11 +1,11 @@
 package com.github.teamreflog.reflogserver.acceptance.fixture;
 
+import static org.hamcrest.Matchers.matchesRegex;
+import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import com.github.teamreflog.reflogserver.team.application.dto.InviteAcceptRequest;
-import com.github.teamreflog.reflogserver.team.application.dto.InviteCreateRequest;
-import com.github.teamreflog.reflogserver.team.application.dto.InviteQueryResponse;
 import io.restassured.RestAssured;
+import org.springframework.http.HttpHeaders;
 
 public abstract class InviteFixture {
 
@@ -13,56 +13,80 @@ public abstract class InviteFixture {
         /* no-op */
     }
 
-    public static void inviteAndAccept(
-            final String inviterAccessToken,
-            final String inviteeAccessToken,
-            final String memberEmail,
-            final Long teamId) {
-        RestAssured.given()
-                .log()
-                .all()
-                .auth()
-                .oauth2(inviterAccessToken)
-                .body(new InviteCreateRequest(null, memberEmail, teamId))
-                .contentType(APPLICATION_JSON_VALUE)
-                .when()
-                .post("/invites")
-                .then()
-                .log()
-                .all()
-                .statusCode(201);
-
-        final Long inviteId =
+    public static Long invite(
+            final String ownerAccessToken, final String memberEmail, final Long teamId) {
+        final String inviteLocation =
                 RestAssured.given()
                         .log()
                         .all()
                         .auth()
-                        .oauth2(inviteeAccessToken)
+                        .oauth2(ownerAccessToken)
+                        .contentType(APPLICATION_JSON_VALUE)
+                        .body(
+                                """
+                                        {
+                                            "email": "%s",
+                                            "teamId": %d
+                                        }
+                                        """
+                                        .formatted(memberEmail, teamId))
                         .when()
-                        .get("/invites")
+                        .post("/invites")
                         .then()
                         .log()
                         .all()
-                        .statusCode(200)
+                        .statusCode(201)
+                        .header(LOCATION, matchesRegex("/invites/[0-9]+"))
                         .extract()
-                        .jsonPath()
-                        .getList(".", InviteQueryResponse.class)
-                        .get(0)
-                        .id();
+                        .header(HttpHeaders.LOCATION);
 
+        return Long.parseLong(inviteLocation.split("/")[2]);
+    }
+
+    public static void accept(
+            final String inviteeAccessToken, final Long inviteId, final String nickname) {
         RestAssured.given()
                 .log()
                 .all()
                 .auth()
                 .oauth2(inviteeAccessToken)
-                .body(new InviteAcceptRequest(null, null, "super-duper-nickname"))
                 .contentType(APPLICATION_JSON_VALUE)
+                .body(
+                        """
+                                {
+                                                                "nickname": "%s"
+                                                            }
+                                                            """
+                                .formatted(nickname))
                 .when()
                 .post("/invites/{inviteId}/accept", inviteId)
                 .then()
                 .log()
                 .all()
-                .statusCode(200)
-                .extract();
+                .statusCode(200);
+    }
+
+    public static void reject(final String inviteeAccessToken, final Long inviteId) {
+        RestAssured.given()
+                .log()
+                .all()
+                .auth()
+                .oauth2(inviteeAccessToken)
+                .contentType(APPLICATION_JSON_VALUE)
+                .when()
+                .delete("/invites/{inviteId}/reject", inviteId)
+                .then()
+                .log()
+                .all()
+                .statusCode(200);
+    }
+
+    public static void inviteAndAccept(
+            final String inviterAccessToken,
+            final String inviteeAccessToken,
+            final String memberEmail,
+            final Long teamId) {
+        final Long inviteId = invite(inviterAccessToken, memberEmail, teamId);
+        accept(inviteeAccessToken, inviteId, "super-duper-nickname");
     }
 }

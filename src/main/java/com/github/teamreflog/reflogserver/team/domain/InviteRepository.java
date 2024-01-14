@@ -12,5 +12,5 @@ public interface InviteRepository extends Repository<Invite, Long> {
 
     void delete(Invite invite);
 
-    void save(Invite invite);
+    Invite save(Invite invite);
 }
