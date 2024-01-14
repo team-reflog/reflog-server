@@ -21,7 +21,7 @@ public abstract class TeamFixture {
             final String description,
             final String nickname,
             final List<DayOfWeek> reflectionDays) {
-        final String teamId =
+        final String teamLocation =
                 RestAssured.given()
                         .log()
                         .all()
@@ -50,10 +50,9 @@ public abstract class TeamFixture {
                         .statusCode(201)
                         .header(HttpHeaders.LOCATION, matchesRegex("/teams/[0-9]+"))
                         .extract()
-                        .header(HttpHeaders.LOCATION)
-                        .split("/")[2];
+                        .header(HttpHeaders.LOCATION);
 
-        return Long.parseLong(teamId);
+        return Long.parseLong(teamLocation.split("/")[2]);
     }
 
     private static String toString(final List<DayOfWeek> reflectionDays) {
