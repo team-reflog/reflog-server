@@ -1,0 +1,24 @@
+package com.github.teamreflog.reflogserver.mail.application;
+
+import com.github.teamreflog.reflogserver.mail.application.dto.MailSendRequest;
+import com.github.teamreflog.reflogserver.mail.application.dto.MailSendResponse;
+import com.github.teamreflog.reflogserver.mail.domain.MailAuthCodeGenerator;
+import com.github.teamreflog.reflogserver.mail.domain.MailAuthData;
+import com.github.teamreflog.reflogserver.mail.domain.MailRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class MailService {
+
+    private final MailAuthCodeGenerator mailAuthCodeGenerator;
+    private final MailRepository mailRepository;
+
+    public MailSendResponse sendAuthMail(final MailSendRequest request) {
+        final MailAuthData data =
+                MailAuthData.of(request.email(), mailAuthCodeGenerator.generateCode());
+
+        return new MailSendResponse(mailRepository.save(data));
+    }
+}
