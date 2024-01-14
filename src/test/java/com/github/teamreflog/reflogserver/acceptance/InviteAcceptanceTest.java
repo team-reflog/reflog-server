@@ -30,8 +30,8 @@ class InviteAcceptanceTest extends AcceptanceTest {
         memberEmail = "member@email.com";
         MemberFixture.createMember("reflog@email.com", "reflog");
         MemberFixture.createMember(memberEmail, "reflog");
-        ownerAccessToken = AuthFixture.login("reflog@email.com", "reflog").accessToken();
-        memberAccessToken = AuthFixture.login("member@email.com", "reflog").accessToken();
+        ownerAccessToken = AuthFixture.login("reflog@email.com", "reflog");
+        memberAccessToken = AuthFixture.login("member@email.com", "reflog");
         teamId =
                 TeamFixture.createTeam(
                         ownerAccessToken,

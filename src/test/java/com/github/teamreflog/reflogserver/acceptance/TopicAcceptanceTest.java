@@ -36,7 +36,7 @@ class TopicAcceptanceTest extends AcceptanceTest {
         super.setUp();
 
         MemberFixture.createMember("owner@email.com", "owner");
-        ownerAccessToken = AuthFixture.login("owner@email.com", "owner").accessToken();
+        ownerAccessToken = AuthFixture.login("owner@email.com", "owner");
         teamId =
                 TeamFixture.createTeam(
                         ownerAccessToken,

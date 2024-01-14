@@ -28,7 +28,7 @@ class TeamAcceptanceTest extends AcceptanceTest {
         super.setUp();
 
         ownerId = MemberFixture.createMember("reflog@email.com", "reflog");
-        ownerAccessToken = AuthFixture.login("reflog@email.com", "reflog").accessToken();
+        ownerAccessToken = AuthFixture.login("reflog@email.com", "reflog");
     }
 
     @Test
@@ -42,18 +42,18 @@ class TeamAcceptanceTest extends AcceptanceTest {
                 .contentType(APPLICATION_JSON_VALUE)
                 .body(
                         """
-                        {
-                            "name": "antifragile",
-                            "description": "안티프래질 팀입니다.",
-                            "nickname": "owner",
-                            "reflectionDays": [
-                                "MONDAY",
-                                "WEDNESDAY",
-                                "FRIDAY",
-                                "SUNDAY"
-                            ]
-                        }
-                        """)
+                                {
+                                    "name": "antifragile",
+                                    "description": "안티프래질 팀입니다.",
+                                    "nickname": "owner",
+                                    "reflectionDays": [
+                                        "MONDAY",
+                                        "WEDNESDAY",
+                                        "FRIDAY",
+                                        "SUNDAY"
+                                    ]
+                                }
+                                """)
                 .when()
                 .post("/teams")
                 .then()

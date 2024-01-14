@@ -1,9 +1,8 @@
 package com.github.teamreflog.reflogserver.acceptance.fixture;
 
+import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import com.github.teamreflog.reflogserver.auth.application.dto.LoginRequest;
-import com.github.teamreflog.reflogserver.auth.application.dto.TokenResponse;
 import io.restassured.RestAssured;
 
 public abstract class AuthFixture {
@@ -12,20 +11,30 @@ public abstract class AuthFixture {
         /* no-op */
     }
 
-    public static TokenResponse login(final String email, final String password) {
+    public static String login(final String email, final String password) {
         return RestAssured.given()
                 .log()
                 .all()
-                .body(new LoginRequest(email, password))
                 .contentType(APPLICATION_JSON_VALUE)
+                .body(
+                        """
+                        {
+                            "email": "%s",
+                            "password": "%s"
+                        }
+                        """
+                                .formatted(email, password))
                 .when()
                 .post("/auth/login")
                 .then()
                 .log()
                 .all()
                 .statusCode(200)
+                .body("accessToken", notNullValue())
+                .body("refreshToken", notNullValue())
                 .extract()
                 .body()
-                .as(TokenResponse.class);
+                .jsonPath()
+                .getString("accessToken");
     }
 }

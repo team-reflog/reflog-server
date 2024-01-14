@@ -32,7 +32,7 @@ class CommentAcceptanceTest extends AcceptanceTest {
         super.setUp();
 
         MemberFixture.createMember("owner@email.com", "owner");
-        final String ownerToken = AuthFixture.login("owner@email.com", "owner").accessToken();
+        final String ownerToken = AuthFixture.login("owner@email.com", "owner");
         final Long teamId =
                 TeamFixture.createTeam(
                         ownerToken,
@@ -47,7 +47,7 @@ class CommentAcceptanceTest extends AcceptanceTest {
         topicId = TopicFixture.createTopic(ownerToken, teamId, "오늘 하루는 어땠나요?");
 
         MemberFixture.createMember("crew@email.com", "crew");
-        crewToken = AuthFixture.login("crew@email.com", "crew").accessToken();
+        crewToken = AuthFixture.login("crew@email.com", "crew");
 
         InviteFixture.inviteAndAccept(ownerToken, crewToken, "crew@email.com", teamId);
         reflectionId = ReflectionFixture.createReflection(crewToken, topicId, "힘들었어요 🥲");
@@ -64,10 +64,10 @@ class CommentAcceptanceTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(
                         """
-                        {
-                            "content": "오늘 하루도 수고하셨습니다."
-                        }
-                        """)
+                                {
+                                    "content": "오늘 하루도 수고하셨습니다."
+                                }
+                                """)
                 .when()
                 .post("/reflections/{reflectionId}/comments", reflectionId)
                 .then()

@@ -31,7 +31,7 @@ class ReflectionAcceptanceTest extends AcceptanceTest {
         super.setUp();
 
         MemberFixture.createMember("owner@email.com", "owner");
-        final String ownerToken = AuthFixture.login("owner@email.com", "owner").accessToken();
+        final String ownerToken = AuthFixture.login("owner@email.com", "owner");
         final Long teamId =
                 TeamFixture.createTeam(
                         ownerToken,
@@ -46,7 +46,7 @@ class ReflectionAcceptanceTest extends AcceptanceTest {
         topicId = TopicFixture.createTopic(ownerToken, teamId, "오늘 하루는 어땠나요?");
 
         MemberFixture.createMember("crew@email.com", "crew");
-        crewToken = AuthFixture.login("crew@email.com", "crew").accessToken();
+        crewToken = AuthFixture.login("crew@email.com", "crew");
 
         InviteFixture.inviteAndAccept(ownerToken, crewToken, "crew@email.com", teamId);
     }
@@ -63,11 +63,11 @@ class ReflectionAcceptanceTest extends AcceptanceTest {
                 .contentType(APPLICATION_JSON_VALUE)
                 .body(
                         """
-                        {
-                            "topicId": %d,
-                            "content": "힘들었어요 🥲"
-                        }
-                        """
+                                {
+                                    "topicId": %d,
+                                    "content": "힘들었어요 🥲"
+                                }
+                                """
                                 .formatted(topicId))
                 .when()
                 .post("/reflections")
