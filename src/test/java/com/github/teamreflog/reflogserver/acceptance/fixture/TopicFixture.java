@@ -1,9 +1,9 @@
 package com.github.teamreflog.reflogserver.acceptance.fixture;
 
+import static org.hamcrest.Matchers.matchesRegex;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import com.github.teamreflog.reflogserver.topic.application.dto.TopicCreateRequest;
 import com.github.teamreflog.reflogserver.topic.application.dto.TopicQueryResponse;
 import io.restassured.RestAssured;
 import java.util.List;
@@ -22,14 +22,22 @@ public abstract class TopicFixture {
                         .all()
                         .auth()
                         .oauth2(accessToken)
-                        .body(new TopicCreateRequest(null, teamId, content))
                         .contentType(APPLICATION_JSON_VALUE)
+                        .body(
+                                """
+                                        {
+                                            "teamId": %d,
+                                            "content": "%s"
+                                        }
+                                        """
+                                        .formatted(teamId, content))
                         .when()
                         .post("/topics")
                         .then()
                         .log()
                         .all()
                         .statusCode(201)
+                        .header(LOCATION, matchesRegex("/topics/[0-9]+"))
                         .extract()
                         .header(LOCATION)
                         .split("/")[2];
