@@ -13,8 +13,8 @@ public class MailAuthData {
     @Getter private final Integer code;
     private final Boolean isVerified;
 
-    public static MailAuthData of(@NonNull final String mail, @NonNull final Integer number) {
-        return new MailAuthData(mail, number, false);
+    public static MailAuthData of(@NonNull final String mail, @NonNull final Integer code) {
+        return new MailAuthData(mail, code, false);
     }
 
     public MailAuthData verify(final Integer code) {
