@@ -17,6 +17,6 @@ public class TeamClient implements TeamQueryClient {
     public TeamData getTeamData(final Long teamId) {
         final TeamQueryResponse response = teamService.queryTeam(teamId);
 
-        return new TeamData(response.id(), response.ownerId(), response.daysOfWeek());
+        return new TeamData(response.id(), response.ownerId(), response.reflectionDays());
     }
 }

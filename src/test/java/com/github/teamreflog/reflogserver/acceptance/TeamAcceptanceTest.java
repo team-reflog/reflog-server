@@ -86,7 +86,9 @@ class TeamAcceptanceTest extends AcceptanceTest {
                 .body("name", equalTo("antifragile"))
                 .body("description", equalTo("안티프래질 팀입니다."))
                 .body("ownerId", equalTo(memberId.intValue()))
-                .body("daysOfWeek", equalTo(List.of("MONDAY", "WEDNESDAY", "FRIDAY", "SUNDAY")));
+                .body(
+                        "reflectionDays",
+                        equalTo(List.of("MONDAY", "WEDNESDAY", "FRIDAY", "SUNDAY")));
     }
 
     @Test
@@ -131,13 +133,13 @@ class TeamAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.get(0).description()).isEqualTo("안티 팀입니다."),
                 () -> assertThat(response.get(0).ownerId()).isEqualTo(memberId),
                 () ->
-                        assertThat(response.get(0).daysOfWeek())
+                        assertThat(response.get(0).reflectionDays())
                                 .containsExactly(DayOfWeek.MONDAY, DayOfWeek.SUNDAY),
                 () -> assertThat(response.get(1).name()).isEqualTo("fragile"),
                 () -> assertThat(response.get(1).description()).isEqualTo("프래질 팀입니다."),
                 () -> assertThat(response.get(1).ownerId()).isEqualTo(memberId),
                 () ->
-                        assertThat(response.get(1).daysOfWeek())
+                        assertThat(response.get(1).reflectionDays())
                                 .containsExactly(DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY));
     }
 
