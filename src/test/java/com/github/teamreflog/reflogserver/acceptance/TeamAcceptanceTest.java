@@ -3,6 +3,7 @@ package com.github.teamreflog.reflogserver.acceptance;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.matchesRegex;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import com.github.teamreflog.reflogserver.acceptance.fixture.AuthFixture;
@@ -11,6 +12,7 @@ import com.github.teamreflog.reflogserver.acceptance.fixture.TeamFixture;
 import com.github.teamreflog.reflogserver.auth.application.dto.TokenResponse;
 import com.github.teamreflog.reflogserver.team.application.dto.CrewQueryResponse;
 import com.github.teamreflog.reflogserver.team.application.dto.TeamCreateRequest;
+import com.github.teamreflog.reflogserver.team.application.dto.TeamQueryResponse;
 import io.restassured.RestAssured;
 import java.time.DayOfWeek;
 import java.util.List;
@@ -85,6 +87,58 @@ class TeamAcceptanceTest extends AcceptanceTest {
                 .body("description", equalTo("안티프래질 팀입니다."))
                 .body("ownerId", equalTo(memberId.intValue()))
                 .body("daysOfWeek", equalTo(List.of("MONDAY", "WEDNESDAY", "FRIDAY", "SUNDAY")));
+    }
+
+    @Test
+    @DisplayName("속한 팀들을 조회할 수 있다.")
+    void queryTeams() {
+        final Long memberId = MemberFixture.createMember("reflog@email.com", "reflog");
+        final String accessToken = AuthFixture.login("reflog@email.com", "reflog").accessToken();
+        TeamFixture.createTeam(
+                accessToken,
+                "anti",
+                "안티 팀입니다.",
+                "anti-owner",
+                List.of(DayOfWeek.MONDAY, DayOfWeek.SUNDAY));
+        TeamFixture.createTeam(
+                accessToken,
+                "fragile",
+                "프래질 팀입니다.",
+                "fragile-owner",
+                List.of(DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY));
+
+        /* when */
+        final List<TeamQueryResponse> response =
+                RestAssured.given()
+                        .log()
+                        .all()
+                        .auth()
+                        .oauth2(accessToken)
+                        .when()
+                        .get("/teams")
+                        .then()
+                        .log()
+                        .all()
+                        .statusCode(200)
+                        .extract()
+                        .jsonPath()
+                        .getList(".", TeamQueryResponse.class);
+
+        /* then */
+        assertAll(
+                () -> assertThat(response).hasSize(2),
+                () -> assertThat(response.get(0).name()).isEqualTo("anti"),
+                () -> assertThat(response.get(0).description()).isEqualTo("안티 팀입니다."),
+                () -> assertThat(response.get(0).ownerId()).isEqualTo(memberId),
+                () ->
+                        assertThat(response.get(0).daysOfWeek())
+                                .containsExactly(DayOfWeek.MONDAY, DayOfWeek.SUNDAY),
+                () -> assertThat(response.get(1).name()).isEqualTo("fragile"),
+                () -> assertThat(response.get(1).description()).isEqualTo("프래질 팀입니다."),
+                () -> assertThat(response.get(1).ownerId()).isEqualTo(memberId),
+                () ->
+                        assertThat(response.get(1).daysOfWeek())
+                                .containsExactly(DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY));
     }
 
     @Test

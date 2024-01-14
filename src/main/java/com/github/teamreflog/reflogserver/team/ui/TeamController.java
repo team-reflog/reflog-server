@@ -43,6 +43,12 @@ public class TeamController {
     }
 
     @Authorities(MemberRole.MEMBER)
+    @GetMapping
+    public List<TeamQueryResponse> queryTeams(@Authenticated final AuthPrincipal authPrincipal) {
+        return teamService.queryTeams(authPrincipal.memberId());
+    }
+
+    @Authorities(MemberRole.MEMBER)
     @GetMapping("/{id}/members")
     public List<CrewQueryResponse> queryCrews(@PathVariable("id") final Long teamId) {
         return teamService.queryCrews(teamId);
