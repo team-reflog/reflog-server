@@ -40,6 +40,16 @@ public class TeamService {
                 .orElseThrow(ReflogIllegalArgumentException::new);
     }
 
+    @Transactional(readOnly = true)
+    public List<TeamQueryResponse> queryTeams(final Long memberId) {
+        final List<Long> teamIds =
+                crewRepository.findAllByMemberId(memberId).stream().map(Crew::getTeamId).toList();
+
+        return teamRepository.findAllByIdIn(teamIds).stream()
+                .map(TeamQueryResponse::fromEntity)
+                .toList();
+    }
+
     public List<CrewQueryResponse> queryCrews(final Long teamId) {
         final Team team =
                 teamRepository.findById(teamId).orElseThrow(ReflogIllegalArgumentException::new);
