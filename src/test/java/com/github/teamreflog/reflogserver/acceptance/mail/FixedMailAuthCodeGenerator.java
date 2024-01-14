@@ -1,4 +1,4 @@
-package com.github.teamreflog.reflogserver.acceptance.fake;
+package com.github.teamreflog.reflogserver.acceptance.mail;
 
 import com.github.teamreflog.reflogserver.mail.domain.MailAuthCodeGenerator;
 import org.springframework.context.annotation.Primary;

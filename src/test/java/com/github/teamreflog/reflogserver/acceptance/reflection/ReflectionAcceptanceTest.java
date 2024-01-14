@@ -1,15 +1,15 @@
-package com.github.teamreflog.reflogserver.acceptance;
+package com.github.teamreflog.reflogserver.acceptance.reflection;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.matchesRegex;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import com.github.teamreflog.reflogserver.acceptance.fixture.AuthFixture;
-import com.github.teamreflog.reflogserver.acceptance.fixture.InviteFixture;
-import com.github.teamreflog.reflogserver.acceptance.fixture.MemberFixture;
-import com.github.teamreflog.reflogserver.acceptance.fixture.ReflectionFixture;
-import com.github.teamreflog.reflogserver.acceptance.fixture.TeamFixture;
-import com.github.teamreflog.reflogserver.acceptance.fixture.TopicFixture;
+import com.github.teamreflog.reflogserver.acceptance.AcceptanceTest;
+import com.github.teamreflog.reflogserver.acceptance.auth.AuthFixture;
+import com.github.teamreflog.reflogserver.acceptance.member.MemberFixture;
+import com.github.teamreflog.reflogserver.acceptance.team.InviteFixture;
+import com.github.teamreflog.reflogserver.acceptance.team.TeamFixture;
+import com.github.teamreflog.reflogserver.acceptance.topic.TopicFixture;
 import io.restassured.RestAssured;
 import java.time.DayOfWeek;
 import java.util.List;
@@ -27,7 +27,7 @@ class ReflectionAcceptanceTest extends AcceptanceTest {
 
     @Override
     @BeforeEach
-    void setUp() {
+    protected void setUp() {
         super.setUp();
 
         MemberFixture.createMember("owner@email.com", "owner");

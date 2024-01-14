@@ -1,43 +1,43 @@
-package com.github.teamreflog.reflogserver.acceptance.fixture;
+package com.github.teamreflog.reflogserver.acceptance.member;
 
 import static org.hamcrest.Matchers.matchesRegex;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import io.restassured.RestAssured;
+import org.springframework.http.HttpHeaders;
 
-public abstract class CommentFixture {
+public abstract class MemberFixture {
 
-    private CommentFixture() {
+    private MemberFixture() {
         /* no-op */
     }
 
-    public static Long createComment(
-            final String accessToken, final Long reflectionId, final String content) {
-        final String commentLocation =
+    public static Long createMember(final String email, final String password) {
+        final String memberId =
                 RestAssured.given()
                         .log()
                         .all()
-                        .auth()
-                        .oauth2(accessToken)
                         .contentType(APPLICATION_JSON_VALUE)
                         .body(
                                 """
                                         {
-                                            "content": "%s"
+                                            "email": "%s",
+                                            "password": "%s"
                                         }
                                         """
-                                        .formatted(content))
+                                        .formatted(email, password))
                         .when()
-                        .post("/reflections/%d/comments".formatted(reflectionId))
+                        .post("/members")
                         .then()
                         .log()
                         .all()
                         .statusCode(201)
-                        .header(LOCATION, matchesRegex("/comments/[0-9]+"))
+                        .header(LOCATION, matchesRegex("/members/[0-9]+"))
                         .extract()
-                        .header(LOCATION);
+                        .header(HttpHeaders.LOCATION)
+                        .split("/")[2];
 
-        return Long.parseLong(commentLocation.split("/")[2]);
+        return Long.parseLong(memberId);
     }
 }

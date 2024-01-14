@@ -1,14 +1,13 @@
-package com.github.teamreflog.reflogserver.acceptance;
+package com.github.teamreflog.reflogserver.acceptance.team;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.matchesRegex;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import com.github.teamreflog.reflogserver.acceptance.fixture.AuthFixture;
-import com.github.teamreflog.reflogserver.acceptance.fixture.InviteFixture;
-import com.github.teamreflog.reflogserver.acceptance.fixture.MemberFixture;
-import com.github.teamreflog.reflogserver.acceptance.fixture.TeamFixture;
+import com.github.teamreflog.reflogserver.acceptance.AcceptanceTest;
+import com.github.teamreflog.reflogserver.acceptance.auth.AuthFixture;
+import com.github.teamreflog.reflogserver.acceptance.member.MemberFixture;
 import io.restassured.RestAssured;
 import java.time.DayOfWeek;
 import java.util.List;
@@ -24,7 +23,7 @@ class InviteAcceptanceTest extends AcceptanceTest {
     Long teamId;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         super.setUp();
 
         memberEmail = "member@email.com";

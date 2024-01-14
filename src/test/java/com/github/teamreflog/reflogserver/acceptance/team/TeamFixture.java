@@ -1,4 +1,4 @@
-package com.github.teamreflog.reflogserver.acceptance.fixture;
+package com.github.teamreflog.reflogserver.acceptance.team;
 
 import static org.hamcrest.Matchers.matchesRegex;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;

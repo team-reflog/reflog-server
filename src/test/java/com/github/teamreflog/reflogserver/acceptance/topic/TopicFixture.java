@@ -1,4 +1,4 @@
-package com.github.teamreflog.reflogserver.acceptance.fixture;
+package com.github.teamreflog.reflogserver.acceptance.topic;
 
 import static org.hamcrest.Matchers.matchesRegex;
 import static org.springframework.http.HttpHeaders.LOCATION;

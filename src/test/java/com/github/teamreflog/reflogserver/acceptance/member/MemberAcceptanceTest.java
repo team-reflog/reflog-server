@@ -1,9 +1,10 @@
-package com.github.teamreflog.reflogserver.acceptance;
+package com.github.teamreflog.reflogserver.acceptance.member;
 
 import static org.hamcrest.Matchers.matchesRegex;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+import com.github.teamreflog.reflogserver.acceptance.AcceptanceTest;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

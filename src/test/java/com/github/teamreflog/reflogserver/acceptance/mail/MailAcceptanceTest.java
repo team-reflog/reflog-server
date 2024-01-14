@@ -1,8 +1,8 @@
-package com.github.teamreflog.reflogserver.acceptance;
+package com.github.teamreflog.reflogserver.acceptance.mail;
 
 import static org.hamcrest.Matchers.matchesRegex;
 
-import com.github.teamreflog.reflogserver.acceptance.fixture.MailFixture;
+import com.github.teamreflog.reflogserver.acceptance.AcceptanceTest;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,10 +22,10 @@ class MailAcceptanceTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(
                         """
-                        {
-                            "email": "reflog@email.com"
-                        }
-                        """)
+                                {
+                                    "email": "reflog@email.com"
+                                }
+                                """)
                 .when()
                 .post("/mails/send")
                 .then()

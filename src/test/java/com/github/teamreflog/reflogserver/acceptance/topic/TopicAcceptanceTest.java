@@ -1,14 +1,13 @@
-package com.github.teamreflog.reflogserver.acceptance;
+package com.github.teamreflog.reflogserver.acceptance.topic;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.matchesRegex;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import com.github.teamreflog.reflogserver.acceptance.fixture.AuthFixture;
-import com.github.teamreflog.reflogserver.acceptance.fixture.MemberFixture;
-import com.github.teamreflog.reflogserver.acceptance.fixture.TeamFixture;
-import com.github.teamreflog.reflogserver.acceptance.fixture.TopicFixture;
-import com.github.teamreflog.reflogserver.acceptance.helper.DayOfWeekProviderBeanChanger;
+import com.github.teamreflog.reflogserver.acceptance.AcceptanceTest;
+import com.github.teamreflog.reflogserver.acceptance.auth.AuthFixture;
+import com.github.teamreflog.reflogserver.acceptance.member.MemberFixture;
+import com.github.teamreflog.reflogserver.acceptance.team.TeamFixture;
 import com.github.teamreflog.reflogserver.topic.application.TopicService;
 import com.github.teamreflog.reflogserver.topic.domain.DayOfWeekProvider;
 import io.restassured.RestAssured;
@@ -32,7 +31,7 @@ class TopicAcceptanceTest extends AcceptanceTest {
 
     @Override
     @BeforeEach
-    void setUp() {
+    protected void setUp() {
         super.setUp();
 
         MemberFixture.createMember("owner@email.com", "owner");

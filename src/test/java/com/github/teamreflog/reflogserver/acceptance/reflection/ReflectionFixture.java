@@ -1,43 +1,46 @@
-package com.github.teamreflog.reflogserver.acceptance.fixture;
+package com.github.teamreflog.reflogserver.acceptance.reflection;
 
 import static org.hamcrest.Matchers.matchesRegex;
-import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import io.restassured.RestAssured;
 import org.springframework.http.HttpHeaders;
 
-public abstract class MemberFixture {
+public abstract class ReflectionFixture {
 
-    private MemberFixture() {
+    private ReflectionFixture() {
         /* no-op */
     }
 
-    public static Long createMember(final String email, final String password) {
-        final String memberId =
+    public static Long createReflection(
+            final String crewToken, final Long topicId, final String content) {
+        final String reflectionLocation =
                 RestAssured.given()
                         .log()
                         .all()
+                        .auth()
+                        .oauth2(crewToken)
+                        .header("Time-Zone", "America/New_York")
                         .contentType(APPLICATION_JSON_VALUE)
                         .body(
                                 """
                                         {
-                                            "email": "%s",
-                                            "password": "%s"
+                                            "topicId": %d,
+                                            "content": "%s"
                                         }
                                         """
-                                        .formatted(email, password))
+                                        .formatted(topicId, content))
                         .when()
-                        .post("/members")
+                        .post("/reflections")
                         .then()
                         .log()
                         .all()
                         .statusCode(201)
-                        .header(LOCATION, matchesRegex("/members/[0-9]+"))
+                        .header(HttpHeaders.LOCATION, matchesRegex("/reflections/[0-9]+"))
                         .extract()
                         .header(HttpHeaders.LOCATION)
                         .split("/")[2];
 
-        return Long.parseLong(memberId);
+        return Long.parseLong(reflectionLocation);
     }
 }

@@ -1,4 +1,4 @@
-package com.github.teamreflog.reflogserver.acceptance.fixture;
+package com.github.teamreflog.reflogserver.acceptance.auth;
 
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -18,11 +18,11 @@ public abstract class AuthFixture {
                 .contentType(APPLICATION_JSON_VALUE)
                 .body(
                         """
-                        {
-                            "email": "%s",
-                            "password": "%s"
-                        }
-                        """
+                                {
+                                    "email": "%s",
+                                    "password": "%s"
+                                }
+                                """
                                 .formatted(email, password))
                 .when()
                 .post("/auth/login")

@@ -1,9 +1,10 @@
-package com.github.teamreflog.reflogserver.acceptance;
+package com.github.teamreflog.reflogserver.acceptance.auth;
 
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import com.github.teamreflog.reflogserver.acceptance.fixture.MemberFixture;
+import com.github.teamreflog.reflogserver.acceptance.AcceptanceTest;
+import com.github.teamreflog.reflogserver.acceptance.member.MemberFixture;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -93,11 +94,11 @@ class AuthAcceptanceTest extends AcceptanceTest {
                 .contentType(APPLICATION_JSON_VALUE)
                 .body(
                         """
-                        {
-                            "email": "%s",
-                            "password": "%s"
-                        }
-                        """
+                                {
+                                    "email": "%s",
+                                    "password": "%s"
+                                }
+                                """
                                 .formatted(email, password))
                 .when()
                 .post("/auth/login")

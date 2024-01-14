@@ -1,4 +1,4 @@
-package com.github.teamreflog.reflogserver.acceptance.fixture;
+package com.github.teamreflog.reflogserver.acceptance.mail;
 
 import static org.hamcrest.Matchers.matchesRegex;
 
@@ -18,10 +18,10 @@ public abstract class MailFixture {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(
                         """
-                        {
-                            "email": "%s"
-                        }
-                        """
+                                {
+                                    "email": "%s"
+                                }
+                                """
                                 .formatted(email))
                 .when()
                 .post("/mails/send")

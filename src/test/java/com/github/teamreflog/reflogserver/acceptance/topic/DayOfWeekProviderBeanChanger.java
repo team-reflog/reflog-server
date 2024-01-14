@@ -1,4 +1,4 @@
-package com.github.teamreflog.reflogserver.acceptance.helper;
+package com.github.teamreflog.reflogserver.acceptance.topic;
 
 import com.github.teamreflog.reflogserver.topic.application.TopicService;
 import com.github.teamreflog.reflogserver.topic.domain.DayOfWeekProvider;
