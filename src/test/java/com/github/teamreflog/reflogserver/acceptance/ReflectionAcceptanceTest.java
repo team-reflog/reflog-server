@@ -8,26 +8,19 @@ import com.github.teamreflog.reflogserver.acceptance.fixture.InviteFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.MemberFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.TeamFixture;
 import com.github.teamreflog.reflogserver.acceptance.fixture.TopicFixture;
-import com.github.teamreflog.reflogserver.acceptance.helper.DayOfWeekProviderBeanChanger;
 import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionCreateRequest;
 import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionQueryResponse;
-import com.github.teamreflog.reflogserver.topic.application.TopicService;
-import com.github.teamreflog.reflogserver.topic.domain.DayOfWeekProvider;
 import io.restassured.RestAssured;
 import java.time.DayOfWeek;
 import java.util.List;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 
 @DisplayName("인수 테스트: 회고")
 public class ReflectionAcceptanceTest extends AcceptanceTest {
-
-    @Autowired TopicService service;
 
     String crewToken;
     Long topicId;
@@ -36,16 +29,6 @@ public class ReflectionAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     void setUp() {
         super.setUp();
-
-        /* 오늘은 월요일 */
-        DayOfWeekProviderBeanChanger.changeDateProvider(
-                service,
-                new DayOfWeekProvider() {
-                    @Override
-                    public DayOfWeek getToday(final String timezone) {
-                        return DayOfWeek.MONDAY;
-                    }
-                });
 
         MemberFixture.createMember("owner@email.com", "owner");
         final String ownerToken = AuthFixture.login("owner@email.com", "owner").accessToken();
@@ -66,12 +49,6 @@ public class ReflectionAcceptanceTest extends AcceptanceTest {
         crewToken = AuthFixture.login("crew@email.com", "crew").accessToken();
 
         InviteFixture.inviteAndAccept(ownerToken, crewToken, "crew@email.com", teamId);
-        TopicFixture.queryTodayTopics(crewToken);
-    }
-
-    @AfterEach
-    void tearDown() {
-        DayOfWeekProviderBeanChanger.changeDateProvider(service, new DayOfWeekProvider());
     }
 
     @Nested
