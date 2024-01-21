@@ -9,9 +9,11 @@ import com.github.teamreflog.reflogserver.team.application.dto.InviteAcceptReque
 import com.github.teamreflog.reflogserver.team.application.dto.InviteCreateRequest;
 import com.github.teamreflog.reflogserver.team.application.dto.InviteQueryResponse;
 import com.github.teamreflog.reflogserver.team.application.dto.InviteRejectRequest;
+import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,10 +34,13 @@ public class InviteController {
     @Authorities(MemberRole.MEMBER)
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void inviteCrew(
+    public ResponseEntity<Void> inviteCrew(
             @Authenticated final AuthPrincipal authPrincipal,
             @RequestBody final InviteCreateRequest request) {
-        inviteService.inviteCrew(request.setMemberId(authPrincipal.memberId()));
+        final Long inviteId =
+                inviteService.inviteCrew(request.setMemberId(authPrincipal.memberId()));
+
+        return ResponseEntity.created(URI.create("/invites/" + inviteId)).build();
     }
 
     @Authorities(MemberRole.MEMBER)

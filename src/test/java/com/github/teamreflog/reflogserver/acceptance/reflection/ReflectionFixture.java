@@ -1,8 +1,8 @@
-package com.github.teamreflog.reflogserver.acceptance.fixture;
+package com.github.teamreflog.reflogserver.acceptance.reflection;
 
+import static org.hamcrest.Matchers.matchesRegex;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionCreateRequest;
 import io.restassured.RestAssured;
 import org.springframework.http.HttpHeaders;
 
@@ -22,13 +22,21 @@ public abstract class ReflectionFixture {
                         .oauth2(crewToken)
                         .header("Time-Zone", "America/New_York")
                         .contentType(APPLICATION_JSON_VALUE)
-                        .body(new ReflectionCreateRequest(null, topicId, content, null))
+                        .body(
+                                """
+                                        {
+                                            "topicId": %d,
+                                            "content": "%s"
+                                        }
+                                        """
+                                        .formatted(topicId, content))
                         .when()
                         .post("/reflections")
                         .then()
                         .log()
                         .all()
                         .statusCode(201)
+                        .header(HttpHeaders.LOCATION, matchesRegex("/reflections/[0-9]+"))
                         .extract()
                         .header(HttpHeaders.LOCATION)
                         .split("/")[2];

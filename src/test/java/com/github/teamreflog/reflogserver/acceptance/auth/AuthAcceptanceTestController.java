@@ -1,4 +1,4 @@
-package com.github.teamreflog.reflogserver.acceptance.controller;
+package com.github.teamreflog.reflogserver.acceptance.auth;
 
 import com.github.teamreflog.reflogserver.auth.domain.Authorities;
 import com.github.teamreflog.reflogserver.auth.domain.MemberRole;

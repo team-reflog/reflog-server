@@ -14,7 +14,7 @@ public abstract class AcceptanceTest {
     @LocalServerPort int port;
 
     @BeforeEach
-    void setUp() {
+    protected void setUp() {
         RestAssured.port = port;
     }
 
