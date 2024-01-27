@@ -9,18 +9,25 @@ import com.github.teamreflog.reflogserver.acceptance.auth.AuthFixture;
 import com.github.teamreflog.reflogserver.acceptance.member.MemberFixture;
 import com.github.teamreflog.reflogserver.acceptance.team.InviteFixture;
 import com.github.teamreflog.reflogserver.acceptance.team.TeamFixture;
+import com.github.teamreflog.reflogserver.acceptance.topic.DayOfWeekProviderBeanChanger;
 import com.github.teamreflog.reflogserver.acceptance.topic.TopicFixture;
+import com.github.teamreflog.reflogserver.topic.application.TopicService;
+import com.github.teamreflog.reflogserver.topic.domain.DayOfWeekProvider;
 import io.restassured.RestAssured;
 import java.time.DayOfWeek;
 import java.util.List;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 
 @DisplayName("인수 테스트: 회고")
 class ReflectionAcceptanceTest extends AcceptanceTest {
+
+    @Autowired TopicService topicService;
 
     String crewToken;
     Long topicId;
@@ -29,6 +36,15 @@ class ReflectionAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     protected void setUp() {
         super.setUp();
+
+        DayOfWeekProviderBeanChanger.changeDateProvider(
+                topicService,
+                new DayOfWeekProvider() {
+                    @Override
+                    public DayOfWeek getToday(final String timezone) {
+                        return DayOfWeek.MONDAY;
+                    }
+                });
 
         MemberFixture.createMember("owner@email.com", "owner");
         final String ownerToken = AuthFixture.login("owner@email.com", "owner");
@@ -49,6 +65,11 @@ class ReflectionAcceptanceTest extends AcceptanceTest {
         crewToken = AuthFixture.login("crew@email.com", "crew");
 
         InviteFixture.inviteAndAccept(ownerToken, crewToken, "crew@email.com", teamId);
+    }
+
+    @AfterEach
+    void tearDown() {
+        DayOfWeekProviderBeanChanger.changeDateProvider(topicService, new DayOfWeekProvider());
     }
 
     @Test
