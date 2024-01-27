@@ -28,8 +28,8 @@ class DateProviderTest {
         final Instant now = ZonedDateTime.of(2024, 1, 5, 4, 0, 0, 0, ZoneOffset.UTC).toInstant();
 
         /* when */
-        final LocalDate seoulToday = dateProvider.getTodayOfZone(now, "Asia/Seoul");
-        final LocalDate newYorkToday = dateProvider.getTodayOfZone(now, "America/New_York");
+        final LocalDate seoulToday = dateProvider.getLocalDateNow(now, "Asia/Seoul");
+        final LocalDate newYorkToday = dateProvider.getLocalDateNow(now, "America/New_York");
 
         /* then */
         assertAll(

@@ -25,10 +25,9 @@ public class ReflectionService {
 
     @Transactional
     public Long createReflection(final ReflectionCreateRequest request) {
-        final LocalDate localDate = dateProvider.getTodayOfZone(request.timezone());
+        final LocalDate now = dateProvider.getLocalDateNow(request.timezone());
 
-        reflectionValidator.validateReflectionExistence(
-                request.memberId(), request.topicId(), localDate);
+        reflectionValidator.validateReflectionExistence(request.memberId(), request.topicId(), now);
 
         return reflectionRepository
                 .save(
@@ -36,7 +35,7 @@ public class ReflectionService {
                                 request.memberId(),
                                 request.topicId(),
                                 request.content(),
-                                localDate,
+                                now,
                                 teamQueryService.getTeamDataByTopicId(request.topicId())))
                 .getId();
     }
@@ -47,7 +46,7 @@ public class ReflectionService {
 
         return reflectionRepository
                 .findAllByMemberIdAndReflectionDate(
-                        request.memberId(), dateProvider.getTodayOfZone(request.timezone()))
+                        request.memberId(), dateProvider.getLocalDateNow(request.timezone()))
                 .stream()
                 .map(ReflectionQueryResponse::fromEntity)
                 .toList();

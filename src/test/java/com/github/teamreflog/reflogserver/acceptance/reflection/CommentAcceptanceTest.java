@@ -42,7 +42,7 @@ class CommentAcceptanceTest extends AcceptanceTest {
                 reflectionService,
                 new DateProvider() {
                     @Override
-                    public LocalDate getTodayOfZone(final String timezone) {
+                    public LocalDate getLocalDateNow(final String timezone) {
                         return LocalDate.of(2024, 1, 29);
                     }
                 });
