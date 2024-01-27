@@ -31,6 +31,7 @@ public class ReflectionService {
         return reflectionRepository.save(reflection).getId();
     }
 
+    @Transactional(readOnly = true)
     public List<ReflectionQueryResponse> queryTodayReflections(
             final ReflectionTodayQueryRequest request) {
 
