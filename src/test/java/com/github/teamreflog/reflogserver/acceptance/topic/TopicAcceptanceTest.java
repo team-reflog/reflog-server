@@ -116,7 +116,7 @@ class TopicAcceptanceTest extends AcceptanceTest {
 
             @BeforeEach
             void setUp() {
-                DayOfWeekProviderBeanChanger.changeDateProvider(
+                DateBasedBeanChanger.changeDayOfWeekProvider(
                         service,
                         new DayOfWeekProvider() {
                             @Override
@@ -128,7 +128,7 @@ class TopicAcceptanceTest extends AcceptanceTest {
 
             @AfterEach
             void tearDown() {
-                DayOfWeekProviderBeanChanger.changeDateProvider(service, new DayOfWeekProvider());
+                DateBasedBeanChanger.changeDayOfWeekProvider(service, new DayOfWeekProvider());
             }
 
             @Test
@@ -162,7 +162,7 @@ class TopicAcceptanceTest extends AcceptanceTest {
 
             @BeforeEach
             void setUp() {
-                DayOfWeekProviderBeanChanger.changeDateProvider(
+                DateBasedBeanChanger.changeDayOfWeekProvider(
                         service,
                         new DayOfWeekProvider() {
                             @Override
@@ -174,7 +174,7 @@ class TopicAcceptanceTest extends AcceptanceTest {
 
             @AfterEach
             void tearDown() {
-                DayOfWeekProviderBeanChanger.changeDateProvider(service, new DayOfWeekProvider());
+                DateBasedBeanChanger.changeDayOfWeekProvider(service, new DayOfWeekProvider());
             }
 
             @Test

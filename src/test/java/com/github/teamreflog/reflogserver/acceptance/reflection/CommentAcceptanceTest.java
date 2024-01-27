@@ -8,19 +8,27 @@ import com.github.teamreflog.reflogserver.acceptance.auth.AuthFixture;
 import com.github.teamreflog.reflogserver.acceptance.member.MemberFixture;
 import com.github.teamreflog.reflogserver.acceptance.team.InviteFixture;
 import com.github.teamreflog.reflogserver.acceptance.team.TeamFixture;
+import com.github.teamreflog.reflogserver.acceptance.topic.DateBasedBeanChanger;
 import com.github.teamreflog.reflogserver.acceptance.topic.TopicFixture;
+import com.github.teamreflog.reflogserver.reflection.application.ReflectionService;
+import com.github.teamreflog.reflogserver.reflection.domain.DateProvider;
 import io.restassured.RestAssured;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.List;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 @DisplayName("인수 테스트: 댓글")
 class CommentAcceptanceTest extends AcceptanceTest {
+
+    @Autowired ReflectionService reflectionService;
 
     String crewToken;
     Long topicId, reflectionId;
@@ -29,6 +37,15 @@ class CommentAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     protected void setUp() {
         super.setUp();
+
+        DateBasedBeanChanger.changeDateProvider(
+                reflectionService,
+                new DateProvider() {
+                    @Override
+                    public LocalDate getTodayOfZone(final String timezone) {
+                        return LocalDate.of(2024, 1, 29);
+                    }
+                });
 
         MemberFixture.createMember("owner@email.com", "owner");
         final String ownerToken = AuthFixture.login("owner@email.com", "owner");
@@ -50,6 +67,11 @@ class CommentAcceptanceTest extends AcceptanceTest {
 
         InviteFixture.inviteAndAccept(ownerToken, crewToken, "crew@email.com", teamId);
         reflectionId = ReflectionFixture.createReflection(crewToken, topicId, "힘들었어요 🥲");
+    }
+
+    @AfterEach
+    void tearDown() {
+        DateBasedBeanChanger.changeDateProvider(reflectionService, new DateProvider());
     }
 
     @Test

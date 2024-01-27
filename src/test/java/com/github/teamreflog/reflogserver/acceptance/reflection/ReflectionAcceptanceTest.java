@@ -9,12 +9,13 @@ import com.github.teamreflog.reflogserver.acceptance.auth.AuthFixture;
 import com.github.teamreflog.reflogserver.acceptance.member.MemberFixture;
 import com.github.teamreflog.reflogserver.acceptance.team.InviteFixture;
 import com.github.teamreflog.reflogserver.acceptance.team.TeamFixture;
-import com.github.teamreflog.reflogserver.acceptance.topic.DayOfWeekProviderBeanChanger;
+import com.github.teamreflog.reflogserver.acceptance.topic.DateBasedBeanChanger;
 import com.github.teamreflog.reflogserver.acceptance.topic.TopicFixture;
-import com.github.teamreflog.reflogserver.topic.application.TopicService;
-import com.github.teamreflog.reflogserver.topic.domain.DayOfWeekProvider;
+import com.github.teamreflog.reflogserver.reflection.application.ReflectionService;
+import com.github.teamreflog.reflogserver.reflection.domain.DateProvider;
 import io.restassured.RestAssured;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +28,7 @@ import org.springframework.http.HttpHeaders;
 @DisplayName("인수 테스트: 회고")
 class ReflectionAcceptanceTest extends AcceptanceTest {
 
-    @Autowired TopicService topicService;
+    @Autowired ReflectionService reflectionService;
 
     String crewToken;
     Long topicId;
@@ -37,12 +38,12 @@ class ReflectionAcceptanceTest extends AcceptanceTest {
     protected void setUp() {
         super.setUp();
 
-        DayOfWeekProviderBeanChanger.changeDateProvider(
-                topicService,
-                new DayOfWeekProvider() {
+        DateBasedBeanChanger.changeDateProvider(
+                reflectionService,
+                new DateProvider() {
                     @Override
-                    public DayOfWeek getToday(final String timezone) {
-                        return DayOfWeek.MONDAY;
+                    public LocalDate getTodayOfZone(final String timezone) {
+                        return LocalDate.of(2024, 1, 29);
                     }
                 });
 
@@ -69,7 +70,7 @@ class ReflectionAcceptanceTest extends AcceptanceTest {
 
     @AfterEach
     void tearDown() {
-        DayOfWeekProviderBeanChanger.changeDateProvider(topicService, new DayOfWeekProvider());
+        DateBasedBeanChanger.changeDateProvider(reflectionService, new DateProvider());
     }
 
     @Test
