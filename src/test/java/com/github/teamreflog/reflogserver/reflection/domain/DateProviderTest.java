@@ -22,8 +22,8 @@ class DateProviderTest {
     }
 
     @Test
-    @DisplayName("Timezone이 주어지면 오늘 날짜를 반환한다.")
-    void getTodayOfZoneTest() {
+    @DisplayName("Timezone이 주어지면 현재 시간을 반환한다.")
+    void getLocalDateNow() {
         /* given */
         final Instant now = ZonedDateTime.of(2024, 1, 5, 4, 0, 0, 0, ZoneOffset.UTC).toInstant();
 
