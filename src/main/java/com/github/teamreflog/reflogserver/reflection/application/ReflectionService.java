@@ -4,6 +4,7 @@ import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionC
 import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionQueryResponse;
 import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionTodayQueryRequest;
 import com.github.teamreflog.reflogserver.reflection.domain.DateProvider;
+import com.github.teamreflog.reflogserver.reflection.domain.Reflection;
 import com.github.teamreflog.reflogserver.reflection.domain.ReflectionRepository;
 import java.time.LocalDate;
 import java.util.List;
@@ -23,7 +24,11 @@ public class ReflectionService {
     public Long createReflection(final ReflectionCreateRequest request) {
         final LocalDate localDate = dateProvider.getTodayOfZone(request.timezone());
 
-        return reflectionRepository.save(request.toEntity(localDate)).getId();
+        final Reflection reflection =
+                Reflection.create(
+                        request.memberId(), request.topicId(), request.content(), localDate);
+
+        return reflectionRepository.save(reflection).getId();
     }
 
     public List<ReflectionQueryResponse> queryTodayReflections(

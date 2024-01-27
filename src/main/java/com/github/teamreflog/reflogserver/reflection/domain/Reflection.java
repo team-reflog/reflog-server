@@ -36,7 +36,7 @@ public class Reflection extends BaseEntity {
     @Column(name = "reflection_date", nullable = false, updatable = false)
     private LocalDate reflectionDate;
 
-    public static Reflection of(
+    public static Reflection create(
             final Long memberId,
             final Long topicId,
             final String content,
