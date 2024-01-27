@@ -6,7 +6,7 @@ import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionT
 import com.github.teamreflog.reflogserver.reflection.domain.DateProvider;
 import com.github.teamreflog.reflogserver.reflection.domain.Reflection;
 import com.github.teamreflog.reflogserver.reflection.domain.ReflectionRepository;
-import com.github.teamreflog.reflogserver.reflection.domain.TeamData;
+import com.github.teamreflog.reflogserver.reflection.domain.ReflectionValidator;
 import com.github.teamreflog.reflogserver.reflection.domain.TeamQueryService;
 import java.time.LocalDate;
 import java.util.List;
@@ -19,25 +19,26 @@ import org.springframework.transaction.annotation.Transactional;
 public class ReflectionService {
 
     private final ReflectionRepository reflectionRepository;
+    private final ReflectionValidator reflectionValidator;
     private final DateProvider dateProvider;
     private final TeamQueryService teamQueryService;
 
-    // TODO: 동일 주제에 대하여 중복 회고를 작성할 수 없음
     @Transactional
     public Long createReflection(final ReflectionCreateRequest request) {
         final LocalDate localDate = dateProvider.getTodayOfZone(request.timezone());
 
-        final TeamData teamData = teamQueryService.getTeamDataByTopicId(request.topicId());
+        reflectionValidator.validateReflectionExistence(
+                request.memberId(), request.topicId(), localDate);
 
-        final Reflection reflection =
-                Reflection.create(
-                        request.memberId(),
-                        request.topicId(),
-                        request.content(),
-                        localDate,
-                        teamData);
-
-        return reflectionRepository.save(reflection).getId();
+        return reflectionRepository
+                .save(
+                        Reflection.create(
+                                request.memberId(),
+                                request.topicId(),
+                                request.content(),
+                                localDate,
+                                teamQueryService.getTeamDataByTopicId(request.topicId())))
+                .getId();
     }
 
     @Transactional(readOnly = true)
