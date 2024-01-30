@@ -107,6 +107,7 @@ class ReflectionAcceptanceTest extends AcceptanceTest {
                     .body("size()", is(1))
                     .body("[0].reflectionId", is(reflectionId.intValue()))
                     .body("[0].topicId", is(topicId.intValue()))
+                    .body("[0].topicContent", is("오늘 하루는 어땠나요?"))
                     .body("[0].content", is("힘들었어요 🥲"));
         }
 

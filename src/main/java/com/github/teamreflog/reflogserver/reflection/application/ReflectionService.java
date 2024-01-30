@@ -5,6 +5,7 @@ import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionQ
 import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionTodayQueryRequest;
 import com.github.teamreflog.reflogserver.reflection.domain.DateProvider;
 import com.github.teamreflog.reflogserver.reflection.domain.ReflectionRepository;
+import com.github.teamreflog.reflogserver.reflection.domain.TopicData;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,11 @@ public class ReflectionService {
                 .findAllByMemberIdAndReflectionDate(
                         request.memberId(), dateProvider.getTodayOfZone(request.timezone()))
                 .stream()
-                .map(ReflectionQueryResponse::fromEntity)
+                .map(
+                        reflection ->
+                                ReflectionQueryResponse.fromEntity(
+                                        reflection,
+                                        new TopicData(reflection.getTopicId(), "오늘 하루는 어땠나요?")))
                 .toList();
     }
 }
