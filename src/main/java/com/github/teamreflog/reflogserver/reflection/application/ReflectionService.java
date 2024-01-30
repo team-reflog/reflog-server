@@ -5,7 +5,7 @@ import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionQ
 import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionTodayQueryRequest;
 import com.github.teamreflog.reflogserver.reflection.domain.DateProvider;
 import com.github.teamreflog.reflogserver.reflection.domain.ReflectionRepository;
-import com.github.teamreflog.reflogserver.reflection.domain.TopicData;
+import com.github.teamreflog.reflogserver.reflection.domain.TopicQueryService;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +18,7 @@ public class ReflectionService {
 
     private final ReflectionRepository reflectionRepository;
     private final DateProvider dateProvider;
+    private final TopicQueryService topicQueryService;
 
     // TODO: 회고일에만 회고를 작성할 수 있다.
     @Transactional
@@ -38,7 +39,8 @@ public class ReflectionService {
                         reflection ->
                                 ReflectionQueryResponse.fromEntity(
                                         reflection,
-                                        new TopicData(reflection.getTopicId(), "오늘 하루는 어땠나요?")))
+                                        topicQueryService.getTopicDataById(
+                                                reflection.getTopicId())))
                 .toList();
     }
 }
