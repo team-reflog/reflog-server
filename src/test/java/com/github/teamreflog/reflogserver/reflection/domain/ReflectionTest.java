@@ -5,7 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-import com.github.teamreflog.reflogserver.reflection.exception.ReflectionAlreadyExistException;
+import com.github.teamreflog.reflogserver.reflection.exception.ReflectionNotAvailableDayException;
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,8 +37,8 @@ class ReflectionTest {
                                 () ->
                                         Reflection.create(
                                                 1L, 1L, "content", mock(LocalDate.class), teamData))
-                        .isExactlyInstanceOf(ReflectionAlreadyExistException.class)
-                        .hasMessage("이미 오늘의 회고를 작성했습니다.");
+                        .isExactlyInstanceOf(ReflectionNotAvailableDayException.class)
+                        .hasMessage("회고 작성일이 아닙니다.");
             }
         }
     }

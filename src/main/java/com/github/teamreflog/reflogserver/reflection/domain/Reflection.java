@@ -1,7 +1,7 @@
 package com.github.teamreflog.reflogserver.reflection.domain;
 
 import com.github.teamreflog.reflogserver.common.entity.BaseEntity;
-import com.github.teamreflog.reflogserver.reflection.exception.ReflectionAlreadyExistException;
+import com.github.teamreflog.reflogserver.reflection.exception.ReflectionNotAvailableDayException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -44,7 +44,7 @@ public class Reflection extends BaseEntity {
             final LocalDate reflectionDate,
             final TeamData teamData) {
         if (!teamData.containsReflectionDay(reflectionDate.getDayOfWeek())) {
-            throw new ReflectionAlreadyExistException();
+            throw new ReflectionNotAvailableDayException();
         }
 
         return new Reflection(null, memberId, topicId, content, reflectionDate);
