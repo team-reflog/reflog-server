@@ -105,24 +105,27 @@ public class TeamService {
                 reflectionQueryService.queryTeamReflectionsByTopicsAndReflectionDate(
                         topicIds, today);
 
+        return TeamReflectionQueryResponse.fromEntity(
+                team, queryReflectionWroteCrews(team.getId(), reflectionDatas));
+    }
+
+    private List<TeamReflectionDetailResponse> queryReflectionWroteCrews(
+            final Long teamId, final List<ReflectionData> reflectionDatas) {
         final List<Long> reflectionWroteCrewIds =
                 reflectionDatas.stream().map(ReflectionData::memberId).toList();
 
         final Map<Long, Crew> crewsByMemberId =
                 crewRepository
-                        .findAllByMemberIdIsInAndTeamId(reflectionWroteCrewIds, team.getId())
+                        .findAllByMemberIdIsInAndTeamId(reflectionWroteCrewIds, teamId)
                         .stream()
                         .collect(Collectors.toMap(Crew::getMemberId, Function.identity()));
 
-        final List<TeamReflectionDetailResponse> teamReflectionDetailResponses =
-                reflectionDatas.stream()
-                        .map(
-                                reflectionData ->
-                                        TeamReflectionDetailResponse.fromEntity(
-                                                crewsByMemberId.get(reflectionData.memberId()),
-                                                reflectionData))
-                        .toList();
-
-        return TeamReflectionQueryResponse.fromEntity(team, teamReflectionDetailResponses);
+        return reflectionDatas.stream()
+                .map(
+                        reflectionData ->
+                                TeamReflectionDetailResponse.fromEntity(
+                                        crewsByMemberId.get(reflectionData.memberId()),
+                                        reflectionData))
+                .toList();
     }
 }
