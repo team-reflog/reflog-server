@@ -125,6 +125,22 @@ class TeamAcceptanceTest extends AcceptanceTest {
                     .body("[0].nickname", equalTo("owner"))
                     .body("[0].memberId", equalTo(ownerId.intValue()));
         }
+
+        @Test
+        @DisplayName("오늘 작성된 팀 회고를 조회한다.")
+        void queryTodayTeamReflections() {
+            RestAssured.given()
+                    .log()
+                    .all()
+                    .auth()
+                    .oauth2(ownerAccessToken)
+                    .when()
+                    .get("/teams/{teamId}/reflections/today", teamId)
+                    .then()
+                    .log()
+                    .all()
+                    .statusCode(200);
+        }
     }
 
     @Nested
