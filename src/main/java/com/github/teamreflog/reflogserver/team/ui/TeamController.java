@@ -68,8 +68,8 @@ public class TeamController {
 
     @Authorities(MemberRole.MEMBER)
     @GetMapping("/{id}/reflections/today")
-    public List<TeamReflectionQueryResponse> queryTodayTeamReflections(
+    public TeamReflectionQueryResponse queryTodayTeamReflections(
             @PathVariable("id") final Long teamId) {
-        return List.of();
+        return teamService.queryTodayTeamReflections(teamId);
     }
 }
