@@ -6,7 +6,9 @@ import com.github.teamreflog.reflogserver.team.domain.ReflectionQueryService;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
+@Component
 @RequiredArgsConstructor
 public class ReflectionClient implements ReflectionQueryService {
 
