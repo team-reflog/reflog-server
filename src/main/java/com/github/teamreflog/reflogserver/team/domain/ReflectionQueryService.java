@@ -5,6 +5,6 @@ import java.util.List;
 
 public interface ReflectionQueryService {
 
-    List<ReflectionData> queryTeamReflectionsByTopicsAndReflectionDate(
+    List<ReflectionData> getAllTeamReflectionsInTopicsByDate(
             List<Long> topicIds, LocalDate reflectionDate);
 }

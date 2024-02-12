@@ -102,8 +102,7 @@ public class TeamService {
                         .toList();
 
         final List<ReflectionData> reflectionDatas =
-                reflectionQueryService.queryTeamReflectionsByTopicsAndReflectionDate(
-                        topicIds, today);
+                reflectionQueryService.getAllTeamReflectionsInTopicsByDate(topicIds, today);
 
         return TeamReflectionQueryResponse.fromEntity(
                 team, queryReflectionWroteCrews(team.getId(), reflectionDatas));

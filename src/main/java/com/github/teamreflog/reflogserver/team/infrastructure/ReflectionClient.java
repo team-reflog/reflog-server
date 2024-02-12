@@ -15,7 +15,7 @@ public class ReflectionClient implements ReflectionQueryService {
     private final ReflectionRepository reflectionRepository;
 
     @Override
-    public List<ReflectionData> queryTeamReflectionsByTopicsAndReflectionDate(
+    public List<ReflectionData> getAllTeamReflectionsInTopicsByDate(
             List<Long> topicIds, LocalDate reflectionDate) {
 
         return reflectionRepository
