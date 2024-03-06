@@ -90,6 +90,7 @@ public class TeamService {
         return TeamQueryDetailResponse.from(team, crews, topicData);
     }
 
+    @Transactional(readOnly = true)
     public TeamReflectionQueryResponse queryTodayTeamReflections(final Long teamId) {
         final LocalDate today = LocalDate.now();
 
