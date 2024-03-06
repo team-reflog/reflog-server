@@ -8,6 +8,7 @@ import com.github.teamreflog.reflogserver.reflection.domain.ReflectionRepository
 import com.github.teamreflog.reflogserver.team.domain.CrewRepository;
 import com.github.teamreflog.reflogserver.topic.domain.Topic;
 import com.github.teamreflog.reflogserver.topic.domain.TopicRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -44,5 +45,12 @@ public class CrewService implements CrewQueryService {
                 .findByMemberIdAndTeamId(memberId, topic.getTeamId())
                 .map(crew -> new CrewData(crew.getId(), crew.getNickname()))
                 .orElseThrow(ReflogIllegalArgumentException::new);
+    }
+
+    @Override
+    public List<CrewData> getCrewDatasByMemberIdIsInAndTeamId(List<Long> memberIds, Long teamId) {
+        return crewRepository.findAllByMemberIdIsInAndTeamId(memberIds, teamId).stream()
+                .map(crew -> new CrewData(crew.getId(), crew.getNickname()))
+                .toList();
     }
 }

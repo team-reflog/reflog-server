@@ -12,6 +12,7 @@ import com.github.teamreflog.reflogserver.acceptance.team.TeamFixture;
 import com.github.teamreflog.reflogserver.acceptance.topic.TopicFixture;
 import io.restassured.RestAssured;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,6 +25,7 @@ class ReflectionAcceptanceTest extends AcceptanceTest {
 
     String crewToken;
     Long topicId;
+    Long teamId;
 
     @Override
     @BeforeEach
@@ -32,7 +34,7 @@ class ReflectionAcceptanceTest extends AcceptanceTest {
 
         MemberFixture.createMember("owner@email.com", "owner");
         final String ownerToken = AuthFixture.login("owner@email.com", "owner");
-        final Long teamId =
+        teamId =
                 TeamFixture.createTeam(
                         ownerToken,
                         "antifragile",
@@ -76,6 +78,35 @@ class ReflectionAcceptanceTest extends AcceptanceTest {
                 .all()
                 .statusCode(201)
                 .header(HttpHeaders.LOCATION, matchesRegex("/reflections/[0-9]+"));
+    }
+
+    @Test
+    @DisplayName("팀원은 오늘 작성된 팀 회고를 조회할 수 있다.")
+    void readTodayTeamReflections() {
+        /* given */
+        final String content = "취업하고 싶어요 🥲";
+        final Long reflectionId = ReflectionFixture.createReflection(crewToken, topicId, content);
+
+        /* when & then */
+        RestAssured.given()
+                .log()
+                .all()
+                .auth()
+                .oauth2(crewToken)
+                .when()
+                .get("/reflections/teams/{teamId}/today", teamId)
+                .then()
+                .log()
+                .all()
+                .statusCode(200)
+                .body("teamId", is(teamId.intValue()))
+                .body("teamName", is("antifragile"))
+                .body("reflections.size()", is(1))
+                .body("reflections[0].nickname", is("super-duper-nickname"))
+                .body("reflections[0].reflectionId", is(reflectionId.intValue()))
+                .body("reflections[0].topicId", is(topicId.intValue()))
+                .body("reflections[0].content", is("취업하고 싶어요 🥲"))
+                .body("reflections[0].reflectionAt", is(LocalDate.now().toString()));
     }
 
     @Nested

@@ -5,6 +5,7 @@ import com.github.teamreflog.reflogserver.reflection.domain.TopicData;
 import com.github.teamreflog.reflogserver.reflection.domain.TopicQueryService;
 import com.github.teamreflog.reflogserver.topic.domain.Topic;
 import com.github.teamreflog.reflogserver.topic.domain.TopicRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -20,5 +21,12 @@ public class TopicQueryClient implements TopicQueryService {
                 topicRepository.findById(topicId).orElseThrow(ReflogIllegalArgumentException::new);
 
         return new TopicData(topic.getId(), topic.getContent());
+    }
+
+    @Override
+    public List<TopicData> getAllTopicDataByTeamId(final Long teamId) {
+        return topicRepository.findAllByTeamId(teamId).stream()
+                .map(topic -> new TopicData(topic.getId(), topic.getContent()))
+                .toList();
     }
 }
