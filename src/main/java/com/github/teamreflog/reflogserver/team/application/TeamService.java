@@ -6,22 +6,14 @@ import com.github.teamreflog.reflogserver.team.application.dto.TeamCreateRequest
 import com.github.teamreflog.reflogserver.team.application.dto.TeamQueryDetailRequest;
 import com.github.teamreflog.reflogserver.team.application.dto.TeamQueryDetailResponse;
 import com.github.teamreflog.reflogserver.team.application.dto.TeamQueryResponse;
-import com.github.teamreflog.reflogserver.team.application.dto.TeamReflectionDetailResponse;
-import com.github.teamreflog.reflogserver.team.application.dto.TeamReflectionQueryResponse;
 import com.github.teamreflog.reflogserver.team.domain.Crew;
 import com.github.teamreflog.reflogserver.team.domain.CrewRepository;
-import com.github.teamreflog.reflogserver.team.domain.ReflectionData;
-import com.github.teamreflog.reflogserver.team.domain.ReflectionQueryService;
 import com.github.teamreflog.reflogserver.team.domain.Team;
 import com.github.teamreflog.reflogserver.team.domain.TeamRepository;
 import com.github.teamreflog.reflogserver.team.domain.TeamValidator;
 import com.github.teamreflog.reflogserver.team.domain.TopicData;
 import com.github.teamreflog.reflogserver.team.domain.TopicQueryService;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +27,6 @@ public class TeamService {
     private final CrewRepository crewRepository;
     private final TeamValidator teamValidator;
     private final TopicQueryService topicQueryService;
-    private final ReflectionQueryService reflectionQueryService;
 
     @Transactional
     public Long createTeam(final TeamCreateRequest request) {
@@ -88,44 +79,5 @@ public class TeamService {
                 topicQueryService.getAllTopicDataByTeamId(request.teamId());
 
         return TeamQueryDetailResponse.from(team, crews, topicData);
-    }
-
-    @Transactional(readOnly = true)
-    public TeamReflectionQueryResponse queryTodayTeamReflections(final Long teamId) {
-        final LocalDate today = LocalDate.now();
-
-        final Team team =
-                teamRepository.findById(teamId).orElseThrow(ReflogIllegalArgumentException::new);
-
-        final List<Long> topicIds =
-                topicQueryService.getAllTopicDataByTeamId(team.getId()).stream()
-                        .map(TopicData::id)
-                        .toList();
-
-        final List<ReflectionData> reflectionDatas =
-                reflectionQueryService.getAllTeamReflectionsInTopicsByDate(topicIds, today);
-
-        return TeamReflectionQueryResponse.fromEntity(
-                team, queryReflectionWroteCrews(team.getId(), reflectionDatas));
-    }
-
-    private List<TeamReflectionDetailResponse> queryReflectionWroteCrews(
-            final Long teamId, final List<ReflectionData> reflectionDatas) {
-        final List<Long> reflectionWroteCrewIds =
-                reflectionDatas.stream().map(ReflectionData::memberId).toList();
-
-        final Map<Long, Crew> crewsByMemberId =
-                crewRepository
-                        .findAllByMemberIdIsInAndTeamId(reflectionWroteCrewIds, teamId)
-                        .stream()
-                        .collect(Collectors.toMap(Crew::getMemberId, Function.identity()));
-
-        return reflectionDatas.stream()
-                .map(
-                        reflectionData ->
-                                TeamReflectionDetailResponse.fromEntity(
-                                        crewsByMemberId.get(reflectionData.memberId()),
-                                        reflectionData))
-                .toList();
     }
 }

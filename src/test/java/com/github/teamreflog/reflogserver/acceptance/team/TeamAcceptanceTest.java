@@ -1,18 +1,15 @@
 package com.github.teamreflog.reflogserver.acceptance.team;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.matchesRegex;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import com.github.teamreflog.reflogserver.acceptance.AcceptanceTest;
 import com.github.teamreflog.reflogserver.acceptance.auth.AuthFixture;
 import com.github.teamreflog.reflogserver.acceptance.member.MemberFixture;
-import com.github.teamreflog.reflogserver.acceptance.reflection.ReflectionFixture;
 import com.github.teamreflog.reflogserver.acceptance.topic.TopicFixture;
 import io.restassured.RestAssured;
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -131,36 +128,6 @@ class TeamAcceptanceTest extends AcceptanceTest {
                     .body("[0].isOwner", equalTo(true))
                     .body("[0].nickname", equalTo("owner"))
                     .body("[0].memberId", equalTo(ownerId.intValue()));
-        }
-
-        @Test
-        @DisplayName("오늘 작성된 팀 회고를 조회한다.")
-        void queryTodayTeamReflections() {
-            /* given */
-            final String content = "힘들었어요 🥲";
-            final Long reflectionId =
-                    ReflectionFixture.createReflection(ownerAccessToken, topicId, content);
-
-            /* when & then */
-            RestAssured.given()
-                    .log()
-                    .all()
-                    .auth()
-                    .oauth2(ownerAccessToken)
-                    .when()
-                    .get("/teams/{teamId}/reflections/today", teamId)
-                    .then()
-                    .log()
-                    .all()
-                    .statusCode(200)
-                    .body("id", is(teamId.intValue()))
-                    .body("name", is("antifragile"))
-                    .body("reflections.size()", is(1))
-                    .body("reflections[0].nickname", is("owner"))
-                    .body("reflections[0].reflectionId", is(reflectionId.intValue()))
-                    .body("reflections[0].topicId", is(topicId.intValue()))
-                    .body("reflections[0].content", is("힘들었어요 🥲"))
-                    .body("reflections[0].reflectionAt", is(LocalDate.now().toString()));
         }
     }
 

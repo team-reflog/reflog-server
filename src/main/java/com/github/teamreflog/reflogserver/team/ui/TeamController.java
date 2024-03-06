@@ -10,7 +10,6 @@ import com.github.teamreflog.reflogserver.team.application.dto.TeamCreateRequest
 import com.github.teamreflog.reflogserver.team.application.dto.TeamQueryDetailRequest;
 import com.github.teamreflog.reflogserver.team.application.dto.TeamQueryDetailResponse;
 import com.github.teamreflog.reflogserver.team.application.dto.TeamQueryResponse;
-import com.github.teamreflog.reflogserver.team.application.dto.TeamReflectionQueryResponse;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -64,12 +63,5 @@ public class TeamController {
     @GetMapping("/{id}/members") // TODO: crews로 바꾸고 CrewController로 빼기
     public List<CrewQueryResponse> queryCrews(@PathVariable("id") final Long teamId) {
         return teamService.queryCrews(teamId);
-    }
-
-    @Authorities(MemberRole.MEMBER)
-    @GetMapping("/{id}/reflections/today")
-    public TeamReflectionQueryResponse queryTodayTeamReflections(
-            @PathVariable("id") final Long teamId) {
-        return teamService.queryTodayTeamReflections(teamId);
     }
 }
