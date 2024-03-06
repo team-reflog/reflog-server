@@ -3,7 +3,7 @@ package com.github.teamreflog.reflogserver.reflection.application;
 import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionCreateRequest;
 import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionDetailResponse;
 import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionQueryResponse;
-import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionTodayInTeamQueryRequest;
+import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionTodayInTeamQueryResponse;
 import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionTodayQueryRequest;
 import com.github.teamreflog.reflogserver.reflection.domain.CrewData;
 import com.github.teamreflog.reflogserver.reflection.domain.DateProvider;
@@ -58,7 +58,7 @@ public class ReflectionService {
     }
 
     @Transactional(readOnly = true)
-    public ReflectionTodayInTeamQueryRequest queryTodayTeamReflections(final Long teamId) {
+    public ReflectionTodayInTeamQueryResponse queryTodayTeamReflections(final Long teamId) {
         final LocalDate today = LocalDate.now();
 
         final TeamData team = teamQueryService.getTeamDataById(teamId);
@@ -69,15 +69,15 @@ public class ReflectionService {
                         .toList();
 
         final List<ReflectionDetailResponse> reflectionDetails =
-                queryReflectionWroteCrews(
+                matchReflectionWithWriter(
                         teamId,
                         reflectionRepository.findAllByTopicIdIsInAndReflectionDate(
                                 topicIds, today));
 
-        return ReflectionTodayInTeamQueryRequest.fromEntity(team, reflectionDetails);
+        return ReflectionTodayInTeamQueryResponse.fromEntity(team, reflectionDetails);
     }
 
-    private List<ReflectionDetailResponse> queryReflectionWroteCrews(
+    private List<ReflectionDetailResponse> matchReflectionWithWriter(
             final Long teamId, final List<Reflection> reflections) {
         final List<Long> reflectionWroteCrewIds =
                 reflections.stream().map(Reflection::getMemberId).toList();

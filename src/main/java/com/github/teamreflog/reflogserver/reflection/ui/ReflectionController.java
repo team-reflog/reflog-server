@@ -7,7 +7,7 @@ import com.github.teamreflog.reflogserver.auth.domain.MemberRole;
 import com.github.teamreflog.reflogserver.reflection.application.ReflectionService;
 import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionCreateRequest;
 import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionQueryResponse;
-import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionTodayInTeamQueryRequest;
+import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionTodayInTeamQueryResponse;
 import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionTodayQueryRequest;
 import java.net.URI;
 import java.util.List;
@@ -52,7 +52,7 @@ public class ReflectionController {
 
     @Authorities(MemberRole.MEMBER)
     @GetMapping("/teams/{teamId}/today")
-    public ReflectionTodayInTeamQueryRequest getTodayTeamReflections(
+    public ReflectionTodayInTeamQueryResponse getTodayTeamReflections(
             @PathVariable final Long teamId) {
         return reflectionService.queryTodayTeamReflections(teamId);
     }
