@@ -86,7 +86,7 @@ public class ReflectionService {
                 crewService
                         .getCrewDatasByMemberIdIsInAndTeamId(reflectionWroteCrewIds, teamId)
                         .stream()
-                        .collect(Collectors.toMap(CrewData::crewId, Function.identity()));
+                        .collect(Collectors.toMap(CrewData::memberId, Function.identity()));
 
         return reflections.stream()
                 .map(
