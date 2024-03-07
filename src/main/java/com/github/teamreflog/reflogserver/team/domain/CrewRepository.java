@@ -15,4 +15,6 @@ public interface CrewRepository extends Repository<Crew, Long> {
     Optional<Crew> findById(Long id);
 
     Optional<Crew> findByMemberIdAndTeamId(Long memberId, Long teamId);
+
+    List<Crew> findAllByMemberIdIsInAndTeamId(List<Long> memberId, Long teamId);
 }

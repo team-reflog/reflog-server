@@ -7,12 +7,14 @@ import com.github.teamreflog.reflogserver.auth.domain.MemberRole;
 import com.github.teamreflog.reflogserver.reflection.application.ReflectionService;
 import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionCreateRequest;
 import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionQueryResponse;
+import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionTodayInTeamQueryResponse;
 import com.github.teamreflog.reflogserver.reflection.application.dto.ReflectionTodayQueryRequest;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -46,5 +48,12 @@ public class ReflectionController {
             @RequestHeader("Time-Zone") final String timezone) {
         return reflectionService.queryTodayReflections(
                 new ReflectionTodayQueryRequest(authPrincipal.memberId(), timezone));
+    }
+
+    @Authorities(MemberRole.MEMBER)
+    @GetMapping("/teams/{teamId}/today")
+    public ReflectionTodayInTeamQueryResponse getTodayTeamReflections(
+            @PathVariable final Long teamId) {
+        return reflectionService.queryTodayTeamReflections(teamId);
     }
 }

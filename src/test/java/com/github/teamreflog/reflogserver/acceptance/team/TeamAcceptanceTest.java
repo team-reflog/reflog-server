@@ -7,6 +7,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import com.github.teamreflog.reflogserver.acceptance.AcceptanceTest;
 import com.github.teamreflog.reflogserver.acceptance.auth.AuthFixture;
 import com.github.teamreflog.reflogserver.acceptance.member.MemberFixture;
+import com.github.teamreflog.reflogserver.acceptance.topic.TopicFixture;
 import io.restassured.RestAssured;
 import java.time.DayOfWeek;
 import java.util.List;
@@ -68,6 +69,7 @@ class TeamAcceptanceTest extends AcceptanceTest {
     class WhenCreateTeam {
 
         Long teamId;
+        Long topicId;
 
         @BeforeEach
         void setUp() {
@@ -82,6 +84,8 @@ class TeamAcceptanceTest extends AcceptanceTest {
                                     DayOfWeek.WEDNESDAY,
                                     DayOfWeek.FRIDAY,
                                     DayOfWeek.SUNDAY));
+
+            topicId = TopicFixture.createTopic(ownerAccessToken, teamId, "오늘 하루는 어땠나요?");
         }
 
         @Test
