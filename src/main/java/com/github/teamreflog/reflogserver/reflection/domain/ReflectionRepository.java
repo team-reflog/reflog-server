@@ -12,4 +12,7 @@ public interface ReflectionRepository extends Repository<Reflection, Long> {
     List<Reflection> findAllByMemberIdAndReflectionDate(Long memberId, LocalDate reflectionDate);
 
     Optional<Reflection> findById(Long id);
+
+    Optional<Reflection> findByMemberIdAndTopicIdAndReflectionDate(
+            Long memberId, Long topicId, LocalDate reflectionDate);
 }

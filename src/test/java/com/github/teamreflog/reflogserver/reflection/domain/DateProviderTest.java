@@ -22,14 +22,14 @@ class DateProviderTest {
     }
 
     @Test
-    @DisplayName("Timezone이 주어지면 오늘 날짜를 반환한다.")
-    void getTodayOfZoneTest() {
+    @DisplayName("Timezone이 주어지면 현재 시간을 반환한다.")
+    void getLocalDateNow() {
         /* given */
         final Instant now = ZonedDateTime.of(2024, 1, 5, 4, 0, 0, 0, ZoneOffset.UTC).toInstant();
 
         /* when */
-        final LocalDate seoulToday = dateProvider.getTodayOfZone(now, "Asia/Seoul");
-        final LocalDate newYorkToday = dateProvider.getTodayOfZone(now, "America/New_York");
+        final LocalDate seoulToday = dateProvider.getLocalDateNow(now, "Asia/Seoul");
+        final LocalDate newYorkToday = dateProvider.getLocalDateNow(now, "America/New_York");
 
         /* then */
         assertAll(

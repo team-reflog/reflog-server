@@ -1,6 +1,7 @@
 package com.github.teamreflog.reflogserver.reflection.domain;
 
 import com.github.teamreflog.reflogserver.common.entity.BaseEntity;
+import com.github.teamreflog.reflogserver.reflection.exception.ReflectionNotAvailableDayException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -36,11 +37,16 @@ public class Reflection extends BaseEntity {
     @Column(name = "reflection_date", nullable = false, updatable = false)
     private LocalDate reflectionDate;
 
-    public static Reflection of(
-            final Long memberId,
-            final Long topicId,
+    public static Reflection create(
+            final long memberId,
+            final long topicId,
             final String content,
-            final LocalDate reflectionDate) {
+            final LocalDate reflectionDate,
+            final TeamData teamData) {
+        if (!teamData.containsReflectionDay(reflectionDate.getDayOfWeek())) {
+            throw new ReflectionNotAvailableDayException();
+        }
+
         return new Reflection(null, memberId, topicId, content, reflectionDate);
     }
 }

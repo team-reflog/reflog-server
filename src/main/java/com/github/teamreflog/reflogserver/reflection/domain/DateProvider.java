@@ -8,11 +8,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class DateProvider {
 
-    public LocalDate getTodayOfZone(final String timezone) {
-        return getTodayOfZone(Instant.now(), timezone);
+    public LocalDate getLocalDateNow(final String timezone) {
+        return getLocalDateNow(Instant.now(), timezone);
     }
 
-    LocalDate getTodayOfZone(final Instant utc, final String timezone) {
+    LocalDate getLocalDateNow(final Instant utc, final String timezone) {
         return utc.atZone(ZoneId.of(timezone)).toLocalDate();
     }
 }

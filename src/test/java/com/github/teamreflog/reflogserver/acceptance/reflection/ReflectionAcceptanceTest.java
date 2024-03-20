@@ -9,18 +9,26 @@ import com.github.teamreflog.reflogserver.acceptance.auth.AuthFixture;
 import com.github.teamreflog.reflogserver.acceptance.member.MemberFixture;
 import com.github.teamreflog.reflogserver.acceptance.team.InviteFixture;
 import com.github.teamreflog.reflogserver.acceptance.team.TeamFixture;
+import com.github.teamreflog.reflogserver.acceptance.topic.DateBasedBeanChanger;
 import com.github.teamreflog.reflogserver.acceptance.topic.TopicFixture;
+import com.github.teamreflog.reflogserver.reflection.application.ReflectionService;
+import com.github.teamreflog.reflogserver.reflection.domain.DateProvider;
 import io.restassured.RestAssured;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.List;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 
 @DisplayName("인수 테스트: 회고")
 class ReflectionAcceptanceTest extends AcceptanceTest {
+
+    @Autowired ReflectionService reflectionService;
 
     String crewToken;
     Long topicId;
@@ -29,6 +37,15 @@ class ReflectionAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     protected void setUp() {
         super.setUp();
+
+        DateBasedBeanChanger.changeDateProvider(
+                reflectionService,
+                new DateProvider() {
+                    @Override
+                    public LocalDate getLocalDateNow(final String timezone) {
+                        return LocalDate.of(2024, 1, 29);
+                    }
+                });
 
         MemberFixture.createMember("owner@email.com", "owner");
         final String ownerToken = AuthFixture.login("owner@email.com", "owner");
@@ -49,6 +66,11 @@ class ReflectionAcceptanceTest extends AcceptanceTest {
         crewToken = AuthFixture.login("crew@email.com", "crew");
 
         InviteFixture.inviteAndAccept(ownerToken, crewToken, "crew@email.com", teamId);
+    }
+
+    @AfterEach
+    void tearDown() {
+        DateBasedBeanChanger.changeDateProvider(reflectionService, new DateProvider());
     }
 
     @Test
